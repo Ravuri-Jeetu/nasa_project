@@ -35,9 +35,22 @@ export interface ChatResponse {
 }
 
 // Papers API
-export const fetchPapers = async (role: string): Promise<Paper[]> => {
-  const res = await apiClient.get('/api/papers', { params: { role } });
-  return res.data.papers || [];
+export interface PapersResponse {
+  papers: Paper[];
+  total: number;
+  page: number;
+  total_pages: number;
+  limit: number;
+  offset: number;
+  has_next: boolean;
+  has_previous: boolean;
+  role: string;
+}
+
+export const fetchPapers = async (role: string, page: number = 1, limit: number = 10): Promise<PapersResponse> => {
+  const offset = (page - 1) * limit;
+  const res = await apiClient.get('/api/papers', { params: { role, limit, offset } });
+  return res.data;
 };
 
 export const fetchPaperById = async (id: string, role: string): Promise<Paper> => {

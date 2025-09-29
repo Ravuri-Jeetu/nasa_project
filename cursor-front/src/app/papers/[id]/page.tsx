@@ -100,6 +100,10 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
   });
 
   const analysis = role === 'Scientist' ? getTechnicalAnalysis() : getBusinessAnalysis();
+  
+  // Type assertion to help TypeScript understand the analysis type
+  const technicalAnalysis = analysis as ReturnType<typeof getTechnicalAnalysis>;
+  const businessAnalysis = analysis as ReturnType<typeof getBusinessAnalysis>;
 
   return (
     <MainLayout>
@@ -224,24 +228,29 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
                 <CardContent className="space-y-4">
                   <div>
                     <h4 className="font-semibold mb-2">Methodology</h4>
-                    <p className="text-sm text-gray-700">{analysis.methodology}</p>
+                    <p className="text-sm text-gray-700">{role === 'Scientist' ? technicalAnalysis.methodology : 'Business Analysis'}</p>
                   </div>
                   
                   <div>
                     <h4 className="font-semibold mb-2">Research Impact</h4>
                     <Badge variant="outline" className="mb-2">
-                      {analysis.impact}
+                      {role === 'Scientist' ? technicalAnalysis.impact : 'Market Impact'}
                     </Badge>
-                    <p className="text-sm text-gray-700">{analysis.innovation}</p>
+                    <p className="text-sm text-gray-700">{role === 'Scientist' ? technicalAnalysis.innovation : businessAnalysis.competitiveAdvantage}</p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-2">Technical Applications</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
-                      {analysis.applications.map((app, index) => (
+                      {role === 'Scientist' ? technicalAnalysis.applications.map((app, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2">•</span>
                           <span>{app}</span>
+                        </li>
+                      )) : businessAnalysis.opportunities.map((opportunity, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="mr-2">•</span>
+                          <span>{opportunity}</span>
                         </li>
                       ))}
                     </ul>
@@ -250,10 +259,15 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
                   <div>
                     <h4 className="font-semibold mb-2">Technical Limitations</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
-                      {analysis.limitations.map((limitation, index) => (
+                      {role === 'Scientist' ? technicalAnalysis.limitations.map((limitation, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2">•</span>
                           <span>{limitation}</span>
+                        </li>
+                      )) : businessAnalysis.risks.map((risk, index) => (
+                        <li key={index} className="flex items-start">
+                          <span className="mr-2">•</span>
+                          <span>{risk}</span>
                         </li>
                       ))}
                     </ul>
@@ -337,7 +351,7 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
                   <div>
                     <h4 className="font-semibold mb-2">ROI Analysis</h4>
                     <div className="text-2xl font-bold text-green-600 mb-2">
-                      {analysis.roi}% ROI
+                      {businessAnalysis.roi}% ROI
                     </div>
                     <p className="text-sm text-gray-700">
                       Based on historical data and market trends
@@ -346,18 +360,18 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
                   
                   <div>
                     <h4 className="font-semibold mb-2">Market Size</h4>
-                    <p className="text-sm text-gray-700">{analysis.marketSize} addressable market</p>
+                    <p className="text-sm text-gray-700">{businessAnalysis.marketSize} addressable market</p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-2">Competitive Advantage</h4>
-                    <p className="text-sm text-gray-700">{analysis.competitiveAdvantage}</p>
+                    <p className="text-sm text-gray-700">{businessAnalysis.competitiveAdvantage}</p>
                   </div>
 
                   <div>
                     <h4 className="font-semibold mb-2">Investment Opportunities</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
-                      {analysis.opportunities.map((opportunity, index) => (
+                      {businessAnalysis.opportunities.map((opportunity, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2">•</span>
                           <span>{opportunity}</span>
@@ -369,7 +383,7 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
                   <div>
                     <h4 className="font-semibold mb-2">Risk Factors</h4>
                     <ul className="text-sm text-gray-700 space-y-1">
-                      {analysis.risks.map((risk, index) => (
+                      {businessAnalysis.risks.map((risk, index) => (
                         <li key={index} className="flex items-start">
                           <span className="mr-2">•</span>
                           <span>{risk}</span>

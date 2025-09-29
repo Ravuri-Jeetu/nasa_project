@@ -1,11 +1,11 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, Paper, ChatRequest, ChatResponse } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, Paper, ChatRequest, ChatResponse, PapersResponse } from './api';
 
 // Papers queries
-export const usePapers = (role: string) => {
+export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
   return useQuery({
-    queryKey: ['papers', role],
-    queryFn: () => fetchPapers(role),
+    queryKey: ['papers', role, page, limit],
+    queryFn: () => fetchPapers(role, page, limit),
     staleTime: 5 * 60 * 1000, // 5 minutes
   });
 };

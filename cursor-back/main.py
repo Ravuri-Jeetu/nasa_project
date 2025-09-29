@@ -471,23 +471,37 @@ def get_papers():
     }
 
 @app.get("/api/papers")
-def get_papers_data(role: str = "Scientist"):
+def get_papers_data(role: str = "Scientist", limit: int = 10, offset: int = 0):
     """
-    Get papers data for the frontend with role-based filtering.
+    Get papers data for the frontend with role-based filtering and pagination.
     """
     try:
         if not PAPERS_DATA:
-            return {"error": "No papers data available", "papers": []}
+            return {"error": "No papers data available", "papers": [], "total": 0, "page": 1, "total_pages": 0}
         
-        # For now, return all papers regardless of role
-        # In the future, you can add role-based filtering logic here
+        # Calculate pagination
+        total_papers = len(PAPERS_DATA)
+        total_pages = (total_papers + limit - 1) // limit  # Ceiling division
+        current_page = (offset // limit) + 1
+        
+        # Get paginated papers
+        start_idx = offset
+        end_idx = min(offset + limit, total_papers)
+        paginated_papers = PAPERS_DATA[start_idx:end_idx]
+        
         return {
-            "papers": PAPERS_DATA,
-            "total": len(PAPERS_DATA),
+            "papers": paginated_papers,
+            "total": total_papers,
+            "page": current_page,
+            "total_pages": total_pages,
+            "limit": limit,
+            "offset": offset,
+            "has_next": end_idx < total_papers,
+            "has_previous": offset > 0,
             "role": role
         }
     except Exception as e:
-        return {"error": f"Error fetching papers: {str(e)}", "papers": []}
+        return {"error": f"Error fetching papers: {str(e)}", "papers": [], "total": 0, "page": 1, "total_pages": 0}
 
 @app.get("/api/papers/{paper_id}")
 def get_paper_by_id(paper_id: str, role: str = "Scientist"):

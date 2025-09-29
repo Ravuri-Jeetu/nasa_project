@@ -130,7 +130,7 @@ export default function DynamicManagerDashboard() {
       {/* Header with Refresh Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Dynamic Manager Dashboard</h1>
+          <h1 className="text-3xl font-bold">Manager Dashboard</h1>
           <p className="text-gray-600">
             Real-time research analytics and investment recommendations
             {domainAnalytics?.last_updated && (

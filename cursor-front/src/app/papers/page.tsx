@@ -6,8 +6,10 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import Pagination from '@/components/ui/pagination';
 import { useAppStore } from '@/store/appStore';
 import { usePapers } from '@/api/hooks';
+import { Paper } from '@/api/api';
 import { 
   Search, 
   Filter, 
@@ -24,7 +26,9 @@ import Link from 'next/link';
 
 export default function PapersPage() {
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
-  const { data: papers, isLoading } = usePapers(role);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(10);
+  const { data: papersData, isLoading } = usePapers(role, currentPage, limit);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date');
@@ -32,7 +36,13 @@ export default function PapersPage() {
   const [filterYear, setFilterYear] = useState('all');
   const [generatingSummary, setGeneratingSummary] = useState<string | null>(null);
 
-  const filteredPapers = papers?.filter(paper => {
+  const papers = papersData?.papers || [];
+  const totalPages = papersData?.total_pages || 0;
+  const totalItems = papersData?.total || 0;
+  const hasNext = papersData?.has_next || false;
+  const hasPrevious = papersData?.has_previous || false;
+
+  const filteredPapers = papers.filter(paper => {
     const matchesSearch = !searchTerm || 
       paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       paper.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -56,7 +66,15 @@ export default function PapersPage() {
       default:
         return new Date(b.publicationDate).getTime() - new Date(a.publicationDate).getTime();
     }
-  }) || [];
+  });
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Reset search and filters when changing pages
+    setSearchTerm('');
+    setFilterMethodology('all');
+    setFilterYear('all');
+  };
 
   const handlePaperSelect = (paperId: string) => {
     if (selectedPaperIds.includes(paperId)) {
@@ -66,7 +84,7 @@ export default function PapersPage() {
     }
   };
 
-  const handleGenerateSummary = async (paper: any) => {
+  const handleGenerateSummary = async (paper: Paper) => {
     setGeneratingSummary(paper.id);
     try {
       // Call the backend API to generate summary
@@ -120,7 +138,7 @@ export default function PapersPage() {
     return [...new Set(years)].sort((a, b) => b.localeCompare(a));
   };
 
-  const getSummaryByRole = (paper: any) => {
+  const getSummaryByRole = (paper: Paper) => {
     if (role === 'Scientist') {
       return {
         title: 'Technical Summary',
@@ -380,19 +398,15 @@ export default function PapersPage() {
         </div>
 
         {/* Pagination */}
-        {filteredPapers.length > 0 && (
-          <div className="flex items-center justify-center space-x-2">
-            <Button variant="outline" size="sm" disabled>
-              Previous
-            </Button>
-            <span className="text-sm text-gray-600">
-              Showing {filteredPapers.length} of {papers?.length || 0} papers
-            </span>
-            <Button variant="outline" size="sm" disabled>
-              Next
-            </Button>
-          </div>
-        )}
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+          hasNext={hasNext}
+          hasPrevious={hasPrevious}
+          totalItems={totalItems}
+          itemsPerPage={limit}
+        />
       </div>
     </MainLayout>
   );

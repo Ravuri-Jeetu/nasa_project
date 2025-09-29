@@ -4,8 +4,10 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Pagination from '@/components/ui/pagination';
 import { useAppStore } from '@/store/appStore';
 import { usePapers, useAnalytics, useKnowledgeGraph } from '@/api/hooks';
+import { Paper } from '@/api/api';
 import { 
   BarChart, 
   Bar, 
@@ -37,7 +39,9 @@ const COLORS = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6'];
 
 export default function ScientistDashboard() {
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
-  const { data: papers, isLoading: papersLoading } = usePapers(role);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [limit] = useState(10);
+  const { data: papersData, isLoading: papersLoading } = usePapers(role, currentPage, limit);
   const { data: analytics, isLoading: analyticsLoading } = useAnalytics(role);
   const { data: knowledgeGraph, isLoading: kgLoading } = useKnowledgeGraph(role);
   
@@ -45,7 +49,13 @@ export default function ScientistDashboard() {
   const [filterMethodology, setFilterMethodology] = useState('');
   const [generatingSummary, setGeneratingSummary] = useState<string | null>(null);
 
-  const filteredPapers = papers?.filter(paper => {
+  const papers = papersData?.papers || [];
+  const totalPages = papersData?.total_pages || 0;
+  const totalItems = papersData?.total || 0;
+  const hasNext = papersData?.has_next || false;
+  const hasPrevious = papersData?.has_previous || false;
+
+  const filteredPapers = papers.filter(paper => {
     const matchesKeyword = !filterKeyword || 
       paper.title.toLowerCase().includes(filterKeyword.toLowerCase()) ||
       paper.abstract.toLowerCase().includes(filterKeyword.toLowerCase()) ||
@@ -57,7 +67,7 @@ export default function ScientistDashboard() {
       paper.abstract.toLowerCase().includes(filterMethodology.toLowerCase());
     
     return matchesKeyword && matchesTopic;
-  }) || [];
+  });
 
   const handlePaperSelect = (paperId: string) => {
     if (selectedPaperIds.includes(paperId)) {
@@ -67,7 +77,14 @@ export default function ScientistDashboard() {
     }
   };
 
-  const handleGenerateSummary = async (paper: any) => {
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+    // Reset filters when changing pages to avoid confusion
+    setFilterKeyword('');
+    setFilterMethodology('');
+  };
+
+  const handleGenerateSummary = async (paper: Paper) => {
     setGeneratingSummary(paper.id);
     try {
       // Call the backend API to generate summary
@@ -284,6 +301,17 @@ export default function ScientistDashboard() {
               ))
             )}
           </div>
+          
+          {/* Pagination */}
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            hasNext={hasNext}
+            hasPrevious={hasPrevious}
+            totalItems={totalItems}
+            itemsPerPage={limit}
+          />
         </TabsContent>
 
         {/* Knowledge Graph Tab */}
