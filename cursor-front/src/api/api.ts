@@ -76,6 +76,12 @@ export const fetchKnowledgeGraph = async (role: string) => {
   return res.data;
 };
 
+// Gap Finder API
+export const fetchGapFinder = async (role: string) => {
+  const res = await apiClient.get('/api/gap-finder', { params: { role } });
+  return res.data;
+};
+
 // ==================== DYNAMIC MANAGER DASHBOARD API ====================
 
 // Manager Dashboard Types

@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, Paper, ChatRequest, ChatResponse, PapersResponse } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, Paper, ChatRequest, ChatResponse, PapersResponse } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -46,5 +46,13 @@ export const useKnowledgeGraph = (role: string) => {
     queryKey: ['knowledge-graph', role],
     queryFn: () => fetchKnowledgeGraph(role),
     staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useGapFinder = (role: string) => {
+  return useQuery({
+    queryKey: ['gap-finder', role],
+    queryFn: () => fetchGapFinder(role),
+    staleTime: 10 * 60 * 1000, // 10 minutes
   });
 };
