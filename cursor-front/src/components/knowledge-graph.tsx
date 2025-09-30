@@ -479,7 +479,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     
                     return (
                       <g key={node.id}>
-                        {/* Smooth animated outer ring that enlarges with node */}
+                        {/* Smooth animated outer ring that enlarges with node in place */}
                         <circle
                           cx={position.x}
                           cy={position.y}
@@ -493,6 +493,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                             strokeDasharray: isSelected ? "8 4" : "0 0",
                             strokeDashoffset: isSelected ? 0 : 12,
                             animation: isSelected ? "rotate 1.5s linear infinite" : "none",
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
@@ -514,7 +515,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           SELECTED
                         </text>
                         
-                        {/* Main paper node with smooth hover enlargement */}
+                        {/* Main paper node with smooth hover enlargement in place */}
                         <circle
                           cx={position.x}
                           cy={position.y}
@@ -528,13 +529,14 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           onMouseEnter={() => setSelectedNode(node.id)}
                           onMouseLeave={() => setSelectedNode(null)}
                           style={{
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             filter: isSelected ? 'url(#glow) brightness(1.2) drop-shadow(0 0 20px rgba(139, 92, 246, 0.5))' : 'url(#glow)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                         
-                        {/* Smooth inner highlight */}
+                        {/* Smooth inner highlight that scales in place */}
                         <circle
                           cx={position.x - nodeSize * 0.3}
                           cy={position.y - nodeSize * 0.3}
@@ -543,12 +545,13 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           opacity={isSelected ? 0.6 : 0.5}
                           className="transition-all duration-300 ease-out"
                           style={{
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                         
-                        {/* Smooth paper title */}
+                        {/* Smooth paper title that scales in place */}
                         <text
                           x={position.x}
                           y={position.y + 4}
@@ -556,6 +559,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           className="text-sm font-bold fill-white pointer-events-none drop-shadow-lg transition-all duration-300 ease-out"
                           style={{
                             opacity: isSelected ? 1 : 0.9,
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
@@ -618,7 +622,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     
                     return (
                       <g key={node.id}>
-                        {/* Smooth animated outer ring that enlarges with node */}
+                        {/* Smooth animated outer ring that enlarges with node in place */}
                         <circle
                           cx={position.x}
                           cy={position.y}
@@ -632,6 +636,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                             strokeDasharray: isSelected ? "10 5" : "0 0",
                             strokeDashoffset: isSelected ? 0 : 15,
                             animation: isSelected ? "rotate 2s linear infinite" : "none",
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
@@ -653,7 +658,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           SELECTED
                         </text>
                         
-                        {/* Main node with smooth hover enlargement */}
+                        {/* Main node with smooth hover enlargement in place */}
                         <circle
                           cx={position.x}
                           cy={position.y}
@@ -667,13 +672,14 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           onMouseEnter={() => setSelectedNode(node.id)}
                           onMouseLeave={() => setSelectedNode(null)}
                           style={{
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             filter: isSelected ? 'url(#glow) brightness(1.2) drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))' : 'url(#glow)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                         
-                        {/* Smooth inner highlight circle that scales with node */}
+                        {/* Smooth inner highlight circle that scales with node in place */}
                         <circle
                           cx={position.x - nodeSize * 0.3}
                           cy={position.y - nodeSize * 0.3}
@@ -682,12 +688,13 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           opacity={isSelected ? 0.6 : 0.4}
                           className="transition-all duration-300 ease-out"
                           style={{
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
                         />
                         
-                        {/* Smooth node label that scales with node */}
+                        {/* Smooth node label that scales with node in place */}
                         <text
                           x={position.x}
                           y={position.y + 5}
@@ -697,6 +704,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           }`}
                           style={{
                             opacity: isSelected ? 1 : 0.9,
+                            transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.3)' : 'scale(1)',
                             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
                           }}
