@@ -109,7 +109,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
     return { nodes, edges };
   };
 
-  const getNodePosition = (index: number, total: number, centerX = 200, centerY = 150, radius = 120) => {
+  const getNodePosition = (index: number, total: number, centerX = 300, centerY = 300, radius = 180) => {
     const angle = (index * 2 * Math.PI) / total;
     return {
       x: centerX + radius * Math.cos(angle),
@@ -315,7 +315,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
 
       {/* Enhanced Knowledge Graph Visualization */}
       <Card className="bg-gradient-to-br from-white to-blue-50 border-blue-200 shadow-xl">
-        <CardHeader>
+        <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Target className="h-6 w-6 text-blue-600" />
             <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">
@@ -329,7 +329,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             }
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-6">
           {!showIntraPaperRelations && (
             <div className="mb-6 flex gap-2">
               <Button
@@ -368,7 +368,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             </div>
           )}
 
-          <div className="relative h-96 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 rounded-xl overflow-hidden border border-blue-200 shadow-lg">
+          <div className="relative h-[600px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 rounded-xl overflow-hidden border border-blue-200 shadow-lg">
             {/* Animated background particles */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
@@ -446,8 +446,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     
                     const sourceIndex = intraPaperData.nodes.findIndex(n => n.id === edge.source);
                     const targetIndex = intraPaperData.nodes.findIndex(n => n.id === edge.target);
-                    const sourcePos = getNodePosition(sourceIndex, intraPaperData.nodes.length, 200, 150, 100);
-                    const targetPos = getNodePosition(targetIndex, intraPaperData.nodes.length, 200, 150, 100);
+                    const sourcePos = getNodePosition(sourceIndex, intraPaperData.nodes.length, 300, 300, 120);
+                    const targetPos = getNodePosition(targetIndex, intraPaperData.nodes.length, 300, 300, 120);
                     
                     return (
                       <g key={index}>
@@ -477,7 +477,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   
                   {/* Enhanced nodes for papers with smooth enlargement */}
                   {intraPaperData.nodes.map((node, index) => {
-                    const position = getNodePosition(index, intraPaperData.nodes.length, 200, 150, 100);
+                    const position = getNodePosition(index, intraPaperData.nodes.length, 300, 300, 120);
                     const isSelected = selectedNode === node.id;
                     const nodeSize = isSelected ? 25 : 18;
                     
@@ -801,7 +801,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             {/* Enhanced Node Labels - Hidden by default, shown on hover */}
             <div className="absolute inset-0 pointer-events-none">
               {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node, index) => {
-                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 200, 150, showIntraPaperRelations ? 100 : 120);
+                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 300, 300, showIntraPaperRelations ? 120 : 180);
                 return (
                   <div
                     key={`label-${node.id}`}
