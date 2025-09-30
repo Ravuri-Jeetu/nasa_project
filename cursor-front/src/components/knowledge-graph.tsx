@@ -653,12 +653,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     const baseSize = 22;
                     const nodeSize = isSelected ? 35 : baseSize;
                     
-                    // Enhanced color scheme based on node type
-                    const nodeColor = node.type === 'research_area' ? 
-                      `hsl(${(index * 137.5) % 360}, 70%, 60%)` :
-                      node.type === 'methodology' ? 
-                      `hsl(${(index * 200) % 360}, 65%, 55%)` :
-                      `hsl(${(index * 80) % 360}, 75%, 50%)`;
+                    // Use the node's color from backend data
+                    const nodeColor = node.color || `hsl(${(index * 60) % 360}, 70%, 55%)`;
                     
                     return (
                       <g key={node.id}>
@@ -718,18 +714,9 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           strokeWidth={isSelected ? 5 : 4}
                           filter="url(#glow)"
                           className="cursor-pointer transition-all duration-400 ease-out"
-                          onClick={() => {
-                            console.log('Node clicked:', node.id, 'Current selected:', selectedNode);
-                            setSelectedNode(isSelected ? null : node.id);
-                          }}
-                          onMouseEnter={() => {
-                            console.log('Node hover enter:', node.id);
-                            setSelectedNode(node.id);
-                          }}
-                          onMouseLeave={() => {
-                            console.log('Node hover leave:', node.id);
-                            setSelectedNode(null);
-                          }}
+                          onClick={() => setSelectedNode(isSelected ? null : node.id)}
+                          onMouseEnter={() => setSelectedNode(node.id)}
+                          onMouseLeave={() => setSelectedNode(null)}
                           style={{
                             transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.4)' : 'scale(1)',
