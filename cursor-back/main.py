@@ -1493,54 +1493,90 @@ def calculate_feasibility_score(mission: MissionPlannerRequest) -> int:
     """Calculate mission feasibility score based on parameters."""
     return calculate_feasibility_score_with_realtime(mission, {})
 
-def generate_risk_assessment(mission: MissionPlannerRequest) -> list[RiskAssessment]:
-    """Generate risk assessment based on mission parameters."""
+def generate_risk_assessment_with_realtime(mission: MissionPlannerRequest, realtime_data: dict) -> list[RiskAssessment]:
+    """Generate risk assessment based on mission parameters and real-time data."""
     risks = []
     
-    # Bone loss risk
-    bone_loss_rate = 1.5 if mission.duration_days > 180 else 1.0
+    # Bone loss risk - use real-time data if available
+    if realtime_data and 'research_updates' in realtime_data:
+        bone_loss_study = realtime_data['research_updates'].get('latest_bone_loss_study', '1.5% per month')
+        if '1.2%' in bone_loss_study:
+            bone_loss_rate = 1.2
+        elif '1.5%' in bone_loss_study:
+            bone_loss_rate = 1.5
+        else:
+            bone_loss_rate = 1.5 if mission.duration_days > 180 else 1.0
+    else:
+        bone_loss_rate = 1.5 if mission.duration_days > 180 else 1.0
+    
     risks.append(RiskAssessment(
         risk="Bone loss",
         severity="High" if mission.duration_days > 180 else "Medium",
         expected_loss=f"{bone_loss_rate}% per month"
     ))
     
-    # Radiation risk
-    if mission.destination.lower() == "mars":
-        risks.append(RiskAssessment(
-            risk="Radiation exposure",
-            severity="High",
-            dose="500 mSv/year"
-        ))
+    # Radiation risk - use real-time data if available
+    if realtime_data and 'radiation' in realtime_data:
+        current_radiation = realtime_data['radiation'].get('current_level', 1.0)
+        if mission.destination.lower() == "mars":
+            dose = f"{current_radiation * 365 * 1.5:.0f} mSv/year (based on current levels)"
+        else:
+            dose = f"{current_radiation * 365:.0f} mSv/year (based on current levels)"
     else:
-        risks.append(RiskAssessment(
-            risk="Radiation exposure",
-            severity="Medium",
-            dose="200 mSv/year"
-        ))
+        if mission.destination.lower() == "mars":
+            dose = "500 mSv/year"
+        else:
+            dose = "200 mSv/year"
     
-    # Psychological stress
-    if mission.duration_days > 300:
-        risks.append(RiskAssessment(
-            risk="Psychological stress",
-            severity="High",
-            notes="Long isolation risk"
-        ))
+    risks.append(RiskAssessment(
+        risk="Radiation exposure",
+        severity="High" if mission.destination.lower() == "mars" else "Medium",
+        dose=dose
+    ))
+    
+    # Psychological stress - use real-time data if available
+    if realtime_data and 'research_updates' in realtime_data:
+        stress_index = realtime_data['research_updates'].get('psychological_stress_index', 'Moderate')
+        if stress_index == 'High':
+            severity = "High"
+            notes = "High stress levels detected in current crew"
+        elif stress_index == 'Low':
+            severity = "Low"
+            notes = "Low stress levels in current crew"
+        else:
+            severity = "Medium"
+            notes = "Moderate stress levels"
     else:
-        risks.append(RiskAssessment(
-            risk="Psychological stress",
-            severity="Medium",
-            notes="Moderate isolation risk"
-        ))
+        severity = "High" if mission.duration_days > 300 else "Medium"
+        notes = "Long isolation risk" if mission.duration_days > 300 else "Moderate isolation risk"
     
-    # Muscle atrophy
+    risks.append(RiskAssessment(
+        risk="Psychological stress",
+        severity=severity,
+        notes=notes
+    ))
+    
+    # Muscle atrophy - use real-time data if available
+    if realtime_data and 'research_updates' in realtime_data:
+        muscle_rate = realtime_data['research_updates'].get('muscle_atrophy_rate', '2% per month')
+        if '1.8%' in muscle_rate:
+            muscle_loss_rate = 1.8
+        else:
+            muscle_loss_rate = 2.0
+    else:
+        muscle_loss_rate = 2.0
+    
     risks.append(RiskAssessment(
         risk="Muscle atrophy",
         severity="High" if mission.duration_days > 180 else "Medium",
-        expected_loss="2% per month"
+        expected_loss=f"{muscle_loss_rate}% per month"
     ))
     
     return risks
+
+def generate_risk_assessment(mission: MissionPlannerRequest) -> list[RiskAssessment]:
+    """Generate risk assessment based on mission parameters."""
+    return generate_risk_assessment_with_realtime(mission, {})
 
 def calculate_resource_requirements_with_realtime(mission: MissionPlannerRequest, realtime_data: dict) -> ResourceRequirements:
     """Calculate resource requirements based on mission parameters and real-time data."""
@@ -1577,11 +1613,27 @@ def calculate_resource_requirements(mission: MissionPlannerRequest) -> ResourceR
     """Calculate resource requirements based on mission parameters."""
     return calculate_resource_requirements_with_realtime(mission, {})
 
-def determine_crew_health_requirements(mission: MissionPlannerRequest) -> CrewHealthRequirements:
-    """Determine crew health requirements based on mission parameters."""
-    exercise_hours = 2 if mission.duration_days > 180 else 1.5
+def determine_crew_health_requirements_with_realtime(mission: MissionPlannerRequest, realtime_data: dict) -> CrewHealthRequirements:
+    """Determine crew health requirements based on mission parameters and real-time data."""
+    # Exercise requirements - use real-time data if available
+    if realtime_data and 'iss_crew' in realtime_data:
+        current_exercise = realtime_data['iss_crew'].get('exercise_hours', 2.0)
+        if mission.duration_days > 180:
+            exercise_hours = max(current_exercise, 2.0)
+        else:
+            exercise_hours = max(current_exercise, 1.5)
+    else:
+        exercise_hours = 2 if mission.duration_days > 180 else 1.5
     
+    # Medical support - enhanced based on real-time crew health
     medical_support = "Telemedicine + onboard kit"
+    if realtime_data and 'iss_crew' in realtime_data:
+        health_status = realtime_data['iss_crew'].get('health_status', 'Unknown')
+        if health_status == 'Poor':
+            medical_support += " + emergency medical protocols"
+        elif health_status == 'Good':
+            medical_support += " + preventive care systems"
+    
     if mission.duration_days > 500:
         medical_support += " + surgical capabilities"
     elif mission.duration_days > 300:
@@ -1592,8 +1644,12 @@ def determine_crew_health_requirements(mission: MissionPlannerRequest) -> CrewHe
         medical_support=medical_support
     )
 
-def generate_recommendations(mission: MissionPlannerRequest) -> list[str]:
-    """Generate recommendations based on mission parameters."""
+def determine_crew_health_requirements(mission: MissionPlannerRequest) -> CrewHealthRequirements:
+    """Determine crew health requirements based on mission parameters."""
+    return determine_crew_health_requirements_with_realtime(mission, {})
+
+def generate_recommendations_with_realtime(mission: MissionPlannerRequest, realtime_data: dict) -> list[str]:
+    """Generate recommendations based on mission parameters and real-time data."""
     recommendations = []
     
     # Duration-based recommendations
@@ -1616,12 +1672,42 @@ def generate_recommendations(mission: MissionPlannerRequest) -> list[str]:
         recommendations.append("Implement crew conflict resolution protocols")
         recommendations.append("Add privacy modules for crew quarters")
     
+    # Real-time based recommendations
+    if realtime_data:
+        # ISS crew health recommendations
+        if 'iss_crew' in realtime_data:
+            health_status = realtime_data['iss_crew'].get('health_status', 'Unknown')
+            if health_status == 'Poor':
+                recommendations.append("Implement enhanced medical monitoring based on current crew health issues")
+            elif health_status == 'Good':
+                recommendations.append("Maintain current health protocols - crew performing well")
+        
+        # Radiation-based recommendations
+        if 'radiation' in realtime_data:
+            radiation_level = realtime_data['radiation'].get('current_level', 1.0)
+            if radiation_level > 1.5:
+                recommendations.append("Increase radiation shielding due to elevated current levels")
+            elif radiation_level < 0.5:
+                recommendations.append("Current low radiation levels allow for reduced shielding")
+        
+        # Research-based recommendations
+        if 'research_updates' in realtime_data:
+            bone_loss_study = realtime_data['research_updates'].get('latest_bone_loss_study', '')
+            if '1.2%' in bone_loss_study:
+                recommendations.append("Latest research shows improved bone loss rates - consider enhanced exercise protocols")
+            elif '2.0%' in bone_loss_study:
+                recommendations.append("Recent studies show higher bone loss - implement additional countermeasures")
+    
     # General recommendations
     recommendations.append("Schedule psychological support sessions weekly")
     recommendations.append("Include emergency evacuation procedures")
     recommendations.append("Implement comprehensive health monitoring")
     
     return recommendations
+
+def generate_recommendations(mission: MissionPlannerRequest) -> list[str]:
+    """Generate recommendations based on mission parameters."""
+    return generate_recommendations_with_realtime(mission, {})
 
 @app.post("/api/mission-planner", response_model=MissionPlannerResponse)
 def mission_planner_endpoint(request: MissionPlannerRequest):
