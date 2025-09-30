@@ -325,7 +325,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           <CardDescription className="text-gray-700 font-medium">
             {showIntraPaperRelations 
               ? 'Real-time analysis of relationships between selected papers'
-              : 'Interactive visualization of research connections from real data'
+              : 'Interactive visualization of research connections from real data - hover over nodes to see details'
             }
           </CardDescription>
         </CardHeader>
@@ -375,6 +375,11 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
               <div className="absolute top-20 right-20 w-1 h-1 bg-purple-400 rounded-full animate-ping"></div>
               <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
               <div className="absolute bottom-10 right-10 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            </div>
+            
+            {/* Hover instruction */}
+            <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-200">
+              💡 Hover over nodes
             </div>
             
             <svg width="100%" height="100%" className="absolute inset-0">
@@ -468,6 +473,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           strokeWidth="3"
                           filter="url(#glow)"
                           className="cursor-pointer transition-all duration-300 hover:scale-110"
+                          onMouseEnter={() => setSelectedNode(node.id)}
+                          onMouseLeave={() => setSelectedNode(null)}
                         />
                         {/* Inner highlight */}
                         <circle
@@ -566,6 +573,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           filter="url(#glow)"
                           className="cursor-pointer transition-all duration-300 hover:scale-110"
                           onClick={() => setSelectedNode(isSelected ? null : node.id)}
+                          onMouseEnter={() => setSelectedNode(node.id)}
+                          onMouseLeave={() => setSelectedNode(null)}
                         />
                         
                         {/* Inner highlight circle */}
@@ -595,14 +604,16 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
               )}
             </svg>
             
-            {/* Enhanced Node Labels */}
+            {/* Enhanced Node Labels - Hidden by default, shown on hover */}
             <div className="absolute inset-0 pointer-events-none">
               {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node, index) => {
                 const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 200, 150, showIntraPaperRelations ? 100 : 120);
                 return (
                   <div
                     key={`label-${node.id}`}
-                    className="absolute text-sm font-semibold text-gray-800 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-gray-200 max-w-36 transition-all duration-300 hover:bg-white hover:shadow-xl"
+                    className={`absolute text-sm font-semibold text-gray-800 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-gray-200 max-w-36 transition-all duration-300 opacity-0 pointer-events-none ${
+                      selectedNode === node.id ? 'opacity-100' : ''
+                    }`}
                     style={{
                       left: position.x - 72,
                       top: position.y + (showIntraPaperRelations ? 30 : 40),
