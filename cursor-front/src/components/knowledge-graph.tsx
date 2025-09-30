@@ -405,6 +405,10 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                       transform: translateY(0); 
                     }
                   }
+                  @keyframes dash {
+                    from { stroke-dashoffset: 0; }
+                    to { stroke-dashoffset: 10; }
+                  }
                 `}
               </style>
               
@@ -571,9 +575,9 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   })}
                 </>
               ) : (
-                // Enhanced Real Data Knowledge Graph
+                // Beautiful Modern Research Areas Knowledge Graph
                 <>
-                  {/* Enhanced edges for real relationships */}
+                  {/* Elegant curved edges with gradient effects */}
                   {filteredEdges.map((edge, index) => {
                     const sourceNode = filteredNodes.find(n => n.id === edge.source);
                     const targetNode = filteredNodes.find(n => n.id === edge.target);
@@ -584,132 +588,197 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     const sourcePos = getNodePosition(sourceIndex, filteredNodes.length);
                     const targetPos = getNodePosition(targetIndex, filteredNodes.length);
                     
+                    // Create curved path for more elegant connections
+                    const midX = (sourcePos.x + targetPos.x) / 2;
+                    const midY = (sourcePos.y + targetPos.y) / 2;
+                    const controlX = midX + (Math.random() - 0.5) * 50;
+                    const controlY = midY + (Math.random() - 0.5) * 50;
+                    
                     const edgeColor = edge.type === 'content_similarity' ? "#3B82F6" : 
                                     edge.type === 'citation_network' ? "#10B981" :
                                     edge.type === 'keyword_cooccurrence' ? "#F59E0B" : "#EF4444";
                     
                     return (
                       <g key={index}>
-                        <line
-                          x1={sourcePos.x}
-                          y1={sourcePos.y}
-                          x2={targetPos.x}
-                          y2={targetPos.y}
-                          stroke={edgeColor}
-                          strokeWidth={Math.max(2, edge.weight * 6)}
-                          opacity={0.7}
+                        {/* Curved path with gradient */}
+                        <defs>
+                          <linearGradient id={`edgeGradient-${index}`} x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stopColor={edgeColor} stopOpacity="0.8"/>
+                            <stop offset="50%" stopColor={edgeColor} stopOpacity="0.4"/>
+                            <stop offset="100%" stopColor={edgeColor} stopOpacity="0.1"/>
+                          </linearGradient>
+                        </defs>
+                        
+                        <path
+                          d={`M ${sourcePos.x} ${sourcePos.y} Q ${controlX} ${controlY} ${targetPos.x} ${targetPos.y}`}
+                          stroke={`url(#edgeGradient-${index})`}
+                          strokeWidth={Math.max(3, edge.weight * 8)}
+                          fill="none"
+                          opacity="0.6"
                           filter="url(#shadow)"
-                          className="transition-all duration-500"
+                          className="transition-all duration-700 ease-out"
+                          style={{
+                            strokeDasharray: "5 5",
+                            strokeDashoffset: isSelected ? 0 : 10,
+                            animation: isSelected ? "dash 2s linear infinite" : "none"
+                          }}
                         />
-                        {/* Animated connection indicator */}
+                        
+                        {/* Floating particles along the edge */}
                         <circle
-                          cx={sourcePos.x + (targetPos.x - sourcePos.x) * 0.3}
-                          cy={sourcePos.y + (targetPos.y - sourcePos.y) * 0.3}
+                          cx={sourcePos.x + (targetPos.x - sourcePos.x) * 0.2}
+                          cy={sourcePos.y + (targetPos.y - sourcePos.y) * 0.2}
+                          r="2"
+                          fill={edgeColor}
+                          opacity="0.7"
+                          className="animate-pulse"
+                        />
+                        <circle
+                          cx={sourcePos.x + (targetPos.x - sourcePos.x) * 0.8}
+                          cy={sourcePos.y + (targetPos.y - sourcePos.y) * 0.8}
                           r="1.5"
                           fill={edgeColor}
-                          opacity="0.8"
+                          opacity="0.5"
                           className="animate-ping"
                         />
                       </g>
                     );
                   })}
                   
-                  {/* Enhanced nodes for real data */}
+                  {/* Beautiful modern nodes with enhanced design */}
                   {filteredNodes.map((node, index) => {
                     const position = getNodePosition(index, filteredNodes.length);
                     const isSelected = selectedNode === node.id;
-                    const nodeSize = isSelected ? 30 : Math.max(15, node.size / 4);
+                    const nodeSize = isSelected ? 35 : Math.max(20, node.size / 3);
+                    
+                    // Enhanced color scheme based on node type
+                    const nodeColor = node.type === 'research_area' ? 
+                      `hsl(${(index * 137.5) % 360}, 70%, 60%)` :
+                      node.type === 'methodology' ? 
+                      `hsl(${(index * 200) % 360}, 65%, 55%)` :
+                      `hsl(${(index * 80) % 360}, 75%, 50%)`;
                     
                     return (
                       <g key={node.id}>
-                        {/* Smooth animated outer ring that enlarges with node in place */}
+                        {/* Outer glow ring with pulsing effect */}
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r={nodeSize + 8}
+                          r={nodeSize + 12}
                           fill="none"
-                          stroke="#3B82F6"
-                          strokeWidth={isSelected ? 3 : 0}
-                          opacity={isSelected ? 0.8 : 0}
-                          className="transition-all duration-300 ease-out"
+                          stroke={nodeColor}
+                          strokeWidth={isSelected ? 4 : 2}
+                          opacity={isSelected ? 0.6 : 0.3}
+                          className="transition-all duration-500 ease-out"
                           style={{
-                            strokeDasharray: isSelected ? "10 5" : "0 0",
-                            strokeDashoffset: isSelected ? 0 : 15,
-                            animation: isSelected ? "rotate 2s linear infinite" : "none",
+                            strokeDasharray: isSelected ? "15 5" : "0 0",
+                            strokeDashoffset: isSelected ? 0 : 20,
+                            animation: isSelected ? "rotate 3s linear infinite" : "none",
                             transformOrigin: `${position.x}px ${position.y}px`,
-                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transform: isSelected ? 'scale(1.4)' : 'scale(1)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: 'drop-shadow(0 0 15px rgba(0,0,0,0.3))'
                           }}
                         />
                         
-                        {/* Smooth selection indicator text that scales with node */}
+                        {/* Selection indicator with modern design */}
                         <text
                           x={position.x}
-                          y={position.y - nodeSize - 15}
+                          y={position.y - nodeSize - 20}
                           textAnchor="middle"
-                          className={`text-xs font-bold fill-blue-600 pointer-events-none transition-all duration-300 ease-out ${
+                          className={`text-sm font-bold fill-gray-700 pointer-events-none transition-all duration-400 ease-out ${
                             isSelected ? 'opacity-100' : 'opacity-0'
                           }`}
                           style={{
-                            transform: isSelected ? 'translateY(0) scale(1.2)' : 'translateY(-5px) scale(1)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transform: isSelected ? 'translateY(0) scale(1.1)' : 'translateY(-8px) scale(0.9)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
                           }}
                         >
-                          SELECTED
+                          ⭐ SELECTED
                         </text>
                         
-                        {/* Main node with smooth hover enlargement in place */}
+                        {/* Main node with gradient and modern styling */}
+                        <defs>
+                          <radialGradient id={`nodeGradient-${node.id}`} cx="30%" cy="30%">
+                            <stop offset="0%" stopColor="white" stopOpacity="0.8"/>
+                            <stop offset="70%" stopColor={nodeColor} stopOpacity="0.9"/>
+                            <stop offset="100%" stopColor={nodeColor} stopOpacity="1"/>
+                          </radialGradient>
+                        </defs>
+                        
                         <circle
                           cx={position.x}
                           cy={position.y}
                           r={nodeSize}
-                          fill={node.color}
+                          fill={`url(#nodeGradient-${node.id})`}
                           stroke={isSelected ? "#1F2937" : "white"}
-                          strokeWidth={isSelected ? 4 : 3}
+                          strokeWidth={isSelected ? 5 : 4}
                           filter="url(#glow)"
-                          className="cursor-pointer transition-all duration-300 ease-out"
+                          className="cursor-pointer transition-all duration-400 ease-out"
                           onClick={() => setSelectedNode(isSelected ? null : node.id)}
                           onMouseEnter={() => setSelectedNode(node.id)}
                           onMouseLeave={() => setSelectedNode(null)}
                           style={{
                             transformOrigin: `${position.x}px ${position.y}px`,
-                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-                            filter: isSelected ? 'url(#glow) brightness(1.2) drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))' : 'url(#glow)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transform: isSelected ? 'scale(1.4)' : 'scale(1)',
+                            filter: isSelected ? 'url(#glow) brightness(1.3) drop-shadow(0 0 25px rgba(59, 130, 246, 0.6))' : 'url(#glow)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            boxShadow: isSelected ? '0 0 30px rgba(0,0,0,0.4)' : '0 0 10px rgba(0,0,0,0.2)'
                           }}
                         />
                         
-                        {/* Smooth inner highlight circle that scales with node in place */}
+                        {/* Inner highlight with modern design */}
                         <circle
-                          cx={position.x - nodeSize * 0.3}
-                          cy={position.y - nodeSize * 0.3}
-                          r={nodeSize * 0.4}
+                          cx={position.x - nodeSize * 0.25}
+                          cy={position.y - nodeSize * 0.25}
+                          r={nodeSize * 0.35}
                           fill="white"
-                          opacity={isSelected ? 0.6 : 0.4}
-                          className="transition-all duration-300 ease-out"
+                          opacity={isSelected ? 0.8 : 0.6}
+                          className="transition-all duration-400 ease-out"
                           style={{
                             transformOrigin: `${position.x}px ${position.y}px`,
-                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transform: isSelected ? 'scale(1.4)' : 'scale(1)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: 'blur(1px)'
                           }}
                         />
                         
-                        {/* Smooth node label that scales with node in place */}
+                        {/* Enhanced node label with better typography */}
                         <text
                           x={position.x}
-                          y={position.y + 5}
+                          y={position.y + 6}
                           textAnchor="middle"
-                          className={`font-bold fill-white pointer-events-none drop-shadow-lg transition-all duration-300 ease-out ${
-                            nodeSize > 20 ? 'text-sm' : 'text-xs'
+                          className={`font-bold fill-white pointer-events-none transition-all duration-400 ease-out ${
+                            nodeSize > 25 ? 'text-base' : 'text-sm'
                           }`}
                           style={{
                             opacity: isSelected ? 1 : 0.9,
                             transformOrigin: `${position.x}px ${position.y}px`,
-                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                            transform: isSelected ? 'scale(1.4)' : 'scale(1)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.5))',
+                            textShadow: '0 1px 2px rgba(0,0,0,0.8)'
                           }}
                         >
                           {node.count || node.citations || ''}
+                        </text>
+                        
+                        {/* Node type indicator */}
+                        <text
+                          x={position.x}
+                          y={position.y + nodeSize + 15}
+                          textAnchor="middle"
+                          className={`text-xs font-medium fill-gray-600 pointer-events-none transition-all duration-400 ease-out ${
+                            isSelected ? 'opacity-100' : 'opacity-70'
+                          }`}
+                          style={{
+                            transformOrigin: `${position.x}px ${position.y}px`,
+                            transform: isSelected ? 'scale(1.2)' : 'scale(1)',
+                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        >
+                          {node.type?.replace('_', ' ').toUpperCase() || 'NODE'}
                         </text>
                       </g>
                     );
