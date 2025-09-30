@@ -383,6 +383,31 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             </div>
             
             <svg width="100%" height="100%" className="absolute inset-0">
+              {/* CSS animations */}
+              <style>
+                {`
+                  @keyframes rotate {
+                    from { stroke-dashoffset: 0; }
+                    to { stroke-dashoffset: 15; }
+                  }
+                  @keyframes smoothScale {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                    100% { transform: scale(1.1); }
+                  }
+                  @keyframes fadeInUp {
+                    from { 
+                      opacity: 0; 
+                      transform: translateY(10px); 
+                    }
+                    to { 
+                      opacity: 1; 
+                      transform: translateY(0); 
+                    }
+                  }
+                `}
+              </style>
+              
               {/* Gradient definitions */}
               <defs>
                 <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -446,49 +471,94 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     );
                   })}
                   
-                  {/* Enhanced nodes for papers */}
+                  {/* Enhanced nodes for papers with smooth enlargement */}
                   {intraPaperData.nodes.map((node, index) => {
                     const position = getNodePosition(index, intraPaperData.nodes.length, 200, 150, 100);
+                    const isSelected = selectedNode === node.id;
+                    const nodeSize = isSelected ? 25 : 18;
                     
                     return (
                       <g key={node.id}>
-                        {/* Outer glow ring */}
+                        {/* Smooth animated outer ring that enlarges with node */}
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r="20"
+                          r={nodeSize + 6}
                           fill="none"
-                          stroke={node.color}
-                          strokeWidth="1"
-                          opacity="0.3"
-                          className="animate-pulse"
+                          stroke="#8B5CF6"
+                          strokeWidth={isSelected ? 2 : 0}
+                          opacity={isSelected ? 0.6 : 0}
+                          className="transition-all duration-300 ease-out"
+                          style={{
+                            strokeDasharray: isSelected ? "8 4" : "0 0",
+                            strokeDashoffset: isSelected ? 0 : 12,
+                            animation: isSelected ? "rotate 1.5s linear infinite" : "none",
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         />
-                        {/* Main node with gradient */}
+                        
+                        {/* Smooth selection indicator */}
+                        <text
+                          x={position.x}
+                          y={position.y - nodeSize - 12}
+                          textAnchor="middle"
+                          className={`text-xs font-bold fill-purple-600 pointer-events-none transition-all duration-300 ease-out ${
+                            isSelected ? 'opacity-100' : 'opacity-0'
+                          }`}
+                          style={{
+                            transform: isSelected ? 'translateY(0) scale(1.2)' : 'translateY(-3px) scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        >
+                          SELECTED
+                        </text>
+                        
+                        {/* Main paper node with smooth hover enlargement */}
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r="18"
+                          r={nodeSize}
                           fill={node.color}
-                          stroke="white"
-                          strokeWidth="3"
+                          stroke={isSelected ? "#1F2937" : "white"}
+                          strokeWidth={isSelected ? 3 : 2}
                           filter="url(#glow)"
-                          className="cursor-pointer transition-all duration-300 hover:scale-110"
+                          className="cursor-pointer transition-all duration-300 ease-out"
+                          onClick={() => setSelectedNode(isSelected ? null : node.id)}
                           onMouseEnter={() => setSelectedNode(node.id)}
                           onMouseLeave={() => setSelectedNode(null)}
+                          style={{
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            filter: isSelected ? 'url(#glow) brightness(1.2) drop-shadow(0 0 20px rgba(139, 92, 246, 0.5))' : 'url(#glow)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         />
-                        {/* Inner highlight */}
+                        
+                        {/* Smooth inner highlight */}
                         <circle
-                          cx={position.x - 4}
-                          cy={position.y - 4}
-                          r="6"
+                          cx={position.x - nodeSize * 0.3}
+                          cy={position.y - nodeSize * 0.3}
+                          r={nodeSize * 0.3}
                           fill="white"
-                          opacity="0.3"
+                          opacity={isSelected ? 0.6 : 0.5}
+                          className="transition-all duration-300 ease-out"
+                          style={{
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         />
+                        
+                        {/* Smooth paper title */}
                         <text
                           x={position.x}
                           y={position.y + 4}
                           textAnchor="middle"
-                          className="text-sm font-bold fill-white pointer-events-none drop-shadow-lg"
+                          className="text-sm font-bold fill-white pointer-events-none drop-shadow-lg transition-all duration-300 ease-out"
+                          style={{
+                            opacity: isSelected ? 1 : 0.9,
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         >
                           {node.citations}
                         </text>
@@ -548,33 +618,42 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     
                     return (
                       <g key={node.id}>
-                        {/* Outer ring for selected nodes */}
-                        {isSelected && (
-                          <circle
-                            cx={position.x}
-                            cy={position.y}
-                            r={nodeSize + 8}
-                            fill="none"
-                            stroke="#3B82F6"
-                            strokeWidth="3"
-                            opacity="0.8"
-                            className="animate-pulse"
-                          />
-                        )}
+                        {/* Smooth animated outer ring that enlarges with node */}
+                        <circle
+                          cx={position.x}
+                          cy={position.y}
+                          r={nodeSize + 8}
+                          fill="none"
+                          stroke="#3B82F6"
+                          strokeWidth={isSelected ? 3 : 0}
+                          opacity={isSelected ? 0.8 : 0}
+                          className="transition-all duration-300 ease-out"
+                          style={{
+                            strokeDasharray: isSelected ? "10 5" : "0 0",
+                            strokeDashoffset: isSelected ? 0 : 15,
+                            animation: isSelected ? "rotate 2s linear infinite" : "none",
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        />
                         
-                        {/* Selection indicator text */}
-                        {isSelected && (
-                          <text
-                            x={position.x}
-                            y={position.y - nodeSize - 15}
-                            textAnchor="middle"
-                            className="text-xs font-bold fill-blue-600 pointer-events-none"
-                          >
-                            SELECTED
-                          </text>
-                        )}
+                        {/* Smooth selection indicator text that scales with node */}
+                        <text
+                          x={position.x}
+                          y={position.y - nodeSize - 15}
+                          textAnchor="middle"
+                          className={`text-xs font-bold fill-blue-600 pointer-events-none transition-all duration-300 ease-out ${
+                            isSelected ? 'opacity-100' : 'opacity-0'
+                          }`}
+                          style={{
+                            transform: isSelected ? 'translateY(0) scale(1.2)' : 'translateY(-5px) scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
+                        >
+                          SELECTED
+                        </text>
                         
-                        {/* Main node with enhanced styling */}
+                        {/* Main node with smooth hover enlargement */}
                         <circle
                           cx={position.x}
                           cy={position.y}
@@ -583,29 +662,44 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           stroke={isSelected ? "#1F2937" : "white"}
                           strokeWidth={isSelected ? 4 : 3}
                           filter="url(#glow)"
-                          className="cursor-pointer transition-all duration-300 hover:scale-110"
+                          className="cursor-pointer transition-all duration-300 ease-out"
                           onClick={() => setSelectedNode(isSelected ? null : node.id)}
                           onMouseEnter={() => setSelectedNode(node.id)}
                           onMouseLeave={() => setSelectedNode(null)}
+                          style={{
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            filter: isSelected ? 'url(#glow) brightness(1.2) drop-shadow(0 0 20px rgba(59, 130, 246, 0.5))' : 'url(#glow)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         />
                         
-                        {/* Inner highlight circle */}
+                        {/* Smooth inner highlight circle that scales with node */}
                         <circle
                           cx={position.x - nodeSize * 0.3}
                           cy={position.y - nodeSize * 0.3}
                           r={nodeSize * 0.4}
                           fill="white"
-                          opacity="0.4"
+                          opacity={isSelected ? 0.6 : 0.4}
+                          className="transition-all duration-300 ease-out"
+                          style={{
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         />
                         
-                        {/* Node label */}
+                        {/* Smooth node label that scales with node */}
                         <text
                           x={position.x}
                           y={position.y + 5}
                           textAnchor="middle"
-                          className={`font-bold fill-white pointer-events-none drop-shadow-lg ${
+                          className={`font-bold fill-white pointer-events-none drop-shadow-lg transition-all duration-300 ease-out ${
                             nodeSize > 20 ? 'text-sm' : 'text-xs'
                           }`}
+                          style={{
+                            opacity: isSelected ? 1 : 0.9,
+                            transform: isSelected ? 'scale(1.3)' : 'scale(1)',
+                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                          }}
                         >
                           {node.count || node.citations || ''}
                         </text>
