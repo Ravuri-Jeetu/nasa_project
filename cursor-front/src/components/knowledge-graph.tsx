@@ -109,7 +109,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
     return { nodes, edges };
   };
 
-  const getNodePosition = (index: number, total: number, centerX = 300, centerY = 300, radius = 180) => {
+  const getNodePosition = (index: number, total: number, centerX = 400, centerY = 300, radius = 180) => {
     const angle = (index * 2 * Math.PI) / total;
     return {
       x: centerX + radius * Math.cos(angle),
@@ -446,8 +446,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     
                     const sourceIndex = intraPaperData.nodes.findIndex(n => n.id === edge.source);
                     const targetIndex = intraPaperData.nodes.findIndex(n => n.id === edge.target);
-                    const sourcePos = getNodePosition(sourceIndex, intraPaperData.nodes.length, 300, 300, 120);
-                    const targetPos = getNodePosition(targetIndex, intraPaperData.nodes.length, 300, 300, 120);
+                    const sourcePos = getNodePosition(sourceIndex, intraPaperData.nodes.length, 400, 300, 120);
+                    const targetPos = getNodePosition(targetIndex, intraPaperData.nodes.length, 400, 300, 120);
                     
                     return (
                       <g key={index}>
@@ -477,7 +477,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   
                   {/* Enhanced nodes for papers with smooth enlargement */}
                   {intraPaperData.nodes.map((node, index) => {
-                    const position = getNodePosition(index, intraPaperData.nodes.length, 300, 300, 120);
+                    const position = getNodePosition(index, intraPaperData.nodes.length, 400, 300, 120);
                     const isSelected = selectedNode === node.id;
                     const nodeSize = isSelected ? 25 : 18;
                     
@@ -744,7 +744,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             {/* Enhanced Node Labels - Hidden by default, shown on hover */}
             <div className="absolute inset-0 pointer-events-none">
               {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node, index) => {
-                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 300, 300, showIntraPaperRelations ? 120 : 180);
+                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 400, 300, showIntraPaperRelations ? 120 : 180);
                 return (
                   <div
                     key={`label-${node.id}`}
