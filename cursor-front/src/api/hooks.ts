@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, Paper, ChatRequest, ChatResponse, PapersResponse } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, Paper, ChatRequest, ChatResponse, PapersResponse, MethodologyCompareRequest } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -54,5 +54,17 @@ export const useGapFinder = (role: string) => {
     queryKey: ['gap-finder', role],
     queryFn: () => fetchGapFinder(role),
     staleTime: 10 * 60 * 1000, // 10 minutes
+  });
+};
+
+// Methodology Comparison Hook
+export const useMethodologyComparison = (request: MethodologyCompareRequest, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['methodology-comparison', request.query, request.max_papers],
+    queryFn: () => fetchMethodologyComparison(request),
+    enabled: enabled && request.query.trim().length > 0,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2, // Retry failed requests twice
+    retryDelay: 1000, // Wait 1 second between retries
   });
 };

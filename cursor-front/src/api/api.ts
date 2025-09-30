@@ -82,6 +82,47 @@ export const fetchGapFinder = async (role: string) => {
   return res.data;
 };
 
+// Methodology Comparison API
+export interface MethodologyExtraction {
+  title: string;
+  study_type: string;
+  subjects: string;
+  duration: string;
+  conditions: string;
+  techniques: string;
+  independent_vars: string[];
+  dependent_vars: string[];
+  outcome: string;
+  sample_size: string;
+  location: string;
+}
+
+export interface MethodologyComparison {
+  similarities: string[];
+  differences: string[];
+  gaps: string[];
+  contradictions: string[];
+}
+
+export interface MethodologyCompareResponse {
+  query: string;
+  papers: MethodologyExtraction[];
+  comparison: MethodologyComparison;
+  total_papers_found: number;
+}
+
+export interface MethodologyCompareRequest {
+  query: string;
+  max_papers?: number;
+}
+
+export const fetchMethodologyComparison = async (request: MethodologyCompareRequest): Promise<MethodologyCompareResponse> => {
+  const res = await apiClient.post('/api/methodology-compare', request, {
+    timeout: 30000, // 30 seconds timeout for methodology comparison
+  });
+  return res.data;
+};
+
 // ==================== DYNAMIC MANAGER DASHBOARD API ====================
 
 // Manager Dashboard Types

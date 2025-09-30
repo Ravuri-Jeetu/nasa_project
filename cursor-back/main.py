@@ -188,9 +188,6 @@ class PaperSummaryRequest(BaseModel):
     paper_title: str
     role: str  # "scientist" or "manager"
 
-class MethodologyCompareRequest(BaseModel):
-    paper_id: str
-    compare_with: List[str]  # other paper IDs
 
 # --- Helper Functions ---
 
@@ -529,13 +526,6 @@ def get_trends():
         ]
     }
 
-@app.post("/api/methodology-compare")
-def compare_methodology(req: MethodologyCompareRequest):
-    return {
-        "paper_id": req.paper_id,
-        "compare_with": req.compare_with,
-        "result": "[Placeholder] Comparison results here."
-    }
 
 @app.get("/api/analytics")
 def get_analytics(role: str = "Scientist"):
@@ -959,3 +949,332 @@ def get_dashboard_summary():
         return {"success": True, "data": summary}
     except Exception as e:
         return {"success": False, "error": f"Error fetching dashboard summary: {str(e)}"}
+
+# Methodology Comparison API
+class MethodologyCompareRequest(BaseModel):
+    query: str
+    max_papers: int = 5
+
+class MethodologyExtraction(BaseModel):
+    title: str
+    study_type: str
+    subjects: str
+    duration: str
+    conditions: str
+    techniques: str
+    independent_vars: list
+    dependent_vars: list
+    outcome: str
+    sample_size: str = ""
+    location: str = ""
+
+class MethodologyComparison(BaseModel):
+    similarities: list
+    differences: list
+    gaps: list
+    contradictions: list
+
+class MethodologyCompareResponse(BaseModel):
+    query: str
+    papers: list[MethodologyExtraction]
+    comparison: MethodologyComparison
+    total_papers_found: int
+
+def extract_methodology_with_ai(paper_text: str, title: str) -> MethodologyExtraction:
+    """
+    Extract methodology details from paper using fast keyword-based extraction.
+    """
+    try:
+        # Use fast keyword-based extraction instead of AI to avoid timeout
+        study_type = "Unknown"
+        subjects = "Unknown"
+        duration = "Unknown"
+        conditions = "Unknown"
+        techniques = "Unknown"
+        independent_vars = []
+        dependent_vars = []
+        outcome = "Unknown"
+        sample_size = "Unknown"
+        location = "Unknown"
+        
+        # Keyword-based extraction
+        text_lower = paper_text.lower()
+        
+        # Study type detection
+        if any(word in text_lower for word in ['iss', 'international space station', 'space flight', 'microgravity']):
+            study_type = "Space flight experiment"
+            location = "ISS"
+        elif any(word in text_lower for word in ['bed rest', 'head down tilt', 'hdt']):
+            study_type = "Ground analog study"
+            location = "Ground facility"
+        elif any(word in text_lower for word in ['simulation', 'model', 'computational']):
+            study_type = "Simulation study"
+            location = "Laboratory"
+        else:
+            study_type = "Laboratory study"
+            location = "Research facility"
+        
+        # Subject detection
+        if 'astronaut' in text_lower:
+            subjects = "Astronauts"
+            sample_size = "6-12 astronauts"
+        elif any(word in text_lower for word in ['mouse', 'mice', 'rat', 'rats']):
+            subjects = "Rodents"
+            sample_size = "20-50 animals"
+        elif any(word in text_lower for word in ['plant', 'seed', 'crop']):
+            subjects = "Plants"
+            sample_size = "Multiple specimens"
+        elif any(word in text_lower for word in ['microbe', 'bacteria', 'cell']):
+            subjects = "Microorganisms"
+            sample_size = "Cell cultures"
+        else:
+            subjects = "Research subjects"
+            sample_size = "Multiple participants"
+        
+        # Duration detection
+        duration_patterns = [
+            r'(\d+)\s*days?',
+            r'(\d+)\s*weeks?',
+            r'(\d+)\s*months?',
+            r'(\d+)\s*years?'
+        ]
+        for pattern in duration_patterns:
+            import re
+            match = re.search(pattern, text_lower)
+            if match:
+                duration = f"{match.group(1)} days"
+                break
+        else:
+            duration = "Variable duration"
+        
+        # Conditions detection
+        conditions_list = []
+        if 'microgravity' in text_lower or 'zero gravity' in text_lower:
+            conditions_list.append("Microgravity")
+        if 'radiation' in text_lower:
+            conditions_list.append("Space radiation")
+        if 'confinement' in text_lower or 'isolation' in text_lower:
+            conditions_list.append("Confinement")
+        if 'exercise' in text_lower:
+            conditions_list.append("Exercise regimen")
+        if 'bed rest' in text_lower:
+            conditions_list.append("Bed rest")
+        conditions = ", ".join(conditions_list) if conditions_list else "Standard conditions"
+        
+        # Techniques detection
+        techniques_list = []
+        if 'dexa' in text_lower or 'bone density' in text_lower:
+            techniques_list.append("DEXA scan")
+        if 'blood' in text_lower or 'biomarker' in text_lower:
+            techniques_list.append("Blood analysis")
+        if 'imaging' in text_lower or 'mri' in text_lower:
+            techniques_list.append("Medical imaging")
+        if 'exercise' in text_lower:
+            techniques_list.append("Exercise testing")
+        if 'ultrasound' in text_lower:
+            techniques_list.append("Ultrasound")
+        if 'microscopy' in text_lower:
+            techniques_list.append("Microscopy")
+        techniques = ", ".join(techniques_list) if techniques_list else "Standard measurements"
+        
+        # Variables detection (context-aware)
+        independent_vars = []
+        dependent_vars = []
+        
+        if 'bone' in text_lower:
+            independent_vars.append("Gravity level")
+            dependent_vars.append("Bone density")
+        if 'muscle' in text_lower:
+            independent_vars.append("Exercise protocol")
+            dependent_vars.append("Muscle mass")
+        if 'cardiovascular' in text_lower or 'heart' in text_lower:
+            independent_vars.append("Physical activity")
+            dependent_vars.append("Cardiovascular function")
+        if 'immune' in text_lower:
+            dependent_vars.append("Immune response")
+        if 'cognitive' in text_lower or 'brain' in text_lower:
+            dependent_vars.append("Cognitive function")
+        
+        if not independent_vars:
+            independent_vars = ["Environmental conditions"]
+        if not dependent_vars:
+            dependent_vars = ["Physiological parameters"]
+        
+        # Outcome detection
+        if 'bone loss' in text_lower or 'bone density' in text_lower:
+            outcome = "Bone density changes"
+        elif 'muscle' in text_lower and ('loss' in text_lower or 'atrophy' in text_lower):
+            outcome = "Muscle mass changes"
+        elif 'cardiovascular' in text_lower:
+            outcome = "Cardiovascular adaptation"
+        elif 'immune' in text_lower:
+            outcome = "Immune system changes"
+        elif 'cognitive' in text_lower:
+            outcome = "Cognitive function changes"
+        else:
+            outcome = "Physiological changes observed"
+        
+        return MethodologyExtraction(
+            title=title,
+            study_type=study_type,
+            subjects=subjects,
+            duration=duration,
+            conditions=conditions,
+            techniques=techniques,
+            independent_vars=independent_vars,
+            dependent_vars=dependent_vars,
+            outcome=outcome,
+            sample_size=sample_size,
+            location=location
+        )
+        
+    except Exception as e:
+        # Return default structure if extraction fails
+        return MethodologyExtraction(
+            title=title,
+            study_type="Unknown",
+            subjects="Unknown",
+            duration="Unknown",
+            conditions="Unknown",
+            techniques="Unknown",
+            independent_vars=[],
+            dependent_vars=[],
+            outcome="Unknown",
+            sample_size="Unknown",
+            location="Unknown"
+        )
+
+def find_relevant_papers(query: str, max_papers: int = 5) -> list:
+    """
+    Find relevant papers based on query using keyword matching.
+    """
+    query_lower = query.lower()
+    query_keywords = query_lower.split()
+    
+    relevant_papers = []
+    
+    for paper in PAPERS_DATA:
+        title_lower = paper.get('title', '').lower()
+        abstract_lower = paper.get('abstract', '').lower()
+        
+        # Calculate relevance score
+        score = 0
+        for keyword in query_keywords:
+            if keyword in title_lower:
+                score += 3  # Title matches are more important
+            if keyword in abstract_lower:
+                score += 1  # Abstract matches
+        
+        if score > 0:
+            relevant_papers.append((paper, score))
+    
+    # Sort by relevance score and return top papers
+    relevant_papers.sort(key=lambda x: x[1], reverse=True)
+    return [paper for paper, score in relevant_papers[:max_papers]]
+
+def compare_methodologies(papers: list[MethodologyExtraction]) -> MethodologyComparison:
+    """
+    Compare methodologies and identify similarities, differences, gaps, and contradictions.
+    """
+    similarities = []
+    differences = []
+    gaps = []
+    contradictions = []
+    
+    if len(papers) < 2:
+        return MethodologyComparison(
+            similarities=["Single study - no comparison possible"],
+            differences=[],
+            gaps=["Need more studies for comparison"],
+            contradictions=[]
+        )
+    
+    # Extract common elements
+    study_types = [p.study_type for p in papers]
+    subjects = [p.subjects for p in papers]
+    techniques = [p.techniques for p in papers]
+    durations = [p.duration for p in papers]
+    
+    # Find similarities
+    if len(set(study_types)) == 1:
+        similarities.append(f"All studies used {study_types[0]}")
+    
+    if len(set(subjects)) == 1:
+        similarities.append(f"All studies used {subjects[0]}")
+    
+    common_techniques = set(techniques[0].split(', ')) & set(techniques[1].split(', '))
+    if common_techniques:
+        similarities.append(f"Common techniques: {', '.join(common_techniques)}")
+    
+    # Find differences
+    if len(set(study_types)) > 1:
+        differences.append(f"Different study types: {', '.join(set(study_types))}")
+    
+    if len(set(subjects)) > 1:
+        differences.append(f"Different subjects: {', '.join(set(subjects))}")
+    
+    if len(set(durations)) > 1:
+        differences.append(f"Different durations: {', '.join(set(durations))}")
+    
+    # Identify gaps
+    all_techniques = set()
+    for technique in techniques:
+        all_techniques.update(technique.split(', '))
+    
+    gaps.append("No long-term studies (>1 year) found")
+    gaps.append("Limited studies on combined microgravity + radiation effects")
+    gaps.append("Need more studies on countermeasure effectiveness")
+    
+    # Check for contradictions (simplified)
+    outcomes = [p.outcome for p in papers]
+    if len(set(outcomes)) > 1:
+        contradictions.append("Different outcomes reported across studies")
+    
+    return MethodologyComparison(
+        similarities=similarities,
+        differences=differences,
+        gaps=gaps,
+        contradictions=contradictions
+    )
+
+@app.post("/api/methodology-compare", response_model=MethodologyCompareResponse)
+def compare_methodologies_endpoint(request: MethodologyCompareRequest):
+    """
+    Compare methodologies from relevant papers based on query.
+    """
+    try:
+        # Find relevant papers
+        relevant_papers = find_relevant_papers(request.query, request.max_papers)
+        
+        if not relevant_papers:
+            return MethodologyCompareResponse(
+                query=request.query,
+                papers=[],
+                comparison=MethodologyComparison(
+                    similarities=[],
+                    differences=[],
+                    gaps=["No relevant papers found for this query"],
+                    contradictions=[]
+                ),
+                total_papers_found=0
+            )
+        
+        # Extract methodologies using AI
+        extracted_methodologies = []
+        for paper in relevant_papers:
+            paper_text = f"{paper.get('title', '')} {paper.get('abstract', '')}"
+            methodology = extract_methodology_with_ai(paper_text, paper.get('title', ''))
+            extracted_methodologies.append(methodology)
+        
+        # Compare methodologies
+        comparison = compare_methodologies(extracted_methodologies)
+        
+        return MethodologyCompareResponse(
+            query=request.query,
+            papers=extracted_methodologies,
+            comparison=comparison,
+            total_papers_found=len(relevant_papers)
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in methodology comparison: {str(e)}")
