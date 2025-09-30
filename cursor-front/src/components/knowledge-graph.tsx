@@ -4,17 +4,55 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { useState, useEffect } from 'react';
-import { CheckCircle, Star, Link, Brain, Target } from 'lucide-react';
+import { CheckCircle, Star, Link, Brain, Target, BarChart3, TrendingUp } from 'lucide-react';
 
 interface KnowledgeGraphProps {
   papers: any[];
   role: string;
 }
 
+interface KnowledgeGraphData {
+  nodes: any[];
+  edges: any[];
+  research_areas: Record<string, number>;
+  methodologies: Record<string, number>;
+  statistics: {
+    total_papers: number;
+    total_nodes: number;
+    total_edges: number;
+    research_areas_count: number;
+    methodologies_count: number;
+  };
+}
+
 export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
   const [selectedNode, setSelectedNode] = useState<string | null>(null);
   const [selectedPapers, setSelectedPapers] = useState<string[]>([]);
   const [showIntraPaperRelations, setShowIntraPaperRelations] = useState(false);
+  const [graphData, setGraphData] = useState<KnowledgeGraphData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [viewMode, setViewMode] = useState<'research_areas' | 'methodologies' | 'papers'>('research_areas');
+
+  // Fetch real knowledge graph data
+  useEffect(() => {
+    const fetchKnowledgeGraph = async () => {
+      try {
+        const response = await fetch(`http://localhost:8000/api/knowledge-graph?role=${role}`);
+        const data = await response.json();
+        if (data.error) {
+          console.error('Error fetching knowledge graph:', data.error);
+          return;
+        }
+        setGraphData(data);
+      } catch (error) {
+        console.error('Error fetching knowledge graph:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchKnowledgeGraph();
+  }, [role]);
 
   // Get top 4 papers based on citations and relevance
   const getTopPapers = () => {
@@ -31,7 +69,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
 
   const topPapers = getTopPapers();
 
-  // Generate intrapaper relationship data
+  // Generate intrapaper relationship data from real data
   const generateIntraPaperRelations = () => {
     if (selectedPapers.length < 2) return { nodes: [], edges: [] };
     
@@ -44,14 +82,14 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
       methodology: paper.methodology || 'Research'
     }));
 
-    // Generate relationships based on common keywords and methodologies
+    // Generate relationships based on real keyword analysis
     const edges = [];
     for (let i = 0; i < selectedPaperData.length; i++) {
       for (let j = i + 1; j < selectedPaperData.length; j++) {
         const paper1 = selectedPaperData[i];
         const paper2 = selectedPaperData[j];
         
-        // Calculate similarity score
+        // Calculate similarity score using real keywords
         const keywords1 = new Set((paper1.keywords || []).map(k => k.toLowerCase()));
         const keywords2 = new Set((paper2.keywords || []).map(k => k.toLowerCase()));
         const intersection = new Set([...keywords1].filter(x => keywords2.has(x)));
@@ -71,64 +109,6 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
     return { nodes, edges };
   };
 
-  // Generate research area graph data
-  const generateResearchAreaGraph = () => {
-    const nodes = [];
-    const edges = [];
-    
-    // Create nodes for different research areas based on actual papers
-    const researchAreas = [
-      { id: 'microgravity', label: 'Microgravity', color: '#3B82F6', count: 0 },
-      { id: 'stem-cells', label: 'Stem Cells', color: '#10B981', count: 0 },
-      { id: 'bone-research', label: 'Bone Research', color: '#F59E0B', count: 0 },
-      { id: 'radiation', label: 'Radiation Biology', color: '#EF4444', count: 0 },
-      { id: 'cardiac', label: 'Cardiac Research', color: '#8B5CF6', count: 0 },
-      { id: 'gene-expression', label: 'Gene Expression', color: '#06B6D4', count: 0 },
-    ];
-
-    // Count papers in each area
-    papers.forEach(paper => {
-      const title = (paper.title || '').toLowerCase();
-      const abstract = (paper.abstract || '').toLowerCase();
-      const text = title + ' ' + abstract;
-      
-      if (text.includes('microgravity') || text.includes('space')) {
-        researchAreas[0].count++;
-      }
-      if (text.includes('stem cell') || text.includes('embryonic')) {
-        researchAreas[1].count++;
-      }
-      if (text.includes('bone') || text.includes('skeletal')) {
-        researchAreas[2].count++;
-      }
-      if (text.includes('radiation') || text.includes('cosmic')) {
-        researchAreas[3].count++;
-      }
-      if (text.includes('cardiac') || text.includes('heart')) {
-        researchAreas[4].count++;
-      }
-      if (text.includes('gene') || text.includes('expression')) {
-        researchAreas[5].count++;
-      }
-    });
-
-    // Create connections between research areas
-    const connections = [
-      ['microgravity', 'stem-cells'],
-      ['microgravity', 'bone-research'],
-      ['stem-cells', 'gene-expression'],
-      ['bone-research', 'radiation'],
-      ['cardiac', 'microgravity'],
-      ['gene-expression', 'radiation'],
-      ['microgravity', 'cardiac'],
-    ];
-
-    return { nodes: researchAreas, edges: connections };
-  };
-
-  const researchAreaData = generateResearchAreaGraph();
-  const intraPaperData = generateIntraPaperRelations();
-
   const getNodePosition = (index: number, total: number, centerX = 200, centerY = 150, radius = 120) => {
     const angle = (index * 2 * Math.PI) / total;
     return {
@@ -137,7 +117,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
     };
   };
 
-  const selectedNodeData = researchAreaData.nodes.find(node => node.id === selectedNode);
+  const selectedNodeData = graphData?.nodes.find(node => node.id === selectedNode);
 
   const togglePaperSelection = (paperId: string) => {
     setSelectedPapers(prev => 
@@ -147,8 +127,96 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
     );
   };
 
+  const getFilteredNodes = () => {
+    if (!graphData) return [];
+    
+    switch (viewMode) {
+      case 'research_areas':
+        return graphData.nodes.filter(node => node.type === 'research_area');
+      case 'methodologies':
+        return graphData.nodes.filter(node => node.type === 'methodology');
+      case 'papers':
+        return graphData.nodes.filter(node => node.type === 'paper');
+      default:
+        return graphData.nodes;
+    }
+  };
+
+  const getFilteredEdges = () => {
+    if (!graphData) return [];
+    
+    const filteredNodes = getFilteredNodes();
+    const nodeIds = new Set(filteredNodes.map(node => node.id));
+    
+    return graphData.edges.filter(edge => 
+      nodeIds.has(edge.source) && nodeIds.has(edge.target)
+    );
+  };
+
+  if (loading) {
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Analyzing research data...</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!graphData) {
+    return (
+      <Card>
+        <CardContent className="p-8">
+          <div className="text-center text-red-600">
+            <p>Failed to load knowledge graph data</p>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  const filteredNodes = getFilteredNodes();
+  const filteredEdges = getFilteredEdges();
+  const intraPaperData = generateIntraPaperRelations();
+
   return (
     <div className="space-y-4">
+      {/* Statistics Overview */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <BarChart3 className="h-5 w-5 text-blue-500" />
+            Real Data Analysis
+          </CardTitle>
+          <CardDescription>
+            Knowledge graph built from {graphData.statistics.total_papers} space biology publications
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-blue-600">{graphData.statistics.total_papers}</div>
+              <div className="text-sm text-gray-600">Total Papers</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-green-600">{graphData.statistics.research_areas_count}</div>
+              <div className="text-sm text-gray-600">Research Areas</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-purple-600">{graphData.statistics.methodologies_count}</div>
+              <div className="text-sm text-gray-600">Methodologies</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-orange-600">{graphData.statistics.total_edges}</div>
+              <div className="text-sm text-gray-600">Relationships</div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Top Papers Selection */}
       <Card>
         <CardHeader>
@@ -157,7 +225,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             Top 4 Research Papers
           </CardTitle>
           <CardDescription>
-            Select papers to analyze their intrapaper relationships
+            Select papers to analyze their intrapaper relationships using real keyword analysis
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -213,21 +281,47 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
         </CardContent>
       </Card>
 
-      {/* Knowledge Graph Visualization */}
+      {/* View Mode Selection */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Target className="h-5 w-5" />
-            {showIntraPaperRelations ? 'Intrapaper Relationship Graph' : 'Research Knowledge Graph'}
+            Knowledge Graph Visualization
           </CardTitle>
           <CardDescription>
             {showIntraPaperRelations 
-              ? 'Visualization of relationships between selected papers'
-              : 'Interactive visualization of research connections and relationships'
+              ? 'Real-time analysis of relationships between selected papers'
+              : 'Interactive visualization of research connections from real data'
             }
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {!showIntraPaperRelations && (
+            <div className="mb-4 flex gap-2">
+              <Button
+                variant={viewMode === 'research_areas' ? "default" : "outline"}
+                onClick={() => setViewMode('research_areas')}
+                size="sm"
+              >
+                Research Areas
+              </Button>
+              <Button
+                variant={viewMode === 'methodologies' ? "default" : "outline"}
+                onClick={() => setViewMode('methodologies')}
+                size="sm"
+              >
+                Methodologies
+              </Button>
+              <Button
+                variant={viewMode === 'papers' ? "default" : "outline"}
+                onClick={() => setViewMode('papers')}
+                size="sm"
+              >
+                Top Papers
+              </Button>
+            </div>
+          )}
+
           <div className="relative h-96 bg-gray-50 rounded-lg overflow-hidden">
             <svg width="100%" height="100%" className="absolute inset-0">
               {showIntraPaperRelations ? (
@@ -286,18 +380,18 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   })}
                 </>
               ) : (
-                // Research Areas Graph
+                // Real Data Knowledge Graph
                 <>
-                  {/* Edges for research areas */}
-                  {researchAreaData.edges.map((edge, index) => {
-                    const sourceNode = researchAreaData.nodes.find(n => n.id === edge[0]);
-                    const targetNode = researchAreaData.nodes.find(n => n.id === edge[1]);
+                  {/* Edges for real relationships */}
+                  {filteredEdges.map((edge, index) => {
+                    const sourceNode = filteredNodes.find(n => n.id === edge.source);
+                    const targetNode = filteredNodes.find(n => n.id === edge.target);
                     if (!sourceNode || !targetNode) return null;
                     
-                    const sourceIndex = researchAreaData.nodes.findIndex(n => n.id === edge[0]);
-                    const targetIndex = researchAreaData.nodes.findIndex(n => n.id === edge[1]);
-                    const sourcePos = getNodePosition(sourceIndex, researchAreaData.nodes.length);
-                    const targetPos = getNodePosition(targetIndex, researchAreaData.nodes.length);
+                    const sourceIndex = filteredNodes.findIndex(n => n.id === edge.source);
+                    const targetIndex = filteredNodes.findIndex(n => n.id === edge.target);
+                    const sourcePos = getNodePosition(sourceIndex, filteredNodes.length);
+                    const targetPos = getNodePosition(targetIndex, filteredNodes.length);
                     
                     return (
                       <line
@@ -306,16 +400,18 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                         y1={sourcePos.y}
                         x2={targetPos.x}
                         y2={targetPos.y}
-                        stroke="#E5E7EB"
-                        strokeWidth="2"
-                        opacity="0.6"
+                        stroke={edge.type === 'content_similarity' ? "#3B82F6" : 
+                               edge.type === 'citation_network' ? "#10B981" :
+                               edge.type === 'keyword_cooccurrence' ? "#F59E0B" : "#EF4444"}
+                        strokeWidth={Math.max(1, edge.weight * 5)}
+                        opacity={0.6}
                       />
                     );
                   })}
                   
-                  {/* Nodes for research areas */}
-                  {researchAreaData.nodes.map((node, index) => {
-                    const position = getNodePosition(index, researchAreaData.nodes.length);
+                  {/* Nodes for real data */}
+                  {filteredNodes.map((node, index) => {
+                    const position = getNodePosition(index, filteredNodes.length);
                     const isSelected = selectedNode === node.id;
                     
                     return (
@@ -323,7 +419,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r={isSelected ? 25 : 20}
+                          r={isSelected ? 25 : Math.max(10, node.size / 5)}
                           fill={node.color}
                           stroke={isSelected ? "#1F2937" : "white"}
                           strokeWidth={isSelected ? 3 : 2}
@@ -336,7 +432,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           textAnchor="middle"
                           className="text-xs font-medium fill-white pointer-events-none"
                         >
-                          {node.count}
+                          {node.count || node.citations || ''}
                         </text>
                       </g>
                     );
@@ -347,8 +443,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             
             {/* Node Labels */}
             <div className="absolute inset-0 pointer-events-none">
-              {(showIntraPaperRelations ? intraPaperData.nodes : researchAreaData.nodes).map((node, index) => {
-                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : researchAreaData.nodes).length, 200, 150, showIntraPaperRelations ? 100 : 120);
+              {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node, index) => {
+                const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 200, 150, showIntraPaperRelations ? 100 : 120);
                 return (
                   <div
                     key={`label-${node.id}`}
@@ -372,11 +468,12 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <h3 className="font-semibold text-blue-900 mb-2">{selectedNodeData.label}</h3>
               <p className="text-sm text-blue-700 mb-2">
-                {selectedNodeData.count} research papers in this area
+                {selectedNodeData.count || selectedNodeData.citations || 0} {selectedNodeData.type === 'paper' ? 'citations' : 'papers'} in this area
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="bg-blue-100 text-blue-800">
-                  Active Research Area
+                  {selectedNodeData.type === 'research_area' ? 'Research Area' : 
+                   selectedNodeData.type === 'methodology' ? 'Methodology' : 'Research Paper'}
                 </Badge>
                 <Badge variant="outline" className="border-blue-300 text-blue-700">
                   {role === 'Scientist' ? 'High Impact' : 'Strong ROI'}
@@ -388,16 +485,16 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           {/* Intrapaper Relationship Info */}
           {showIntraPaperRelations && selectedPapers.length >= 2 && (
             <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-              <h3 className="font-semibold text-green-900 mb-2">Intrapaper Relationships</h3>
+              <h3 className="font-semibold text-green-900 mb-2">Real Keyword Analysis</h3>
               <p className="text-sm text-green-700 mb-2">
-                Analyzing {selectedPapers.length} selected papers for keyword and methodology similarities
+                Analyzing {selectedPapers.length} selected papers using TF-IDF similarity and keyword co-occurrence
               </p>
               <div className="flex flex-wrap gap-2">
                 <Badge variant="secondary" className="bg-green-100 text-green-800">
                   {intraPaperData.edges.length} relationships found
                 </Badge>
                 <Badge variant="outline" className="border-green-300 text-green-700">
-                  Keyword-based similarity
+                  Real keyword similarity
                 </Badge>
               </div>
             </div>
@@ -405,7 +502,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           
           {/* Legend */}
           <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
-            {(showIntraPaperRelations ? intraPaperData.nodes : researchAreaData.nodes).map((node) => (
+            {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node) => (
               <div key={`legend-${node.id}`} className="flex items-center space-x-2">
                 <div 
                   className="w-3 h-3 rounded-full" 
@@ -418,6 +515,31 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
               </div>
             ))}
           </div>
+
+          {/* Relationship Legend for Real Data */}
+          {!showIntraPaperRelations && (
+            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Relationship Types (Real Data):</h4>
+              <div className="flex items-center gap-4 text-xs">
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-0.5 bg-blue-500"></div>
+                  <span className="text-gray-600">Content Similarity (TF-IDF)</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-0.5 bg-green-500"></div>
+                  <span className="text-gray-600">Citation Network</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-0.5 bg-yellow-500"></div>
+                  <span className="text-gray-600">Keyword Co-occurrence</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <div className="w-3 h-0.5 bg-red-500"></div>
+                  <span className="text-gray-600">Author Collaboration</span>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Relationship Legend for Intrapaper View */}
           {showIntraPaperRelations && (
