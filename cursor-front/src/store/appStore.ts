@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
-export type UserRole = 'Scientist' | 'Manager';
+export type UserRole = 'Scientist' | 'Manager' | 'Mission Planner';
 
 interface AppState {
   role: UserRole;

@@ -16,7 +16,10 @@ import {
   Target,
   ArrowRight,
   CheckCircle,
-  Star
+  Star,
+  Rocket,
+  Shield,
+  Settings
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -62,6 +65,14 @@ export default function LandingPage() {
     "Business intelligence dashboards"
   ];
 
+  const missionPlannerFeatures = [
+    "Mission risk assessment and mitigation",
+    "Resource planning and optimization",
+    "Mission design and architecture",
+    "Timeline and milestone tracking",
+    "Cost-benefit analysis for missions"
+  ];
+
   return (
     <MainLayout>
       <div className="min-h-screen">
@@ -97,6 +108,15 @@ export default function LandingPage() {
                 >
                   <DollarSign className="h-5 w-5 mr-2" />
                   Manager
+                </Button>
+                <Button
+                  variant={role === 'Mission Planner' ? 'default' : 'outline'}
+                  size="lg"
+                  onClick={() => setRole('Mission Planner')}
+                  className="px-8 py-4 text-lg"
+                >
+                  <Rocket className="h-5 w-5 mr-2" />
+                  Mission Planner
                 </Button>
               </div>
               
@@ -141,7 +161,7 @@ export default function LandingPage() {
         </div>
 
         {/* Role-Specific Benefits */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Scientist Benefits */}
           <Card className="border-blue-200">
             <CardHeader className="bg-blue-50 rounded-t-lg">
@@ -179,6 +199,29 @@ export default function LandingPage() {
             <CardContent className="pt-6">
               <ul className="space-y-3">
                 {managerFeatures.map((feature, index) => (
+                  <li key={index} className="flex items-start">
+                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-700">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
+
+          {/* Mission Planner Benefits */}
+          <Card className="border-purple-200">
+            <CardHeader className="bg-purple-50 rounded-t-lg">
+              <CardTitle className="flex items-center text-purple-900">
+                <Rocket className="h-6 w-6 mr-2" />
+                For Mission Planners
+              </CardTitle>
+              <CardDescription className="text-purple-700">
+                Mission design and strategic planning tools
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="pt-6">
+              <ul className="space-y-3">
+                {missionPlannerFeatures.map((feature, index) => (
                   <li key={index} className="flex items-start">
                     <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
                     <span className="text-gray-700">{feature}</span>

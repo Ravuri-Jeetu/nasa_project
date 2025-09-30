@@ -11,7 +11,13 @@ export default function Header() {
   const pathname = usePathname();
 
   const toggleRole = () => {
-    setRole(role === 'Scientist' ? 'Manager' : 'Scientist');
+    if (role === 'Scientist') {
+      setRole('Manager');
+    } else if (role === 'Manager') {
+      setRole('Mission Planner');
+    } else {
+      setRole('Scientist');
+    }
   };
 
   const isActive = (path: string) => pathname === path;
@@ -89,6 +95,14 @@ export default function Header() {
                   className="rounded-md"
                 >
                   Manager
+                </Button>
+                <Button
+                  variant={role === 'Mission Planner' ? 'default' : 'ghost'}
+                  size="sm"
+                  onClick={() => setRole('Mission Planner')}
+                  className="rounded-md"
+                >
+                  Mission Planner
                 </Button>
               </div>
             </div>

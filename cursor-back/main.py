@@ -577,6 +577,29 @@ def get_analytics(role: str = "Scientist"):
                     {"month": "Mar", "funding": 140000, "return": 210000},
                 ]
             }
+        elif role.lower() == "mission planner":
+            return {
+                "total_missions": 3,
+                "active_missions": 1,
+                "completed_missions": 2,
+                "mission_success_rate": 95.5,
+                "total_budget": 10100000,
+                "budget_utilization": 78.5,
+                "risk_levels": {
+                    "technical": 25,
+                    "environmental": 40,
+                    "human_factors": 30,
+                    "resource": 20,
+                    "timeline": 35
+                },
+                "resource_allocation": {
+                    "personnel": 45,
+                    "equipment": 80,
+                    "fuel": 70,
+                    "supplies": 90,
+                    "communication": 95
+                }
+            }
     except Exception as e:
         return {"error": f"Error fetching analytics: {str(e)}"}
 
@@ -828,12 +851,21 @@ def gap_finder(role: str = "Scientist"):
                 {"area": "Space Agriculture", "gap": "Optimized crop growth systems for long-duration missions", "priority": "Medium"},
                 {"area": "Psychological Health", "gap": "Better understanding of isolation effects on astronaut mental health", "priority": "Medium"},
             ]
-        else:  # Manager role
+        elif role.lower() == "manager":
             gaps = [
                 {"area": "Market Analysis", "gap": "Insufficient market research for emerging technologies", "priority": "High"},
                 {"area": "ROI Tracking", "gap": "Need for better long-term ROI measurement tools", "priority": "Medium"},
                 {"area": "Risk Assessment", "gap": "Limited risk evaluation frameworks for space investments", "priority": "High"},
                 {"area": "Competitive Intelligence", "gap": "Lack of comprehensive competitive analysis", "priority": "Medium"},
+            ]
+        else:  # Mission Planner role
+            gaps = [
+                {"area": "Mission Risk Assessment", "gap": "Need for more comprehensive risk modeling tools", "priority": "High"},
+                {"area": "Resource Optimization", "gap": "Limited tools for dynamic resource allocation", "priority": "High"},
+                {"area": "Mission Architecture", "gap": "Insufficient modular design frameworks", "priority": "Medium"},
+                {"area": "Timeline Management", "gap": "Need for better critical path analysis tools", "priority": "Medium"},
+                {"area": "Cost Estimation", "gap": "Limited accurate cost prediction models", "priority": "High"},
+                {"area": "Safety Protocols", "gap": "Need for enhanced safety assessment frameworks", "priority": "High"},
             ]
         
         return {
