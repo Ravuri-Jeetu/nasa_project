@@ -129,6 +129,7 @@ export interface MissionPlannerRequest {
   crew_size: number;
   duration_days: number;
   payload_capacity: string;
+  use_realtime_data?: boolean;
 }
 
 export interface RiskAssessment {
@@ -156,6 +157,30 @@ export interface MissionPlannerResponse {
   resources: ResourceRequirements;
   crew_health: CrewHealthRequirements;
   recommendations: string[];
+  realtime_data?: {
+    iss_crew?: {
+      current_size: number;
+      mission_duration: number;
+      exercise_hours: number;
+      health_status: string;
+    };
+    radiation?: {
+      current_level: number;
+      solar_activity: string;
+      space_weather: string;
+    };
+    research_updates?: {
+      latest_bone_loss_study: string;
+      muscle_atrophy_rate: string;
+      psychological_stress_index: string;
+    };
+    resource_consumption?: {
+      food_per_person_per_day: number;
+      water_per_person_per_day: number;
+      oxygen_per_person_per_day: number;
+    };
+  };
+  data_timestamp?: string;
 }
 
 export const fetchMissionAnalysis = async (request: MissionPlannerRequest): Promise<MissionPlannerResponse> => {

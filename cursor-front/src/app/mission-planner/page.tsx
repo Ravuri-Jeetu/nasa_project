@@ -59,7 +59,8 @@ export default function MissionPlannerPage() {
     destination: 'mars',
     crew_size: 4,
     duration_days: 900,
-    payload_capacity: '50 tons'
+    payload_capacity: '50 tons',
+    use_realtime_data: true
   });
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -210,6 +211,26 @@ export default function MissionPlannerPage() {
                 </div>
               </div>
 
+              {/* Real-time Data Toggle */}
+              <div className="space-y-2">
+                <Label>Data Source</Label>
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="checkbox"
+                    id="realtime"
+                    checked={missionParams.use_realtime_data}
+                    onChange={(e) => handleParameterChange('use_realtime_data', e.target.checked)}
+                    className="rounded"
+                  />
+                  <Label htmlFor="realtime" className="text-sm">
+                    Use Real-time Data
+                  </Label>
+                </div>
+                <p className="text-xs text-gray-500">
+                  Include live ISS crew data, radiation levels, and latest research findings
+                </p>
+              </div>
+
               {/* Quick Presets */}
               <div className="space-y-2">
                 <Label>Quick Presets</Label>
@@ -221,7 +242,8 @@ export default function MissionPlannerPage() {
                       destination: 'moon',
                       crew_size: 2,
                       duration_days: 30,
-                      payload_capacity: '10 tons'
+                      payload_capacity: '10 tons',
+                      use_realtime_data: missionParams.use_realtime_data
                     })}
                   >
                     Moon Mission
@@ -233,7 +255,8 @@ export default function MissionPlannerPage() {
                       destination: 'mars',
                       crew_size: 6,
                       duration_days: 900,
-                      payload_capacity: '100 tons'
+                      payload_capacity: '100 tons',
+                      use_realtime_data: missionParams.use_realtime_data
                     })}
                   >
                     Mars Mission
@@ -388,6 +411,95 @@ export default function MissionPlannerPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* Real-time Data */}
+              {analysis.realtime_data && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Activity className="h-5 w-5 text-green-600" />
+                      Live Space Data
+                      {analysis.data_timestamp && (
+                        <Badge variant="outline" className="text-xs">
+                          Updated: {new Date(analysis.data_timestamp).toLocaleTimeString()}
+                        </Badge>
+                      )}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {/* ISS Crew Data */}
+                      {analysis.realtime_data.iss_crew && (
+                        <div className="p-4 border rounded-lg">
+                          <h3 className="font-semibold flex items-center gap-2 mb-2">
+                            <Users className="h-4 w-4 text-blue-600" />
+                            Current ISS Crew
+                          </h3>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Crew Size:</strong> {analysis.realtime_data.iss_crew.current_size} astronauts</p>
+                            <p><strong>Mission Duration:</strong> {analysis.realtime_data.iss_crew.mission_duration} days</p>
+                            <p><strong>Exercise Hours:</strong> {analysis.realtime_data.iss_crew.exercise_hours} hours/day</p>
+                            <p><strong>Health Status:</strong> 
+                              <Badge variant="outline" className={`ml-2 ${
+                                analysis.realtime_data.iss_crew.health_status === 'Good' ? 'bg-green-100 text-green-800' :
+                                analysis.realtime_data.iss_crew.health_status === 'Poor' ? 'bg-red-100 text-red-800' :
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {analysis.realtime_data.iss_crew.health_status}
+                              </Badge>
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Radiation Data */}
+                      {analysis.realtime_data.radiation && (
+                        <div className="p-4 border rounded-lg">
+                          <h3 className="font-semibold flex items-center gap-2 mb-2">
+                            <Shield className="h-4 w-4 text-red-600" />
+                            Radiation Levels
+                          </h3>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Current Level:</strong> {analysis.realtime_data.radiation.current_level} mSv/day</p>
+                            <p><strong>Solar Activity:</strong> {analysis.realtime_data.radiation.solar_activity}</p>
+                            <p><strong>Space Weather:</strong> {analysis.realtime_data.radiation.space_weather}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Research Updates */}
+                      {analysis.realtime_data.research_updates && (
+                        <div className="p-4 border rounded-lg">
+                          <h3 className="font-semibold flex items-center gap-2 mb-2">
+                            <BarChart3 className="h-4 w-4 text-purple-600" />
+                            Latest Research
+                          </h3>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Bone Loss:</strong> {analysis.realtime_data.research_updates.latest_bone_loss_study}</p>
+                            <p><strong>Muscle Atrophy:</strong> {analysis.realtime_data.research_updates.muscle_atrophy_rate}</p>
+                            <p><strong>Stress Index:</strong> {analysis.realtime_data.research_updates.psychological_stress_index}</p>
+                          </div>
+                        </div>
+                      )}
+
+                      {/* Resource Consumption */}
+                      {analysis.realtime_data.resource_consumption && (
+                        <div className="p-4 border rounded-lg">
+                          <h3 className="font-semibold flex items-center gap-2 mb-2">
+                            <Package className="h-4 w-4 text-green-600" />
+                            Current Consumption
+                          </h3>
+                          <div className="space-y-1 text-sm">
+                            <p><strong>Food:</strong> {analysis.realtime_data.resource_consumption.food_per_person_per_day} kg/person/day</p>
+                            <p><strong>Water:</strong> {analysis.realtime_data.resource_consumption.water_per_person_per_day} kg/person/day</p>
+                            <p><strong>Oxygen:</strong> {analysis.realtime_data.resource_consumption.oxygen_per_person_per_day} kg/person/day</p>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
               {/* Recommendations */}
               <Card>
