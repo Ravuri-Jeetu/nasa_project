@@ -90,8 +90,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
         const paper2 = selectedPaperData[j];
         
         // Calculate similarity score using real keywords
-        const keywords1 = new Set((paper1.keywords || []).map(k => k.toLowerCase()));
-        const keywords2 = new Set((paper2.keywords || []).map(k => k.toLowerCase()));
+        const keywords1 = new Set((paper1.keywords || []).map((k: string) => k.toLowerCase()));
+        const keywords2 = new Set((paper2.keywords || []).map((k: string) => k.toLowerCase()));
         const intersection = new Set([...keywords1].filter(x => keywords2.has(x)));
         const similarity = intersection.size / Math.max(keywords1.size, keywords2.size, 1);
         
@@ -184,78 +184,110 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
 
   return (
     <div className="space-y-4">
-      {/* Statistics Overview */}
-      <Card>
+      {/* Enhanced Statistics Overview */}
+      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <BarChart3 className="h-5 w-5 text-blue-500" />
-            Real Data Analysis
+            <BarChart3 className="h-6 w-6 text-blue-600" />
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">
+              Real Data Analysis
+            </span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-700 font-medium">
             Knowledge graph built from {graphData.statistics.total_papers} space biology publications
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-blue-600">{graphData.statistics.total_papers}</div>
-              <div className="text-sm text-gray-600">Total Papers</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="text-center p-4 bg-white/60 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
+              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-1">
+                {graphData.statistics.total_papers}
+              </div>
+              <div className="text-sm font-semibold text-gray-700">Total Papers</div>
+              <div className="w-full bg-blue-200 rounded-full h-1 mt-2">
+                <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-1 rounded-full w-full"></div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-green-600">{graphData.statistics.research_areas_count}</div>
-              <div className="text-sm text-gray-600">Research Areas</div>
+            <div className="text-center p-4 bg-white/60 rounded-xl border border-green-100 hover:shadow-md transition-all duration-300">
+              <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent mb-1">
+                {graphData.statistics.research_areas_count}
+              </div>
+              <div className="text-sm font-semibold text-gray-700">Research Areas</div>
+              <div className="w-full bg-green-200 rounded-full h-1 mt-2">
+                <div className="bg-gradient-to-r from-green-500 to-green-600 h-1 rounded-full w-full"></div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-purple-600">{graphData.statistics.methodologies_count}</div>
-              <div className="text-sm text-gray-600">Methodologies</div>
+            <div className="text-center p-4 bg-white/60 rounded-xl border border-purple-100 hover:shadow-md transition-all duration-300">
+              <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-1">
+                {graphData.statistics.methodologies_count}
+              </div>
+              <div className="text-sm font-semibold text-gray-700">Methodologies</div>
+              <div className="w-full bg-purple-200 rounded-full h-1 mt-2">
+                <div className="bg-gradient-to-r from-purple-500 to-purple-600 h-1 rounded-full w-full"></div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-orange-600">{graphData.statistics.total_edges}</div>
-              <div className="text-sm text-gray-600">Relationships</div>
+            <div className="text-center p-4 bg-white/60 rounded-xl border border-orange-100 hover:shadow-md transition-all duration-300">
+              <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent mb-1">
+                {graphData.statistics.total_edges}
+              </div>
+              <div className="text-sm font-semibold text-gray-700">Relationships</div>
+              <div className="w-full bg-orange-200 rounded-full h-1 mt-2">
+                <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-1 rounded-full w-full"></div>
+              </div>
             </div>
           </div>
         </CardContent>
       </Card>
 
-      {/* Top Papers Selection */}
-      <Card>
+      {/* Enhanced Top Papers Selection */}
+      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Star className="h-5 w-5 text-yellow-500" />
-            Top 4 Research Papers
+            <Star className="h-6 w-6 text-yellow-600" />
+            <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent font-bold">
+              Top 4 Research Papers
+            </span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-700 font-medium">
             Select papers to analyze their intrapaper relationships using real keyword analysis
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {topPapers.map((paper, index) => (
               <div
                 key={paper.id}
-                className={`p-3 border rounded-lg cursor-pointer transition-all duration-200 ${
+                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-lg ${
                   selectedPapers.includes(paper.id)
-                    ? 'border-blue-500 bg-blue-50'
-                    : 'border-gray-200 hover:border-gray-300'
+                    ? 'border-blue-500 bg-blue-50 shadow-md'
+                    : 'border-gray-200 bg-white/80 hover:border-gray-300 hover:bg-white'
                 }`}
                 onClick={() => togglePaperSelection(paper.id)}
               >
                 <div className="flex items-start justify-between">
                   <div className="flex-1">
-                    <div className="flex items-center gap-2 mb-1">
+                    <div className="flex items-center gap-2 mb-2">
                       {selectedPapers.includes(paper.id) ? (
-                        <CheckCircle className="h-4 w-4 text-blue-500" />
+                        <CheckCircle className="h-5 w-5 text-blue-500" />
                       ) : (
-                        <div className="h-4 w-4 border border-gray-300 rounded-full" />
+                        <div className="h-5 w-5 border-2 border-gray-300 rounded-full" />
                       )}
-                      <Badge variant="outline" className="text-xs">
+                      <Badge variant="outline" className="text-xs font-semibold bg-gradient-to-r from-blue-100 to-indigo-100">
                         #{index + 1}
                       </Badge>
                     </div>
-                    <h4 className="font-medium text-sm line-clamp-2">{paper.title}</h4>
-                    <div className="flex items-center gap-2 mt-2 text-xs text-gray-500">
-                      <span>{paper.citations || 0} citations</span>
-                      {paper.funding && <span>• ${paper.funding.toLocaleString()}</span>}
+                    <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-gray-800">{paper.title}</h4>
+                    <div className="flex items-center gap-3 text-xs text-gray-600">
+                      <span className="flex items-center gap-1">
+                        <TrendingUp className="h-3 w-3" />
+                        {paper.citations || 0} citations
+                      </span>
+                      {paper.funding && (
+                        <span className="flex items-center gap-1">
+                          <span className="text-green-600">$</span>
+                          {paper.funding.toLocaleString()}
+                        </span>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -264,16 +296,16 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           </div>
           
           {selectedPapers.length >= 2 && (
-            <div className="mt-4 flex gap-2">
+            <div className="mt-6 flex gap-3">
               <Button
                 variant={showIntraPaperRelations ? "default" : "outline"}
                 onClick={() => setShowIntraPaperRelations(!showIntraPaperRelations)}
-                className="flex items-center gap-2"
+                className="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-lg"
               >
                 <Brain className="h-4 w-4" />
                 {showIntraPaperRelations ? 'Hide' : 'Show'} Intrapaper Relationships
               </Button>
-              <Badge variant="secondary">
+              <Badge variant="secondary" className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 font-semibold px-3 py-1">
                 {selectedPapers.length} papers selected
               </Badge>
             </div>
@@ -281,14 +313,16 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
         </CardContent>
       </Card>
 
-      {/* View Mode Selection */}
-      <Card>
+      {/* Enhanced Knowledge Graph Visualization */}
+      <Card className="bg-gradient-to-br from-white to-blue-50 border-blue-200 shadow-xl">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Target className="h-5 w-5" />
-            Knowledge Graph Visualization
+            <Target className="h-6 w-6 text-blue-600" />
+            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">
+              Knowledge Graph Visualization
+            </span>
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-700 font-medium">
             {showIntraPaperRelations 
               ? 'Real-time analysis of relationships between selected papers'
               : 'Interactive visualization of research connections from real data'
@@ -297,11 +331,15 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
         </CardHeader>
         <CardContent>
           {!showIntraPaperRelations && (
-            <div className="mb-4 flex gap-2">
+            <div className="mb-6 flex gap-2">
               <Button
                 variant={viewMode === 'research_areas' ? "default" : "outline"}
                 onClick={() => setViewMode('research_areas')}
                 size="sm"
+                className={viewMode === 'research_areas' ? 
+                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg" : 
+                  "hover:bg-blue-50 border-blue-200"
+                }
               >
                 Research Areas
               </Button>
@@ -309,6 +347,10 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                 variant={viewMode === 'methodologies' ? "default" : "outline"}
                 onClick={() => setViewMode('methodologies')}
                 size="sm"
+                className={viewMode === 'methodologies' ? 
+                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg" : 
+                  "hover:bg-blue-50 border-blue-200"
+                }
               >
                 Methodologies
               </Button>
@@ -316,18 +358,53 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                 variant={viewMode === 'papers' ? "default" : "outline"}
                 onClick={() => setViewMode('papers')}
                 size="sm"
+                className={viewMode === 'papers' ? 
+                  "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg" : 
+                  "hover:bg-blue-50 border-blue-200"
+                }
               >
                 Top Papers
               </Button>
             </div>
           )}
 
-          <div className="relative h-96 bg-gray-50 rounded-lg overflow-hidden">
+          <div className="relative h-96 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 rounded-xl overflow-hidden border border-blue-200 shadow-lg">
+            {/* Animated background particles */}
+            <div className="absolute inset-0 opacity-20">
+              <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
+              <div className="absolute top-20 right-20 w-1 h-1 bg-purple-400 rounded-full animate-ping"></div>
+              <div className="absolute bottom-20 left-20 w-1.5 h-1.5 bg-indigo-400 rounded-full animate-bounce"></div>
+              <div className="absolute bottom-10 right-10 w-2 h-2 bg-cyan-400 rounded-full animate-pulse"></div>
+            </div>
+            
             <svg width="100%" height="100%" className="absolute inset-0">
+              {/* Gradient definitions */}
+              <defs>
+                <linearGradient id="nodeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.8"/>
+                  <stop offset="100%" stopColor="#1D4ED8" stopOpacity="0.9"/>
+                </linearGradient>
+                <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stopColor="#3B82F6" stopOpacity="0.3"/>
+                  <stop offset="50%" stopColor="#8B5CF6" stopOpacity="0.6"/>
+                  <stop offset="100%" stopColor="#EC4899" stopOpacity="0.3"/>
+                </linearGradient>
+                <filter id="glow">
+                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                  <feMerge> 
+                    <feMergeNode in="coloredBlur"/>
+                    <feMergeNode in="SourceGraphic"/>
+                  </feMerge>
+                </filter>
+                <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="8" floodColor="#000000" floodOpacity="0.1"/>
+                </filter>
+              </defs>
+              
               {showIntraPaperRelations ? (
-                // Intrapaper Relationships Graph
+                // Enhanced Intrapaper Relationships Graph
                 <>
-                  {/* Edges for paper relationships */}
+                  {/* Animated edges for paper relationships */}
                   {intraPaperData.edges.map((edge, index) => {
                     const sourceNode = intraPaperData.nodes.find(n => n.id === edge.source);
                     const targetNode = intraPaperData.nodes.find(n => n.id === edge.target);
@@ -339,39 +416,72 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     const targetPos = getNodePosition(targetIndex, intraPaperData.nodes.length, 200, 150, 100);
                     
                     return (
-                      <line
-                        key={index}
-                        x1={sourcePos.x}
-                        y1={sourcePos.y}
-                        x2={targetPos.x}
-                        y2={targetPos.y}
-                        stroke={edge.type === 'strong' ? "#3B82F6" : "#94A3B8"}
-                        strokeWidth={edge.type === 'strong' ? 3 : 1}
-                        opacity={edge.strength * 0.8 + 0.2}
-                      />
+                      <g key={index}>
+                        <line
+                          x1={sourcePos.x}
+                          y1={sourcePos.y}
+                          x2={targetPos.x}
+                          y2={targetPos.y}
+                          stroke={edge.type === 'strong' ? "url(#edgeGradient)" : "#94A3B8"}
+                          strokeWidth={edge.type === 'strong' ? 4 : 2}
+                          opacity={edge.strength * 0.8 + 0.3}
+                          filter="url(#shadow)"
+                          className="animate-pulse"
+                        />
+                        {/* Animated dots along the edge */}
+                        <circle
+                          cx={sourcePos.x + (targetPos.x - sourcePos.x) * 0.5}
+                          cy={sourcePos.y + (targetPos.y - sourcePos.y) * 0.5}
+                          r="2"
+                          fill={edge.type === 'strong' ? "#3B82F6" : "#94A3B8"}
+                          opacity="0.6"
+                          className="animate-ping"
+                        />
+                      </g>
                     );
                   })}
                   
-                  {/* Nodes for papers */}
+                  {/* Enhanced nodes for papers */}
                   {intraPaperData.nodes.map((node, index) => {
                     const position = getNodePosition(index, intraPaperData.nodes.length, 200, 150, 100);
                     
                     return (
                       <g key={node.id}>
+                        {/* Outer glow ring */}
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r="15"
+                          r="20"
+                          fill="none"
+                          stroke={node.color}
+                          strokeWidth="1"
+                          opacity="0.3"
+                          className="animate-pulse"
+                        />
+                        {/* Main node with gradient */}
+                        <circle
+                          cx={position.x}
+                          cy={position.y}
+                          r="18"
                           fill={node.color}
                           stroke="white"
-                          strokeWidth="2"
-                          className="cursor-pointer transition-all duration-200"
+                          strokeWidth="3"
+                          filter="url(#glow)"
+                          className="cursor-pointer transition-all duration-300 hover:scale-110"
+                        />
+                        {/* Inner highlight */}
+                        <circle
+                          cx={position.x - 4}
+                          cy={position.y - 4}
+                          r="6"
+                          fill="white"
+                          opacity="0.3"
                         />
                         <text
                           x={position.x}
-                          y={position.y + 3}
+                          y={position.y + 4}
                           textAnchor="middle"
-                          className="text-xs font-medium fill-white pointer-events-none"
+                          className="text-sm font-bold fill-white pointer-events-none drop-shadow-lg"
                         >
                           {node.citations}
                         </text>
@@ -380,9 +490,9 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   })}
                 </>
               ) : (
-                // Real Data Knowledge Graph
+                // Enhanced Real Data Knowledge Graph
                 <>
-                  {/* Edges for real relationships */}
+                  {/* Enhanced edges for real relationships */}
                   {filteredEdges.map((edge, index) => {
                     const sourceNode = filteredNodes.find(n => n.id === edge.source);
                     const targetNode = filteredNodes.find(n => n.id === edge.target);
@@ -393,44 +503,88 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     const sourcePos = getNodePosition(sourceIndex, filteredNodes.length);
                     const targetPos = getNodePosition(targetIndex, filteredNodes.length);
                     
+                    const edgeColor = edge.type === 'content_similarity' ? "#3B82F6" : 
+                                    edge.type === 'citation_network' ? "#10B981" :
+                                    edge.type === 'keyword_cooccurrence' ? "#F59E0B" : "#EF4444";
+                    
                     return (
-                      <line
-                        key={index}
-                        x1={sourcePos.x}
-                        y1={sourcePos.y}
-                        x2={targetPos.x}
-                        y2={targetPos.y}
-                        stroke={edge.type === 'content_similarity' ? "#3B82F6" : 
-                               edge.type === 'citation_network' ? "#10B981" :
-                               edge.type === 'keyword_cooccurrence' ? "#F59E0B" : "#EF4444"}
-                        strokeWidth={Math.max(1, edge.weight * 5)}
-                        opacity={0.6}
-                      />
+                      <g key={index}>
+                        <line
+                          x1={sourcePos.x}
+                          y1={sourcePos.y}
+                          x2={targetPos.x}
+                          y2={targetPos.y}
+                          stroke={edgeColor}
+                          strokeWidth={Math.max(2, edge.weight * 6)}
+                          opacity={0.7}
+                          filter="url(#shadow)"
+                          className="transition-all duration-500"
+                        />
+                        {/* Animated connection indicator */}
+                        <circle
+                          cx={sourcePos.x + (targetPos.x - sourcePos.x) * 0.3}
+                          cy={sourcePos.y + (targetPos.y - sourcePos.y) * 0.3}
+                          r="1.5"
+                          fill={edgeColor}
+                          opacity="0.8"
+                          className="animate-ping"
+                        />
+                      </g>
                     );
                   })}
                   
-                  {/* Nodes for real data */}
+                  {/* Enhanced nodes for real data */}
                   {filteredNodes.map((node, index) => {
                     const position = getNodePosition(index, filteredNodes.length);
                     const isSelected = selectedNode === node.id;
+                    const nodeSize = isSelected ? 30 : Math.max(15, node.size / 4);
                     
                     return (
                       <g key={node.id}>
+                        {/* Outer ring for selected nodes */}
+                        {isSelected && (
+                          <circle
+                            cx={position.x}
+                            cy={position.y}
+                            r={nodeSize + 8}
+                            fill="none"
+                            stroke="#3B82F6"
+                            strokeWidth="2"
+                            opacity="0.5"
+                            className="animate-pulse"
+                          />
+                        )}
+                        
+                        {/* Main node with enhanced styling */}
                         <circle
                           cx={position.x}
                           cy={position.y}
-                          r={isSelected ? 25 : Math.max(10, node.size / 5)}
+                          r={nodeSize}
                           fill={node.color}
                           stroke={isSelected ? "#1F2937" : "white"}
-                          strokeWidth={isSelected ? 3 : 2}
-                          className="cursor-pointer transition-all duration-200"
+                          strokeWidth={isSelected ? 4 : 3}
+                          filter="url(#glow)"
+                          className="cursor-pointer transition-all duration-300 hover:scale-110"
                           onClick={() => setSelectedNode(isSelected ? null : node.id)}
                         />
+                        
+                        {/* Inner highlight circle */}
+                        <circle
+                          cx={position.x - nodeSize * 0.3}
+                          cy={position.y - nodeSize * 0.3}
+                          r={nodeSize * 0.4}
+                          fill="white"
+                          opacity="0.4"
+                        />
+                        
+                        {/* Node label */}
                         <text
                           x={position.x}
-                          y={position.y + 4}
+                          y={position.y + 5}
                           textAnchor="middle"
-                          className="text-xs font-medium fill-white pointer-events-none"
+                          className={`font-bold fill-white pointer-events-none drop-shadow-lg ${
+                            nodeSize > 20 ? 'text-sm' : 'text-xs'
+                          }`}
                         >
                           {node.count || node.citations || ''}
                         </text>
@@ -441,118 +595,124 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
               )}
             </svg>
             
-            {/* Node Labels */}
+            {/* Enhanced Node Labels */}
             <div className="absolute inset-0 pointer-events-none">
               {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node, index) => {
                 const position = getNodePosition(index, (showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).length, 200, 150, showIntraPaperRelations ? 100 : 120);
                 return (
                   <div
                     key={`label-${node.id}`}
-                    className="absolute text-xs font-medium text-gray-700 bg-white px-2 py-1 rounded shadow-sm max-w-32"
+                    className="absolute text-sm font-semibold text-gray-800 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full shadow-lg border border-gray-200 max-w-36 transition-all duration-300 hover:bg-white hover:shadow-xl"
                     style={{
-                      left: position.x - 64,
-                      top: position.y + (showIntraPaperRelations ? 25 : 35),
-                      width: 128,
+                      left: position.x - 72,
+                      top: position.y + (showIntraPaperRelations ? 30 : 40),
+                      width: 144,
                       textAlign: 'center'
                     }}
                   >
-                    {node.label}
+                    <div className="flex items-center justify-center gap-1">
+                      <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: node.color }}
+                      />
+                      <span className="truncate">{node.label}</span>
+                    </div>
                   </div>
                 );
               })}
             </div>
           </div>
           
-          {/* Selected Node Info */}
+          {/* Enhanced Selected Node Info */}
           {selectedNodeData && !showIntraPaperRelations && (
-            <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <h3 className="font-semibold text-blue-900 mb-2">{selectedNodeData.label}</h3>
-              <p className="text-sm text-blue-700 mb-2">
+            <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-lg">
+              <h3 className="font-bold text-blue-900 mb-3 text-lg">{selectedNodeData.label}</h3>
+              <p className="text-sm text-blue-700 mb-4 font-medium">
                 {selectedNodeData.count || selectedNodeData.citations || 0} {selectedNodeData.type === 'paper' ? 'citations' : 'papers'} in this area
               </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+              <div className="flex flex-wrap gap-3">
+                <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-semibold px-3 py-1">
                   {selectedNodeData.type === 'research_area' ? 'Research Area' : 
                    selectedNodeData.type === 'methodology' ? 'Methodology' : 'Research Paper'}
                 </Badge>
-                <Badge variant="outline" className="border-blue-300 text-blue-700">
+                <Badge variant="outline" className="border-blue-300 text-blue-700 font-semibold px-3 py-1">
                   {role === 'Scientist' ? 'High Impact' : 'Strong ROI'}
                 </Badge>
               </div>
             </div>
           )}
 
-          {/* Intrapaper Relationship Info */}
+          {/* Enhanced Intrapaper Relationship Info */}
           {showIntraPaperRelations && selectedPapers.length >= 2 && (
-            <div className="mt-4 p-4 bg-green-50 rounded-lg border border-green-200">
-              <h3 className="font-semibold text-green-900 mb-2">Real Keyword Analysis</h3>
-              <p className="text-sm text-green-700 mb-2">
+            <div className="mt-6 p-6 bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl border border-green-200 shadow-lg">
+              <h3 className="font-bold text-green-900 mb-3 text-lg">Real Keyword Analysis</h3>
+              <p className="text-sm text-green-700 mb-4 font-medium">
                 Analyzing {selectedPapers.length} selected papers using TF-IDF similarity and keyword co-occurrence
               </p>
-              <div className="flex flex-wrap gap-2">
-                <Badge variant="secondary" className="bg-green-100 text-green-800">
+              <div className="flex flex-wrap gap-3">
+                <Badge variant="secondary" className="bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 font-semibold px-3 py-1">
                   {intraPaperData.edges.length} relationships found
                 </Badge>
-                <Badge variant="outline" className="border-green-300 text-green-700">
+                <Badge variant="outline" className="border-green-300 text-green-700 font-semibold px-3 py-1">
                   Real keyword similarity
                 </Badge>
               </div>
             </div>
           )}
           
-          {/* Legend */}
-          <div className="mt-4 grid grid-cols-2 md:grid-cols-3 gap-2">
+          {/* Enhanced Legend */}
+          <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3">
             {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node) => (
-              <div key={`legend-${node.id}`} className="flex items-center space-x-2">
+              <div key={`legend-${node.id}`} className="flex items-center space-x-2 p-2 bg-white/60 rounded-lg border border-gray-100">
                 <div 
-                  className="w-3 h-3 rounded-full" 
+                  className="w-4 h-4 rounded-full shadow-sm" 
                   style={{ backgroundColor: node.color }}
                 />
-                <span className="text-xs text-gray-600">{node.label}</span>
+                <span className="text-sm font-semibold text-gray-700">{node.label}</span>
                 {showIntraPaperRelations && (
-                  <span className="text-xs text-gray-500">({node.citations} citations)</span>
+                  <span className="text-xs text-gray-500 font-medium">({node.citations} citations)</span>
                 )}
               </div>
             ))}
           </div>
 
-          {/* Relationship Legend for Real Data */}
+          {/* Enhanced Relationship Legend for Real Data */}
           {!showIntraPaperRelations && (
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Relationship Types (Real Data):</h4>
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-blue-500"></div>
-                  <span className="text-gray-600">Content Similarity (TF-IDF)</span>
+            <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
+              <h4 className="text-sm font-bold text-gray-700 mb-3">Relationship Types (Real Data):</h4>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Content Similarity (TF-IDF)</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-green-500"></div>
-                  <span className="text-gray-600">Citation Network</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Citation Network</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-yellow-500"></div>
-                  <span className="text-gray-600">Keyword Co-occurrence</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Keyword Co-occurrence</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-red-500"></div>
-                  <span className="text-gray-600">Author Collaboration</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Author Collaboration</span>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Relationship Legend for Intrapaper View */}
+          {/* Enhanced Relationship Legend for Intrapaper View */}
           {showIntraPaperRelations && (
-            <div className="mt-4 p-3 bg-gray-50 rounded-lg">
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Relationship Types:</h4>
-              <div className="flex items-center gap-4 text-xs">
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-blue-500"></div>
-                  <span className="text-gray-600">Strong similarity (&gt;50%)</span>
+            <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
+              <h4 className="text-sm font-bold text-gray-700 mb-3">Relationship Types:</h4>
+              <div className="grid grid-cols-2 gap-4 text-xs">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Strong similarity (&gt;50%)</span>
                 </div>
-                <div className="flex items-center gap-1">
-                  <div className="w-3 h-0.5 bg-gray-400"></div>
-                  <span className="text-gray-600">Weak similarity (20-50%)</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-1 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full"></div>
+                  <span className="text-gray-600 font-medium">Weak similarity (20-50%)</span>
                 </div>
               </div>
             </div>
