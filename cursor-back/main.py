@@ -559,7 +559,7 @@ def get_analytics(role: str = "Scientist"):
                 ],
                 "research_focus": "Space Biology and Microgravity Research"
             }
-        else:  # Manager role
+        elif role.lower() == "manager":
             total_funding = sum(p.get('funding', 0) for p in PAPERS_DATA if p.get('funding'))
             total_return = sum(p.get('return', 0) for p in PAPERS_DATA if p.get('return'))
             roi = ((total_return - total_funding) / total_funding * 100) if total_funding > 0 else 0

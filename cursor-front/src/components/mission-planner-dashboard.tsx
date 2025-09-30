@@ -17,7 +17,6 @@ import {
   Target,
   TrendingUp,
   BarChart3,
-  PieChart,
   Calendar,
   MapPin,
   Zap,
@@ -32,7 +31,8 @@ import {
   CartesianGrid, 
   Tooltip, 
   ResponsiveContainer,
-  PieChart as RechartsPieChart,
+  PieChart,
+  Pie,
   Cell,
   LineChart,
   Line
@@ -298,17 +298,17 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             {/* Budget Breakdown */}
             <Card>
               <CardHeader>
-                <CardTitle className="flex items-center">
-                  <PieChart className="h-5 w-5 mr-2 text-blue-500" />
-                  Budget Breakdown
-                </CardTitle>
+              <CardTitle className="flex items-center">
+                <BarChart3 className="h-5 w-5 mr-2 text-blue-500" />
+                Budget Breakdown
+              </CardTitle>
                 <CardDescription>
                   Total mission budget: $10.1M
                 </CardDescription>
               </CardHeader>
               <CardContent>
                 <ResponsiveContainer width="100%" height={300}>
-                  <RechartsPieChart>
+                  <PieChart>
                     <Pie
                       data={pieData}
                       cx="50%"
@@ -321,7 +321,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
                       ))}
                     </Pie>
                     <Tooltip />
-                  </RechartsPieChart>
+                  </PieChart>
                 </ResponsiveContainer>
               </CardContent>
             </Card>
