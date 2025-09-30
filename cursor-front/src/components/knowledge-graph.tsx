@@ -503,21 +503,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           }}
                         />
                         
-                        {/* Smooth selection indicator */}
-                        <text
-                          x={position.x}
-                          y={position.y - nodeSize - 12}
-                          textAnchor="middle"
-                          className={`text-xs font-bold fill-purple-600 pointer-events-none transition-all duration-300 ease-out ${
-                            isSelected ? 'opacity-100' : 'opacity-0'
-                          }`}
-                          style={{
-                            transform: isSelected ? 'translateY(0) scale(1.2)' : 'translateY(-3px) scale(1)',
-                            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                          }}
-                        >
-                          SELECTED
-                        </text>
+                        {/* Smooth selection indicator - REMOVED */}
                         
                         {/* Main paper node with smooth hover enlargement in place */}
                         <circle
@@ -679,22 +665,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           }}
                         />
                         
-                        {/* Selection indicator with modern design */}
-                        <text
-                          x={position.x}
-                          y={position.y - nodeSize - 20}
-                          textAnchor="middle"
-                          className={`text-sm font-bold fill-gray-700 pointer-events-none transition-all duration-400 ease-out ${
-                            isSelected ? 'opacity-100' : 'opacity-0'
-                          }`}
-                          style={{
-                            transform: isSelected ? 'translateY(0) scale(1.1)' : 'translateY(-8px) scale(0.9)',
-                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                            filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.2))'
-                          }}
-                        >
-                          ⭐ SELECTED
-                        </text>
+                        {/* Selection indicator with modern design - REMOVED */}
                         
                         {/* Main node with gradient and modern styling */}
                         <defs>
@@ -762,22 +733,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           {node.count || node.citations || ''}
                         </text>
                         
-                        {/* Node type indicator */}
-                        <text
-                          x={position.x}
-                          y={position.y + nodeSize + 15}
-                          textAnchor="middle"
-                          className={`text-xs font-medium fill-gray-600 pointer-events-none transition-all duration-400 ease-out ${
-                            isSelected ? 'opacity-100' : 'opacity-70'
-                          }`}
-                          style={{
-                            transformOrigin: `${position.x}px ${position.y}px`,
-                            transform: isSelected ? 'scale(1.2)' : 'scale(1)',
-                            transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)'
-                          }}
-                        >
-                          {node.type?.replace('_', ' ').toUpperCase() || 'NODE'}
-                        </text>
+                        {/* Node type indicator - REMOVED */}
                       </g>
                     );
                   })}
