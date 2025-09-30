@@ -325,7 +325,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           <CardDescription className="text-gray-700 font-medium">
             {showIntraPaperRelations 
               ? 'Real-time analysis of relationships between selected papers'
-              : 'Interactive visualization of research connections from real data - hover over nodes to see details'
+              : 'Interactive visualization - hover to see labels, click to select and view details'
             }
           </CardDescription>
         </CardHeader>
@@ -379,7 +379,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             
             {/* Hover instruction */}
             <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-200">
-              💡 Hover over nodes
+              💡 Hover to see labels • Click to select
             </div>
             
             <svg width="100%" height="100%" className="absolute inset-0">
@@ -556,10 +556,22 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                             r={nodeSize + 8}
                             fill="none"
                             stroke="#3B82F6"
-                            strokeWidth="2"
-                            opacity="0.5"
+                            strokeWidth="3"
+                            opacity="0.8"
                             className="animate-pulse"
                           />
+                        )}
+                        
+                        {/* Selection indicator text */}
+                        {isSelected && (
+                          <text
+                            x={position.x}
+                            y={position.y - nodeSize - 15}
+                            textAnchor="middle"
+                            className="text-xs font-bold fill-blue-600 pointer-events-none"
+                          >
+                            SELECTED
+                          </text>
                         )}
                         
                         {/* Main node with enhanced styling */}
