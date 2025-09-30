@@ -1,0 +1,428 @@
+'use client';
+
+import { useState } from 'react';
+import MainLayout from '@/components/main-layout';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
+import { Progress } from '@/components/ui/progress';
+import { 
+  Rocket, 
+  Shield, 
+  AlertTriangle, 
+  CheckCircle, 
+  Clock, 
+  Users,
+  Package,
+  Target,
+  TrendingUp,
+  BarChart3,
+  Activity,
+  Zap,
+  RefreshCw
+} from 'lucide-react';
+import { 
+  BarChart, 
+  Bar, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  ResponsiveContainer,
+  PieChart,
+  Pie,
+  Cell,
+  LineChart,
+  Line
+} from 'recharts';
+import { useMissionAnalysis, MissionPlannerRequest } from '@/api/hooks';
+
+const destinations = [
+  { value: 'mars', label: 'Mars' },
+  { value: 'moon', label: 'Moon' },
+  { value: 'asteroid', label: 'Asteroid' },
+  { value: 'space station', label: 'Space Station' }
+];
+
+const severityColors = {
+  'High': 'bg-red-100 text-red-800 border-red-200',
+  'Medium': 'bg-yellow-100 text-yellow-800 border-yellow-200',
+  'Low': 'bg-green-100 text-green-800 border-green-200'
+};
+
+export default function MissionPlannerPage() {
+  const [missionParams, setMissionParams] = useState<MissionPlannerRequest>({
+    destination: 'mars',
+    crew_size: 4,
+    duration_days: 900,
+    payload_capacity: '50 tons'
+  });
+
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const { data: analysis, isLoading, error, refetch } = useMissionAnalysis(missionParams, false);
+
+  const handleAnalyze = async () => {
+    setIsAnalyzing(true);
+    try {
+      await refetch();
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleParameterChange = (field: keyof MissionPlannerRequest, value: any) => {
+    setMissionParams(prev => ({
+      ...prev,
+      [field]: value
+    }));
+  };
+
+  const getFeasibilityColor = (score: number) => {
+    if (score >= 80) return 'text-green-600';
+    if (score >= 60) return 'text-yellow-600';
+    return 'text-red-600';
+  };
+
+  const getFeasibilityBgColor = (score: number) => {
+    if (score >= 80) return 'bg-green-500';
+    if (score >= 60) return 'bg-yellow-500';
+    return 'bg-red-500';
+  };
+
+  return (
+    <MainLayout>
+      <div className="container mx-auto p-6 space-y-6">
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold flex items-center gap-2">
+            <Rocket className="h-8 w-8 text-blue-600" />
+            Mission Planner
+          </h1>
+          <p className="text-gray-600 mt-2">
+            Design and evaluate space missions based on biological constraints
+          </p>
+        </div>
+        <Button 
+          onClick={handleAnalyze} 
+          disabled={isAnalyzing || isLoading}
+          className="flex items-center gap-2"
+        >
+          <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
+          {isAnalyzing ? 'Analyzing...' : 'Analyze Mission'}
+        </Button>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Mission Input Form */}
+        <div className="lg:col-span-1">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Target className="h-5 w-5 text-blue-600" />
+                Mission Parameters
+              </CardTitle>
+              <CardDescription>
+                Configure your space mission parameters
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              {/* Destination */}
+              <div className="space-y-2">
+                <Label htmlFor="destination">Destination</Label>
+                <Select 
+                  value={missionParams.destination} 
+                  onValueChange={(value) => handleParameterChange('destination', value)}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select destination" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {destinations.map((dest) => (
+                      <SelectItem key={dest.value} value={dest.value}>
+                        {dest.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Crew Size */}
+              <div className="space-y-2">
+                <Label htmlFor="crew_size">Crew Size</Label>
+                <div className="flex items-center gap-2">
+                  <Users className="h-4 w-4 text-gray-500" />
+                  <Input
+                    id="crew_size"
+                    type="number"
+                    min="1"
+                    max="12"
+                    value={missionParams.crew_size}
+                    onChange={(e) => handleParameterChange('crew_size', parseInt(e.target.value) || 1)}
+                    className="flex-1"
+                  />
+                  <span className="text-sm text-gray-500">astronauts</span>
+                </div>
+              </div>
+
+              {/* Duration */}
+              <div className="space-y-2">
+                <Label htmlFor="duration">Mission Duration</Label>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-gray-500" />
+                    <span className="text-sm font-medium">{missionParams.duration_days} days</span>
+                    <span className="text-sm text-gray-500">
+                      ({Math.round(missionParams.duration_days / 365 * 10) / 10} years)
+                    </span>
+                  </div>
+                  <Slider
+                    value={[missionParams.duration_days]}
+                    onValueChange={([value]) => handleParameterChange('duration_days', value)}
+                    min={30}
+                    max={1000}
+                    step={10}
+                    className="w-full"
+                  />
+                  <div className="flex justify-between text-xs text-gray-500">
+                    <span>30 days</span>
+                    <span>1000 days</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Payload Capacity */}
+              <div className="space-y-2">
+                <Label htmlFor="payload">Payload Capacity</Label>
+                <div className="flex items-center gap-2">
+                  <Package className="h-4 w-4 text-gray-500" />
+                  <Input
+                    id="payload"
+                    value={missionParams.payload_capacity}
+                    onChange={(e) => handleParameterChange('payload_capacity', e.target.value)}
+                    placeholder="e.g., 50 tons"
+                  />
+                </div>
+              </div>
+
+              {/* Quick Presets */}
+              <div className="space-y-2">
+                <Label>Quick Presets</Label>
+                <div className="grid grid-cols-2 gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMissionParams({
+                      destination: 'moon',
+                      crew_size: 2,
+                      duration_days: 30,
+                      payload_capacity: '10 tons'
+                    })}
+                  >
+                    Moon Mission
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setMissionParams({
+                      destination: 'mars',
+                      crew_size: 6,
+                      duration_days: 900,
+                      payload_capacity: '100 tons'
+                    })}
+                  >
+                    Mars Mission
+                  </Button>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Results Dashboard */}
+        <div className="lg:col-span-2 space-y-6">
+          {isLoading || isAnalyzing ? (
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <RefreshCw className="h-8 w-8 animate-spin mx-auto mb-4 text-blue-600" />
+                  <p className="text-gray-600">Analyzing mission feasibility...</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : error ? (
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <AlertTriangle className="h-8 w-8 mx-auto mb-4 text-red-600" />
+                  <p className="text-red-600">Error analyzing mission. Please try again.</p>
+                </div>
+              </CardContent>
+            </Card>
+          ) : analysis ? (
+            <>
+              {/* Mission Feasibility Score */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Activity className="h-5 w-5 text-blue-600" />
+                    Mission Feasibility Analysis
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold">Overall Feasibility Score</span>
+                      <span className={`text-3xl font-bold ${getFeasibilityColor(analysis.mission_feasibility_score)}`}>
+                        {analysis.mission_feasibility_score}/100
+                      </span>
+                    </div>
+                    <Progress 
+                      value={analysis.mission_feasibility_score} 
+                      className="h-3"
+                    />
+                    <div className="flex justify-between text-sm text-gray-500">
+                      <span>Low Risk</span>
+                      <span>High Risk</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Risk Assessment */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Shield className="h-5 w-5 text-red-600" />
+                    Risk Assessment
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-4">
+                    {analysis.risks.map((risk, index) => (
+                      <div key={index} className="border rounded-lg p-4">
+                        <div className="flex items-start justify-between mb-2">
+                          <h3 className="font-semibold text-lg">{risk.risk}</h3>
+                          <Badge 
+                            variant="outline" 
+                            className={severityColors[risk.severity as keyof typeof severityColors]}
+                          >
+                            {risk.severity}
+                          </Badge>
+                        </div>
+                        <div className="space-y-1 text-sm text-gray-600">
+                          {risk.expected_loss && (
+                            <p><strong>Expected Loss:</strong> {risk.expected_loss}</p>
+                          )}
+                          {risk.dose && (
+                            <p><strong>Radiation Dose:</strong> {risk.dose}</p>
+                          )}
+                          {risk.notes && (
+                            <p><strong>Notes:</strong> {risk.notes}</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Resource Requirements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Package className="h-5 w-5 text-green-600" />
+                    Resource Requirements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="text-center p-4 border rounded-lg">
+                      <div className="text-2xl font-bold text-green-600 mb-2">🍎</div>
+                      <h3 className="font-semibold">Food</h3>
+                      <p className="text-sm text-gray-600 mt-1">{analysis.resources.food}</p>
+                    </div>
+                    <div className="text-center p-4 border rounded-lg">
+                      <div className="text-2xl font-bold text-blue-600 mb-2">💧</div>
+                      <h3 className="font-semibold">Water</h3>
+                      <p className="text-sm text-gray-600 mt-1">{analysis.resources.water}</p>
+                    </div>
+                    <div className="text-center p-4 border rounded-lg">
+                      <div className="text-2xl font-bold text-purple-600 mb-2">💨</div>
+                      <h3 className="font-semibold">Oxygen</h3>
+                      <p className="text-sm text-gray-600 mt-1">{analysis.resources.oxygen}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Crew Health Requirements */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <Users className="h-5 w-5 text-purple-600" />
+                    Crew Health Requirements
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="font-semibold flex items-center gap-2 mb-2">
+                        <Activity className="h-4 w-4 text-blue-600" />
+                        Exercise Requirements
+                      </h3>
+                      <p className="text-gray-600">{analysis.crew_health.exercise}</p>
+                    </div>
+                    <div className="p-4 border rounded-lg">
+                      <h3 className="font-semibold flex items-center gap-2 mb-2">
+                        <Shield className="h-4 w-4 text-green-600" />
+                        Medical Support
+                      </h3>
+                      <p className="text-gray-600">{analysis.crew_health.medical_support}</p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Recommendations */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <TrendingUp className="h-5 w-5 text-orange-600" />
+                    AI Recommendations
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {analysis.recommendations.map((recommendation, index) => (
+                      <div key={index} className="flex items-start gap-3 p-3 bg-blue-50 rounded-lg">
+                        <CheckCircle className="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
+                        <p className="text-gray-700">{recommendation}</p>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            </>
+          ) : (
+            <Card>
+              <CardContent className="flex items-center justify-center py-12">
+                <div className="text-center">
+                  <Rocket className="h-12 w-12 mx-auto mb-4 text-gray-400" />
+                  <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Plan Your Mission?</h3>
+                  <p className="text-gray-500">Configure your mission parameters and click "Analyze Mission" to get started.</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </div>
+      </div>
+      </div>
+    </MainLayout>
+  );
+}

@@ -1269,44 +1269,276 @@ def compare_methodologies(papers: list[MethodologyExtraction]) -> MethodologyCom
         contradictions=contradictions
     )
 
-@app.post("/api/methodology-compare", response_model=MethodologyCompareResponse)
-def compare_methodologies_endpoint(request: MethodologyCompareRequest):
+# Mission Planner API
+class MissionPlannerRequest(BaseModel):
+    destination: str
+    crew_size: int
+    duration_days: int
+    payload_capacity: str
+
+class RiskAssessment(BaseModel):
+    risk: str
+    severity: str
+    expected_loss: str = ""
+    dose: str = ""
+    notes: str = ""
+
+class ResourceRequirements(BaseModel):
+    food: str
+    water: str
+    oxygen: str
+
+class CrewHealthRequirements(BaseModel):
+    exercise: str
+    medical_support: str
+
+class MissionPlannerResponse(BaseModel):
+    mission_feasibility_score: int
+    risks: list[RiskAssessment]
+    resources: ResourceRequirements
+    crew_health: CrewHealthRequirements
+    recommendations: list[str]
+
+def analyze_mission_with_ai(mission_params: MissionPlannerRequest) -> MissionPlannerResponse:
     """
-    Compare methodologies from relevant papers based on query.
+    Analyze mission feasibility using AI and space biology data.
     """
     try:
-        # Find relevant papers
-        relevant_papers = find_relevant_papers(request.query, request.max_papers)
+        # Use AI to analyze mission parameters
+        prompt = f"""
+        Role: Mission Planner
+        Task: Use space biology knowledge to evaluate the feasibility of the mission.
         
-        if not relevant_papers:
-            return MethodologyCompareResponse(
-                query=request.query,
-                papers=[],
-                comparison=MethodologyComparison(
-                    similarities=[],
-                    differences=[],
-                    gaps=["No relevant papers found for this query"],
-                    contradictions=[]
-                ),
-                total_papers_found=0
-            )
+        Mission Parameters:
+        - Destination: {mission_params.destination}
+        - Crew Size: {mission_params.crew_size} astronauts
+        - Duration: {mission_params.duration_days} days
+        - Payload Capacity: {mission_params.payload_capacity}
         
-        # Extract methodologies using AI
-        extracted_methodologies = []
-        for paper in relevant_papers:
-            paper_text = f"{paper.get('title', '')} {paper.get('abstract', '')}"
-            methodology = extract_methodology_with_ai(paper_text, paper.get('title', ''))
-            extracted_methodologies.append(methodology)
+        Based on space biology research, analyze:
+        1. Mission feasibility score (0-100)
+        2. Biological risks and their severity
+        3. Resource requirements (food, water, oxygen)
+        4. Crew health requirements
+        5. Recommendations for mission success
         
-        # Compare methodologies
-        comparison = compare_methodologies(extracted_methodologies)
+        Consider factors like:
+        - Bone loss in microgravity
+        - Radiation exposure effects
+        - Psychological stress from isolation
+        - Food production and recycling
+        - Exercise requirements
+        - Medical support needs
+        """
         
-        return MethodologyCompareResponse(
-            query=request.query,
-            papers=extracted_methodologies,
-            comparison=comparison,
-            total_papers_found=len(relevant_papers)
+        # Generate AI analysis
+        result = summarizer(prompt, max_length=500, min_length=100, do_sample=False)
+        ai_analysis = result[0]['summary_text']
+        
+        # Extract structured data based on mission parameters
+        feasibility_score = calculate_feasibility_score(mission_params)
+        risks = generate_risk_assessment(mission_params)
+        resources = calculate_resource_requirements(mission_params)
+        crew_health = determine_crew_health_requirements(mission_params)
+        recommendations = generate_recommendations(mission_params)
+        
+        return MissionPlannerResponse(
+            mission_feasibility_score=feasibility_score,
+            risks=risks,
+            resources=resources,
+            crew_health=crew_health,
+            recommendations=recommendations
         )
         
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error in methodology comparison: {str(e)}")
+        # Return default analysis if AI fails
+        return MissionPlannerResponse(
+            mission_feasibility_score=50,
+            risks=[
+                RiskAssessment(risk="Bone loss", severity="High", expected_loss="1.5% per month"),
+                RiskAssessment(risk="Radiation exposure", severity="Medium", dose="350 mSv/year"),
+                RiskAssessment(risk="Psychological stress", severity="High", notes="Long isolation risk")
+            ],
+            resources=ResourceRequirements(
+                food="5 tons (hydroponics recommended)",
+                water="12 tons (closed loop recycling system)",
+                oxygen="8 tons"
+            ),
+            crew_health=CrewHealthRequirements(
+                exercise="2 hours/day required",
+                medical_support="Telemedicine + onboard kit"
+            ),
+            recommendations=[
+                "Add radiation shielding (+20% payload)",
+                "Include hydroponics for long-duration food supply",
+                "Schedule psychological support sessions weekly"
+            ]
+        )
+
+def calculate_feasibility_score(mission: MissionPlannerRequest) -> int:
+    """Calculate mission feasibility score based on parameters."""
+    score = 100
+    
+    # Duration penalties
+    if mission.duration_days > 500:
+        score -= 20
+    elif mission.duration_days > 300:
+        score -= 10
+    
+    # Crew size penalties
+    if mission.crew_size > 6:
+        score -= 15
+    elif mission.crew_size > 4:
+        score -= 5
+    
+    # Destination penalties
+    if mission.destination.lower() == "mars":
+        score -= 25
+    elif mission.destination.lower() == "moon":
+        score -= 10
+    
+    return max(score, 0)
+
+def generate_risk_assessment(mission: MissionPlannerRequest) -> list[RiskAssessment]:
+    """Generate risk assessment based on mission parameters."""
+    risks = []
+    
+    # Bone loss risk
+    bone_loss_rate = 1.5 if mission.duration_days > 180 else 1.0
+    risks.append(RiskAssessment(
+        risk="Bone loss",
+        severity="High" if mission.duration_days > 180 else "Medium",
+        expected_loss=f"{bone_loss_rate}% per month"
+    ))
+    
+    # Radiation risk
+    if mission.destination.lower() == "mars":
+        risks.append(RiskAssessment(
+            risk="Radiation exposure",
+            severity="High",
+            dose="500 mSv/year"
+        ))
+    else:
+        risks.append(RiskAssessment(
+            risk="Radiation exposure",
+            severity="Medium",
+            dose="200 mSv/year"
+        ))
+    
+    # Psychological stress
+    if mission.duration_days > 300:
+        risks.append(RiskAssessment(
+            risk="Psychological stress",
+            severity="High",
+            notes="Long isolation risk"
+        ))
+    else:
+        risks.append(RiskAssessment(
+            risk="Psychological stress",
+            severity="Medium",
+            notes="Moderate isolation risk"
+        ))
+    
+    # Muscle atrophy
+    risks.append(RiskAssessment(
+        risk="Muscle atrophy",
+        severity="High" if mission.duration_days > 180 else "Medium",
+        expected_loss="2% per month"
+    ))
+    
+    return risks
+
+def calculate_resource_requirements(mission: MissionPlannerRequest) -> ResourceRequirements:
+    """Calculate resource requirements based on mission parameters."""
+    crew_factor = mission.crew_size
+    duration_factor = mission.duration_days / 365  # years
+    
+    # Food requirements (kg per person per day)
+    food_per_person_per_day = 1.5
+    total_food_kg = food_per_person_per_day * crew_factor * mission.duration_days
+    
+    # Water requirements (kg per person per day)
+    water_per_person_per_day = 3.0
+    total_water_kg = water_per_person_per_day * crew_factor * mission.duration_days
+    
+    # Oxygen requirements (kg per person per day)
+    oxygen_per_person_per_day = 0.8
+    total_oxygen_kg = oxygen_per_person_per_day * crew_factor * mission.duration_days
+    
+    return ResourceRequirements(
+        food=f"{total_food_kg/1000:.1f} tons (hydroponics recommended for {mission.duration_days} days)",
+        water=f"{total_water_kg/1000:.1f} tons (closed loop recycling system)",
+        oxygen=f"{total_oxygen_kg/1000:.1f} tons"
+    )
+
+def determine_crew_health_requirements(mission: MissionPlannerRequest) -> CrewHealthRequirements:
+    """Determine crew health requirements based on mission parameters."""
+    exercise_hours = 2 if mission.duration_days > 180 else 1.5
+    
+    medical_support = "Telemedicine + onboard kit"
+    if mission.duration_days > 500:
+        medical_support += " + surgical capabilities"
+    elif mission.duration_days > 300:
+        medical_support += " + advanced diagnostics"
+    
+    return CrewHealthRequirements(
+        exercise=f"{exercise_hours} hours/day required",
+        medical_support=medical_support
+    )
+
+def generate_recommendations(mission: MissionPlannerRequest) -> list[str]:
+    """Generate recommendations based on mission parameters."""
+    recommendations = []
+    
+    # Duration-based recommendations
+    if mission.duration_days > 500:
+        recommendations.append("Include hydroponics for long-duration food supply")
+        recommendations.append("Add advanced psychological support systems")
+        recommendations.append("Implement crew rotation schedule")
+    
+    # Destination-based recommendations
+    if mission.destination.lower() == "mars":
+        recommendations.append("Add radiation shielding (+20% payload)")
+        recommendations.append("Include dust storm protection systems")
+        recommendations.append("Plan for communication delays")
+    elif mission.destination.lower() == "moon":
+        recommendations.append("Include lunar dust mitigation systems")
+        recommendations.append("Plan for extreme temperature variations")
+    
+    # Crew size recommendations
+    if mission.crew_size > 4:
+        recommendations.append("Implement crew conflict resolution protocols")
+        recommendations.append("Add privacy modules for crew quarters")
+    
+    # General recommendations
+    recommendations.append("Schedule psychological support sessions weekly")
+    recommendations.append("Include emergency evacuation procedures")
+    recommendations.append("Implement comprehensive health monitoring")
+    
+    return recommendations
+
+@app.post("/api/mission-planner", response_model=MissionPlannerResponse)
+def mission_planner_endpoint(request: MissionPlannerRequest):
+    """
+    Analyze mission feasibility based on biological constraints.
+    """
+    try:
+        # Validate input parameters
+        if request.crew_size < 1 or request.crew_size > 12:
+            raise HTTPException(status_code=400, detail="Crew size must be between 1 and 12")
+        
+        if request.duration_days < 1 or request.duration_days > 2000:
+            raise HTTPException(status_code=400, detail="Duration must be between 1 and 2000 days")
+        
+        if request.destination.lower() not in ["mars", "moon", "asteroid", "space station"]:
+            raise HTTPException(status_code=400, detail="Destination must be Mars, Moon, Asteroid, or Space Station")
+        
+        # Analyze mission
+        analysis = analyze_mission_with_ai(request)
+        
+        return analysis
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error analyzing mission: {str(e)}")

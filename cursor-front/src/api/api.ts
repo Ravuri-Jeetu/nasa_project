@@ -123,6 +123,48 @@ export const fetchMethodologyComparison = async (request: MethodologyCompareRequ
   return res.data;
 };
 
+// Mission Planner API
+export interface MissionPlannerRequest {
+  destination: string;
+  crew_size: number;
+  duration_days: number;
+  payload_capacity: string;
+}
+
+export interface RiskAssessment {
+  risk: string;
+  severity: string;
+  expected_loss?: string;
+  dose?: string;
+  notes?: string;
+}
+
+export interface ResourceRequirements {
+  food: string;
+  water: string;
+  oxygen: string;
+}
+
+export interface CrewHealthRequirements {
+  exercise: string;
+  medical_support: string;
+}
+
+export interface MissionPlannerResponse {
+  mission_feasibility_score: number;
+  risks: RiskAssessment[];
+  resources: ResourceRequirements;
+  crew_health: CrewHealthRequirements;
+  recommendations: string[];
+}
+
+export const fetchMissionAnalysis = async (request: MissionPlannerRequest): Promise<MissionPlannerResponse> => {
+  const res = await apiClient.post('/api/mission-planner', request, {
+    timeout: 30000, // 30 seconds timeout for mission analysis
+  });
+  return res.data;
+};
+
 // ==================== DYNAMIC MANAGER DASHBOARD API ====================
 
 // Manager Dashboard Types

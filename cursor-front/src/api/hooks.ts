@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, Paper, ChatRequest, ChatResponse, PapersResponse, MethodologyCompareRequest } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, Paper, ChatRequest, ChatResponse, PapersResponse, MethodologyCompareRequest, MissionPlannerRequest } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -64,6 +64,18 @@ export const useMethodologyComparison = (request: MethodologyCompareRequest, ena
     queryFn: () => fetchMethodologyComparison(request),
     enabled: enabled && request.query.trim().length > 0,
     staleTime: 5 * 60 * 1000, // 5 minutes
+    retry: 2, // Retry failed requests twice
+    retryDelay: 1000, // Wait 1 second between retries
+  });
+};
+
+// Mission Planner Hook
+export const useMissionAnalysis = (request: MissionPlannerRequest, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['mission-analysis', request.destination, request.crew_size, request.duration_days, request.payload_capacity],
+    queryFn: () => fetchMissionAnalysis(request),
+    enabled: enabled && request.destination.trim().length > 0 && request.crew_size > 0 && request.duration_days > 0,
+    staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 2, // Retry failed requests twice
     retryDelay: 1000, // Wait 1 second between retries
   });

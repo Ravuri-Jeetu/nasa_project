@@ -73,6 +73,14 @@ export default function Header() {
             >
               Papers
             </Link>
+            <Link
+              href="/mission-planner"
+              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
+                isActive('/mission-planner') ? 'text-blue-600' : 'text-gray-600'
+              }`}
+            >
+              Mission Planner
+            </Link>
           </nav>
 
           {/* Role Toggle - Hidden on mobile */}
