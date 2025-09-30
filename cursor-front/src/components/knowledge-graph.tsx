@@ -649,7 +649,9 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                   {filteredNodes.map((node, index) => {
                     const position = getNodePosition(index, filteredNodes.length);
                     const isSelected = selectedNode === node.id;
-                    const nodeSize = isSelected ? 35 : Math.max(20, node.size / 3);
+                    // Fixed: Ensure consistent base size for all nodes
+                    const baseSize = 22;
+                    const nodeSize = isSelected ? 35 : baseSize;
                     
                     // Enhanced color scheme based on node type
                     const nodeColor = node.type === 'research_area' ? 
@@ -716,9 +718,18 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           strokeWidth={isSelected ? 5 : 4}
                           filter="url(#glow)"
                           className="cursor-pointer transition-all duration-400 ease-out"
-                          onClick={() => setSelectedNode(isSelected ? null : node.id)}
-                          onMouseEnter={() => setSelectedNode(node.id)}
-                          onMouseLeave={() => setSelectedNode(null)}
+                          onClick={() => {
+                            console.log('Node clicked:', node.id, 'Current selected:', selectedNode);
+                            setSelectedNode(isSelected ? null : node.id);
+                          }}
+                          onMouseEnter={() => {
+                            console.log('Node hover enter:', node.id);
+                            setSelectedNode(node.id);
+                          }}
+                          onMouseLeave={() => {
+                            console.log('Node hover leave:', node.id);
+                            setSelectedNode(null);
+                          }}
                           style={{
                             transformOrigin: `${position.x}px ${position.y}px`,
                             transform: isSelected ? 'scale(1.4)' : 'scale(1)',
