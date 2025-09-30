@@ -619,8 +619,8 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                           className="transition-all duration-700 ease-out"
                           style={{
                             strokeDasharray: "5 5",
-                            strokeDashoffset: isSelected ? 0 : 10,
-                            animation: isSelected ? "dash 2s linear infinite" : "none"
+                            strokeDashoffset: 0,
+                            animation: "dash 2s linear infinite"
                           }}
                         />
                         
