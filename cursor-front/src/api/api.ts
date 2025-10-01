@@ -199,8 +199,8 @@ export interface DomainAnalytics {
     counts: Record<string, number>;
     percentages: Record<string, number>;
     recent_counts: Record<string, number>;
-    funding: Record<string, any>;
-    roi: Record<string, any>;
+    funding: Record<string, number>;
+    roi: Record<string, number>;
   };
   last_updated: string;
 }
@@ -277,7 +277,7 @@ export interface EmergingArea {
 export interface ProjectStatus {
   overall_status: Record<string, number>;
   status_percentages: Record<string, number>;
-  completion_by_domain: Record<string, any>;
+  completion_by_domain: Record<string, { completed: number; total: number }>;
   total_active: number;
   total_completed: number;
 }

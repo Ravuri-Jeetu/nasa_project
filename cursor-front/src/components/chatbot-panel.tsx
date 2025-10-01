@@ -23,8 +23,8 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
 
   // Listen for summary events
   useEffect(() => {
-    const handleShowSummary = (event: any) => {
-      const { title, summary, role } = event.detail;
+    const handleShowSummary = (event: CustomEvent) => {
+      const { title, summary } = event.detail;
       const summaryMessage: ChatMessage = {
         id: Date.now().toString(),
         role: 'assistant',
@@ -126,7 +126,7 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
                   <div className="text-center text-gray-500 py-8">
                     <p>Ask me anything about your research!</p>
                     <p className="text-sm mt-2">
-                      I'll provide {role === 'Scientist' ? 'technical insights' : 'business-focused analysis'} 
+                      I&apos;ll provide {role === 'Scientist' ? 'technical insights' : 'business-focused analysis'} 
                       based on your selected papers.
                     </p>
                   </div>

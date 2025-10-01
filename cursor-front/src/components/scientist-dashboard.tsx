@@ -145,7 +145,7 @@ export default function ScientistDashboard() {
     { name: 'Radiation Biology', count: 18, impact: 8.9 },
   ];
 
-  const citationTrends = analytics?.publication_trends?.map((trend: any, index: number) => ({
+  const citationTrends = analytics?.publication_trends?.map((trend: { year?: number; count?: number }) => ({
     month: trend.year,
     citations: Math.floor(trend.count * 2.5), // Estimated citations based on publication count
     publications: trend.count,
@@ -525,7 +525,7 @@ export default function ScientistDashboard() {
             </CardHeader>
             <CardContent>
               <div className="space-y-4">
-                {researchGaps.map((gap: any, index: number) => (
+                {researchGaps.map((gap: { area: string; gap: string; priority: string }, index: number) => (
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">

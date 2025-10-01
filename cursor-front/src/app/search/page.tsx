@@ -58,7 +58,7 @@ export default function SearchPage() {
     }
   };
 
-  const getSummaryByRole = (paper: any) => {
+  const getSummaryByRole = (paper: { id: string; title: string; abstract?: string }) => {
     if (role === 'Scientist') {
       return {
         title: 'Technical Summary',
@@ -159,7 +159,7 @@ export default function SearchPage() {
               {/* Search Results Count */}
               {searchTerm && (
                 <div className="text-sm text-gray-600">
-                  Found {filteredPapers.length} paper{filteredPapers.length !== 1 ? 's' : ''} matching "{searchTerm}"
+                  Found {filteredPapers.length} paper{filteredPapers.length !== 1 ? 's' : ''} matching &quot;{searchTerm}&quot;
                 </div>
               )}
             </div>

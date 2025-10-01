@@ -7,13 +7,13 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, Star, Link, Brain, Target, BarChart3, TrendingUp } from 'lucide-react';
 
 interface KnowledgeGraphProps {
-  papers: any[];
+  papers: Array<{ id: string; title: string; keywords?: string[] }>;
   role: string;
 }
 
 interface KnowledgeGraphData {
-  nodes: any[];
-  edges: any[];
+  nodes: Array<{ id: string; type: string; label: string; [key: string]: unknown }>;
+  edges: Array<{ source: string; target: string; type?: string; [key: string]: unknown }>;
   research_areas: Record<string, number>;
   methodologies: Record<string, number>;
   statistics: {
