@@ -22,23 +22,8 @@ import {
   TrendingUp,
   BarChart3,
   Activity,
-  Zap,
   RefreshCw
 } from 'lucide-react';
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
-  LineChart,
-  Line
-} from 'recharts';
 import { useMissionAnalysis, MissionPlannerRequest } from '@/api/hooks';
 
 const destinations = [
@@ -76,7 +61,7 @@ export default function MissionPlannerPage() {
     }
   };
 
-  const handleParameterChange = (field: keyof MissionPlannerRequest, value: any) => {
+  const handleParameterChange = (field: keyof MissionPlannerRequest, value: string | number | boolean) => {
     setMissionParams(prev => ({
       ...prev,
       [field]: value
@@ -87,12 +72,6 @@ export default function MissionPlannerPage() {
     if (score >= 80) return 'text-green-600';
     if (score >= 60) return 'text-yellow-600';
     return 'text-red-600';
-  };
-
-  const getFeasibilityBgColor = (score: number) => {
-    if (score >= 80) return 'bg-green-500';
-    if (score >= 60) return 'bg-yellow-500';
-    return 'bg-red-500';
   };
 
   return (
@@ -527,7 +506,7 @@ export default function MissionPlannerPage() {
                 <div className="text-center">
                   <Rocket className="h-12 w-12 mx-auto mb-4 text-gray-400" />
                   <h3 className="text-lg font-semibold text-gray-600 mb-2">Ready to Plan Your Mission?</h3>
-                  <p className="text-gray-500">Configure your mission parameters and click "Analyze Mission" to get started.</p>
+                  <p className="text-gray-500">Configure your mission parameters and click &quot;Analyze Mission&quot; to get started.</p>
                 </div>
               </CardContent>
             </Card>
