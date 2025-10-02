@@ -80,7 +80,7 @@ export default function LandingPage() {
         <div className="relative overflow-hidden cosmic-gradient rounded-2xl p-8 mb-8 cosmic-glow">
           <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-500/5 to-purple-500/5"></div>
           <div className="relative max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6">
+            <h1 className="text-5xl font-bold text-white mb-6">
               Space Biology Research Platform
             </h1>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -89,8 +89,8 @@ export default function LandingPage() {
             </p>
             
             {/* Role Selection */}
-            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg mb-8 cosmic-hover">
-              <h2 className="text-2xl font-semibold text-foreground mb-4">Choose Your Role</h2>
+            <div className="bg-card/80 backdrop-blur-sm border-2 border-border/70 rounded-xl p-6 shadow-lg mb-8 cosmic-hover">
+              <h2 className="text-2xl font-semibold text-white mb-4">Choose Your Role</h2>
               <div className="flex justify-center space-x-4 mb-6">
                 <Button
                   variant={role === 'Scientist' ? 'default' : 'outline'}
@@ -127,29 +127,48 @@ export default function LandingPage() {
                 </Badge>
               </div>
 
-              <Button asChild size="lg" className="px-8 py-4 text-lg">
-                <Link href="/dashboard">
-                  Get Started
-                  <ArrowRight className="h-5 w-5 ml-2" />
-                </Link>
-              </Button>
+              <div className="flex justify-center">
+                <Button asChild size="lg" className="px-8 py-4 text-lg">
+                  <Link href="/dashboard">
+                    {role === 'Scientist' && (
+                      <>
+                        <Brain className="h-5 w-5 mr-2" />
+                        Scientist Mode
+                      </>
+                    )}
+                    {role === 'Manager' && (
+                      <>
+                        <DollarSign className="h-5 w-5 mr-2" />
+                        Manager Mode
+                      </>
+                    )}
+                    {role === 'Mission Planner' && (
+                      <>
+                        <Rocket className="h-5 w-5 mr-2" />
+                        Mission Planner Mode
+                      </>
+                    )}
+                    <ArrowRight className="h-5 w-5 ml-2" />
+                  </Link>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Features Section */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-8">
+          <h2 className="text-3xl font-bold text-center text-white mb-8">
             Powerful Features for Research Excellence
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
+              <Card key={index} className="text-center bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
                 <CardHeader>
                   <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center text-primary mb-4 cosmic-glow">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-lg text-foreground">{feature.title}</CardTitle>
+                  <CardTitle className="text-lg text-white">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <CardDescription className="text-sm text-muted-foreground">
@@ -164,8 +183,8 @@ export default function LandingPage() {
         {/* Role-Specific Benefits */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Scientist Benefits */}
-          <Card className="border-primary/30 cosmic-hover bg-card/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent rounded-t-lg">
+          <Card className="border-2 border-primary/50 bg-card/80 backdrop-blur-sm shadow-lg transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent rounded-t-lg border-b border-primary/20">
               <CardTitle className="flex items-center text-primary">
                 <Brain className="h-6 w-6 mr-2" />
                 For Scientists
@@ -187,8 +206,8 @@ export default function LandingPage() {
           </Card>
 
           {/* Manager Benefits */}
-          <Card className="border-chart-2/30 cosmic-hover bg-card/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-chart-2/10 to-transparent rounded-t-lg">
+          <Card className="border-2 border-chart-2/50 bg-card/80 backdrop-blur-sm shadow-lg transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+            <CardHeader className="bg-gradient-to-r from-chart-2/10 to-transparent rounded-t-lg border-b border-chart-2/20">
               <CardTitle className="flex items-center text-chart-2">
                 <DollarSign className="h-6 w-6 mr-2" />
                 For Managers
@@ -210,8 +229,8 @@ export default function LandingPage() {
           </Card>
 
           {/* Mission Planner Benefits */}
-          <Card className="border-accent/30 cosmic-hover bg-card/80 backdrop-blur-sm">
-            <CardHeader className="bg-gradient-to-r from-accent/10 to-transparent rounded-t-lg">
+          <Card className="border-2 border-accent/50 bg-card/80 backdrop-blur-sm shadow-lg transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+            <CardHeader className="bg-gradient-to-r from-accent/10 to-transparent rounded-t-lg border-b border-accent/20">
               <CardTitle className="flex items-center text-accent">
                 <Rocket className="h-6 w-6 mr-2" />
                 For Mission Planners
@@ -235,16 +254,16 @@ export default function LandingPage() {
 
         {/* Quick Actions */}
         <div className="cosmic-gradient rounded-2xl p-8 border border-border/50">
-          <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-8">
+          <h2 className="text-2xl font-bold text-center text-white mb-8">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
+            <Card className="text-center cursor-pointer bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
               <CardHeader>
                 <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/40 rounded-lg flex items-center justify-center text-primary mb-4 cosmic-glow">
                   <Search className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-foreground">Search Papers</CardTitle>
+                <CardTitle className="text-white">Search Papers</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="mb-4 text-muted-foreground">
@@ -256,12 +275,12 @@ export default function LandingPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
+            <Card className="text-center cursor-pointer bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
               <CardHeader>
                 <div className="mx-auto w-12 h-12 bg-gradient-to-br from-chart-2/20 to-chart-2/40 rounded-lg flex items-center justify-center text-chart-2 mb-4 cosmic-glow">
                   <BookOpen className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-foreground">Browse Papers</CardTitle>
+                <CardTitle className="text-white">Browse Papers</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="mb-4 text-muted-foreground">
@@ -273,12 +292,12 @@ export default function LandingPage() {
               </CardContent>
             </Card>
 
-            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
+            <Card className="text-center cursor-pointer bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
               <CardHeader>
                 <div className="mx-auto w-12 h-12 bg-gradient-to-br from-accent/20 to-accent/40 rounded-lg flex items-center justify-center text-accent mb-4 cosmic-glow">
                   <BarChart3 className="h-6 w-6" />
                 </div>
-                <CardTitle className="text-foreground">View Dashboard</CardTitle>
+                <CardTitle className="text-white">View Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
                 <CardDescription className="mb-4 text-muted-foreground">
@@ -294,27 +313,27 @@ export default function LandingPage() {
 
         {/* Stats Section */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
+          <Card className="text-center bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent mb-2">607+</div>
+              <div className="text-3xl font-bold text-white mb-2">607+</div>
               <div className="text-sm text-muted-foreground">Space Biology Papers</div>
             </CardContent>
           </Card>
-          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
+          <Card className="text-center bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold bg-gradient-to-r from-chart-2 to-green-400 bg-clip-text text-transparent mb-2">500+</div>
+              <div className="text-3xl font-bold text-white mb-2">500+</div>
               <div className="text-sm text-muted-foreground">Active Users</div>
             </CardContent>
           </Card>
-          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
+          <Card className="text-center bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent mb-2">50+</div>
+              <div className="text-3xl font-bold text-white mb-2">50+</div>
               <div className="text-sm text-muted-foreground">Research Institutions</div>
             </CardContent>
           </Card>
-          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
+          <Card className="text-center bg-card/80 backdrop-blur-sm border-2 border-border/70 shadow-lg transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold bg-gradient-to-r from-chart-4 to-orange-400 bg-clip-text text-transparent mb-2">99%</div>
+              <div className="text-3xl font-bold text-white mb-2">99%</div>
               <div className="text-sm text-muted-foreground">User Satisfaction</div>
             </CardContent>
           </Card>

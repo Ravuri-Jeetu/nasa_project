@@ -121,7 +121,7 @@ export default function DynamicManagerDashboard() {
 
   const fundingData = domainAnalytics ? Object.entries(domainAnalytics.domains.funding).map(([domain, data]) => ({
     domain,
-    funding: data.sum || 0,
+    funding: typeof data === 'number' ? data : (data as any).sum || 0,
     roi: domainAnalytics.domains.roi[domain]?.mean || 0
   })) : [];
 
@@ -130,7 +130,7 @@ export default function DynamicManagerDashboard() {
       {/* Header with Refresh Button */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Manager Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white">Manager Dashboard</h1>
           <p className="text-gray-600">
             Real-time research analytics and investment recommendations
             {domainAnalytics?.last_updated && (
@@ -233,9 +233,9 @@ export default function DynamicManagerDashboard() {
         </Card>
 
         {/* Investment Recommendations - Dark Style from manager.py */}
-        <Card className="bg-gray-900 border-gray-700 text-white">
+        <Card className="bg-transparent border-gray-700 text-white">
           <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-cyan-400">
+            <CardTitle className="flex items-center gap-2 text-white">
               <DollarSign className="h-5 w-5" />
               Investment Recommendations
             </CardTitle>
@@ -281,9 +281,9 @@ export default function DynamicManagerDashboard() {
       </div>
 
       {/* Red Flag Alerts - Dark Style from manager.py */}
-      <Card className="bg-gray-900 border-gray-700 text-white">
+      <Card className="bg-transparent border-gray-700 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-red-400">
+          <CardTitle className="flex items-center gap-2 text-white">
             <AlertTriangle className="h-5 w-5" />
             Red Flag Alerts
           </CardTitle>
@@ -343,9 +343,9 @@ export default function DynamicManagerDashboard() {
       </Card>
 
       {/* Top 3 Emerging Research Areas - Dark Style from manager.py */}
-      <Card className="bg-gray-900 border-gray-700 text-white">
+      <Card className="bg-transparent border-gray-700 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-cyan-400">
+          <CardTitle className="flex items-center gap-2 text-white">
             <TrendingUp className="h-5 w-5" />
             Top 3 Emerging Research Areas
           </CardTitle>
@@ -390,9 +390,9 @@ export default function DynamicManagerDashboard() {
       </Card>
 
       {/* Budget Simulation - Enhanced from manager.py */}
-      <Card className="bg-gray-900 border-gray-700 text-white">
+      <Card className="bg-transparent border-gray-700 text-white">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-cyan-400">
+          <CardTitle className="flex items-center gap-2 text-white">
             <Target className="h-5 w-5" />
             Budget Simulation
           </CardTitle>
@@ -415,7 +415,7 @@ export default function DynamicManagerDashboard() {
                   {domainChartData.map((item) => (
                     <tr 
                       key={item.domain} 
-                      className={`${item.domain === selectedDomain ? 'bg-blue-900 font-bold' : ''} hover:bg-gray-700`}
+                      className={`${item.domain === selectedDomain ? 'bg-sky-500/20 text-white font-bold' : ''} transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50`}
                     >
                       <td className="p-2 border border-gray-600">{item.domain}</td>
                       <td className="p-2 border border-gray-600">{item.count}</td>

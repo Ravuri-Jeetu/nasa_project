@@ -170,11 +170,11 @@ export default function ScientistDashboard() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Scientist Dashboard</h1>
+          <h1 className="text-3xl font-bold text-white">Scientist Dashboard</h1>
           <p className="text-gray-600 mt-1">Deep technical insights and research analysis</p>
         </div>
         <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
+          <Badge variant="outline" className="bg-transparent text-white border-white/30">
             {selectedPaperIds.length} papers selected
           </Badge>
           <Button variant="outline" size="sm">
@@ -252,8 +252,8 @@ export default function ScientistDashboard() {
               filteredPapers.map((paper) => (
                 <Card 
                   key={paper.id} 
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+                  className={`cursor-pointer transition-all duration-300 ${
+                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-sky-400 bg-sky-100/20 border-sky-300' : 'hover:outline hover:outline-2 hover:outline-white/50'
                   }`}
                   onClick={() => handlePaperSelect(paper.id)}
                 >
@@ -339,13 +339,13 @@ export default function ScientistDashboard() {
 
         {/* Topic Comparison Tab */}
         <TabsContent value="topics" className="space-y-4">
-          <Card>
+          <Card className="bg-transparent">
             <CardHeader>
-              <CardTitle className="flex items-center">
+              <CardTitle className="flex items-center text-white">
                 <TrendingUp className="h-5 w-5 mr-2" />
                 Topic Comparison Analysis
               </CardTitle>
-              <CardDescription>
+              <CardDescription className="text-gray-300">
                 Compare research topics by impact, frequency, and trends
               </CardDescription>
             </CardHeader>
@@ -354,30 +354,30 @@ export default function ScientistDashboard() {
                 {/* Topic Selection */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium">Select First Topic</label>
+                    <label className="text-sm font-medium text-white">Select First Topic</label>
                     <select
                       value={selectedTopic1}
                       onChange={(e) => setSelectedTopic1(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-1 px-3 py-2 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                     >
-                      <option value="">Choose a topic...</option>
+                      <option value="" className="bg-gray-800 text-white">Choose a topic...</option>
                       {analytics?.top_keywords?.map((keyword: string) => (
-                        <option key={keyword} value={keyword}>
+                        <option key={keyword} value={keyword} className="bg-gray-800 text-white">
                           {keyword}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Select Second Topic</label>
+                    <label className="text-sm font-medium text-white">Select Second Topic</label>
                     <select
                       value={selectedTopic2}
                       onChange={(e) => setSelectedTopic2(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-1 px-3 py-2 bg-transparent border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 text-white"
                     >
-                      <option value="">Choose a topic...</option>
+                      <option value="" className="bg-gray-800 text-white">Choose a topic...</option>
                       {analytics?.top_keywords?.map((keyword: string) => (
-                        <option key={keyword} value={keyword}>
+                        <option key={keyword} value={keyword} className="bg-gray-800 text-white">
                           {keyword}
                         </option>
                       ))}
@@ -462,10 +462,10 @@ export default function ScientistDashboard() {
 
                 {/* Comparison Chart */}
                 {selectedTopic1 && selectedTopic2 && (
-                  <Card>
+                  <Card className="bg-transparent">
                     <CardHeader>
-                      <CardTitle>Topic Comparison Chart</CardTitle>
-                      <CardDescription>
+                      <CardTitle className="text-white">Topic Comparison Chart</CardTitle>
+                      <CardDescription className="text-gray-300">
                         Visual comparison of {selectedTopic1} vs {selectedTopic2}
                       </CardDescription>
                     </CardHeader>
@@ -500,10 +500,10 @@ export default function ScientistDashboard() {
 
                 {/* Instructions */}
                 {!selectedTopic1 || !selectedTopic2 ? (
-                  <div className="text-center py-8 text-gray-500">
+                  <div className="text-center py-8 text-white">
                     <TrendingUp className="h-12 w-12 mx-auto mb-4 text-gray-300" />
                     <p className="text-lg font-medium">Select two topics to compare</p>
-                    <p className="text-sm">Choose from the available research topics above to see detailed comparison</p>
+                    <p className="text-sm text-gray-300">Choose from the available research topics above to see detailed comparison</p>
                   </div>
                 ) : null}
               </div>
@@ -529,7 +529,7 @@ export default function ScientistDashboard() {
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex items-start justify-between">
                       <div className="flex-1">
-                        <h3 className="font-semibold text-lg">{gap.area}</h3>
+                        <h3 className="font-semibold text-lg text-white">{gap.area}</h3>
                         <p className="text-gray-600 mt-1">{gap.gap}</p>
                       </div>
                       <Badge 

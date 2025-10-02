@@ -9,7 +9,6 @@ import { useAppStore } from '@/store/appStore';
 import { usePapers } from '@/api/hooks';
 import { 
   Search, 
-  Filter, 
   Calendar, 
   Users, 
   BookOpen,
@@ -24,11 +23,12 @@ import Link from 'next/link';
 
 export default function SearchPage() {
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
-  const { data: papers, isLoading } = usePapers(role);
+  const { data: papersData, isLoading } = usePapers(role);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date');
 
+  const papers = papersData?.papers || [];
   const filteredPapers = papers?.filter(paper => {
     const matchesSearch = !searchTerm || 
       paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,24 +58,24 @@ export default function SearchPage() {
     }
   };
 
-  const getSummaryByRole = (paper: { id: string; title: string; abstract?: string }) => {
+  const getSummaryByRole = (paper: { id: string; title: string; abstract?: string; methodology?: string; citations?: number; funding?: number; return?: number }) => {
     if (role === 'Scientist') {
       return {
         title: 'Technical Summary',
-        content: `This research employs ${paper.methodology || 'advanced analytical methods'} to address critical challenges in the field. The methodology demonstrates ${paper.citations > 50 ? 'high impact' : 'promising potential'} with ${paper.citations} citations, indicating strong academic recognition. Key technical contributions include novel approaches to data analysis and innovative experimental design.`,
+        content: `This research employs ${paper.methodology || 'advanced analytical methods'} to address critical challenges in the field. The methodology demonstrates ${(paper.citations || 0) > 50 ? 'high impact' : 'promising potential'} with ${paper.citations || 0} citations, indicating strong academic recognition. Key technical contributions include novel approaches to data analysis and innovative experimental design.`,
         metrics: [
-          { label: 'Methodology Impact', value: paper.citations > 50 ? 'High' : 'Medium' },
+          { label: 'Methodology Impact', value: (paper.citations || 0) > 50 ? 'High' : 'Medium' },
           { label: 'Technical Innovation', value: 'Significant' },
-          { label: 'Research Quality', value: paper.citations > 30 ? 'Excellent' : 'Good' }
+          { label: 'Research Quality', value: (paper.citations || 0) > 30 ? 'Excellent' : 'Good' }
         ]
       };
     } else {
       return {
         title: 'Business Summary',
-        content: `This project represents a ${paper.funding && paper.return ? ((paper.return - paper.funding) / paper.funding * 100).toFixed(0) : 'promising'}% ROI opportunity with ${paper.citations} industry citations. The research aligns with market trends and shows strong commercial potential. Investment of $${paper.funding?.toLocaleString() || 'TBD'} could yield returns of $${paper.return?.toLocaleString() || 'TBD'} based on current market analysis.`,
+        content: `This project represents a ${paper.funding && paper.return ? ((paper.return - paper.funding) / paper.funding * 100).toFixed(0) : 'promising'}% ROI opportunity with ${paper.citations || 0} industry citations. The research aligns with market trends and shows strong commercial potential. Investment of $${paper.funding?.toLocaleString() || 'TBD'} could yield returns of $${paper.return?.toLocaleString() || 'TBD'} based on current market analysis.`,
         metrics: [
           { label: 'ROI Potential', value: paper.funding && paper.return ? `${((paper.return - paper.funding) / paper.funding * 100).toFixed(0)}%` : 'TBD' },
-          { label: 'Market Impact', value: paper.citations > 30 ? 'High' : 'Medium' },
+          { label: 'Market Impact', value: (paper.citations || 0) > 30 ? 'High' : 'Medium' },
           { label: 'Investment Risk', value: 'Low-Medium' }
         ]
       };
@@ -88,7 +88,7 @@ export default function SearchPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Search Research Papers</h1>
+            <h1 className="text-3xl font-bold text-white">Search Research Papers</h1>
             <p className="text-gray-600 mt-1">
               {role === 'Scientist' ? 'Technical analysis and research insights' : 'Business intelligence and investment opportunities'}
             </p>
@@ -177,7 +177,7 @@ export default function SearchPage() {
             <Card>
               <CardContent className="text-center py-8">
                 <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
+                <h3 className="text-lg font-semibold text-white mb-2">
                   {searchTerm ? 'No papers found' : 'No papers available'}
                 </h3>
                 <p className="text-gray-600">
@@ -192,10 +192,10 @@ export default function SearchPage() {
             filteredPapers.map((paper) => {
               const summary = getSummaryByRole(paper);
               return (
-                <Card 
-                  key={paper.id} 
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+                <Card
+                  key={paper.id}
+                  className={`cursor-pointer transition-all duration-300 ${
+                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-sky-400 bg-sky-100/20 border-sky-300' : 'hover:outline hover:outline-2 hover:outline-white/50'
                   }`}
                   onClick={() => handlePaperSelect(paper.id)}
                 >

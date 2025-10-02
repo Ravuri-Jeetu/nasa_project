@@ -185,52 +185,52 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
   return (
     <div className="space-y-4">
       {/* Enhanced Statistics Overview */}
-      <Card className="bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200 shadow-lg">
+      <Card className="bg-transparent border-blue-200 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <BarChart3 className="h-6 w-6 text-blue-600" />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">
+            <span className="text-white font-bold">
               Real Data Analysis
             </span>
           </CardTitle>
-          <CardDescription className="text-gray-700 font-medium">
+          <CardDescription className="text-gray-300 font-medium">
             Knowledge graph built from {graphData.statistics.total_papers} space biology publications
           </CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="text-center p-4 bg-white/60 rounded-xl border border-blue-100 hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-800 bg-clip-text text-transparent mb-1">
+            <div className="text-center p-4 bg-transparent rounded-xl border border-blue-100 transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+              <div className="text-3xl font-bold text-white mb-1">
                 {graphData.statistics.total_papers}
               </div>
-              <div className="text-sm font-semibold text-gray-700">Total Papers</div>
+              <div className="text-sm font-semibold text-white">Total Papers</div>
               <div className="w-full bg-blue-200 rounded-full h-1 mt-2">
                 <div className="bg-gradient-to-r from-blue-500 to-blue-600 h-1 rounded-full w-full"></div>
               </div>
             </div>
-            <div className="text-center p-4 bg-white/60 rounded-xl border border-green-100 hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold bg-gradient-to-r from-green-600 to-green-800 bg-clip-text text-transparent mb-1">
+            <div className="text-center p-4 bg-transparent rounded-xl border border-green-100 transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+              <div className="text-3xl font-bold text-white mb-1">
                 {graphData.statistics.research_areas_count}
               </div>
-              <div className="text-sm font-semibold text-gray-700">Research Areas</div>
+              <div className="text-sm font-semibold text-white">Research Areas</div>
               <div className="w-full bg-green-200 rounded-full h-1 mt-2">
                 <div className="bg-gradient-to-r from-green-500 to-green-600 h-1 rounded-full w-full"></div>
               </div>
             </div>
-            <div className="text-center p-4 bg-white/60 rounded-xl border border-purple-100 hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-purple-800 bg-clip-text text-transparent mb-1">
+            <div className="text-center p-4 bg-transparent rounded-xl border border-purple-100 transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+              <div className="text-3xl font-bold text-white mb-1">
                 {graphData.statistics.methodologies_count}
               </div>
-              <div className="text-sm font-semibold text-gray-700">Methodologies</div>
+              <div className="text-sm font-semibold text-white">Methodologies</div>
               <div className="w-full bg-purple-200 rounded-full h-1 mt-2">
                 <div className="bg-gradient-to-r from-purple-500 to-purple-600 h-1 rounded-full w-full"></div>
               </div>
             </div>
-            <div className="text-center p-4 bg-white/60 rounded-xl border border-orange-100 hover:shadow-md transition-all duration-300">
-              <div className="text-3xl font-bold bg-gradient-to-r from-orange-600 to-orange-800 bg-clip-text text-transparent mb-1">
+            <div className="text-center p-4 bg-transparent rounded-xl border border-orange-100 transition-all duration-300 cursor-pointer hover:outline hover:outline-2 hover:outline-white/50">
+              <div className="text-3xl font-bold text-white mb-1">
                 {graphData.statistics.total_edges}
               </div>
-              <div className="text-sm font-semibold text-gray-700">Relationships</div>
+              <div className="text-sm font-semibold text-white">Relationships</div>
               <div className="w-full bg-orange-200 rounded-full h-1 mt-2">
                 <div className="bg-gradient-to-r from-orange-500 to-orange-600 h-1 rounded-full w-full"></div>
               </div>
@@ -240,15 +240,15 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
       </Card>
 
       {/* Enhanced Top Papers Selection */}
-      <Card className="bg-gradient-to-r from-yellow-50 to-orange-50 border-yellow-200 shadow-lg">
+      <Card className="bg-transparent border-yellow-200 shadow-lg">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Star className="h-6 w-6 text-yellow-600" />
-            <span className="bg-gradient-to-r from-yellow-600 to-orange-600 bg-clip-text text-transparent font-bold">
+            <span className="text-white font-bold">
               Top 4 Research Papers
             </span>
           </CardTitle>
-          <CardDescription className="text-gray-700 font-medium">
+          <CardDescription className="text-gray-300 font-medium">
             Select papers to analyze their intrapaper relationships using real keyword analysis
           </CardDescription>
         </CardHeader>
@@ -257,10 +257,10 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             {topPapers.map((paper, index) => (
               <div
                 key={paper.id}
-                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 hover:shadow-lg ${
+                className={`p-4 border-2 rounded-xl cursor-pointer transition-all duration-300 ${
                   selectedPapers.includes(paper.id)
-                    ? 'border-blue-500 bg-blue-50 shadow-md'
-                    : 'border-gray-200 bg-white/80 hover:border-gray-300 hover:bg-white'
+                    ? 'border-blue-500 bg-blue-50/20 shadow-md'
+                    : 'border-gray-200 bg-transparent hover:outline hover:outline-2 hover:outline-white/50'
                 }`}
                 onClick={() => togglePaperSelection(paper.id)}
               >
@@ -272,11 +272,11 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                       ) : (
                         <div className="h-5 w-5 border-2 border-gray-300 rounded-full" />
                       )}
-                      <Badge variant="outline" className="text-xs font-semibold bg-gradient-to-r from-blue-100 to-indigo-100">
+                      <Badge variant="outline" className="text-xs font-semibold bg-transparent text-white border-white/30">
                         #{index + 1}
                       </Badge>
                     </div>
-                    <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-gray-800">{paper.title}</h4>
+                    <h4 className="font-semibold text-sm line-clamp-2 mb-2 text-white">{paper.title}</h4>
                     <div className="flex items-center gap-3 text-xs text-gray-600">
                       <span className="flex items-center gap-1">
                         <TrendingUp className="h-3 w-3" />
@@ -314,15 +314,15 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
       </Card>
 
       {/* Enhanced Knowledge Graph Visualization */}
-      <Card className="bg-gradient-to-br from-white to-blue-50 border-blue-200 shadow-xl">
+      <Card className="bg-transparent border-blue-200 shadow-xl">
         <CardHeader className="pb-4">
           <CardTitle className="flex items-center gap-2">
             <Target className="h-6 w-6 text-blue-600" />
-            <span className="bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent font-bold">
+            <span className="text-white font-bold">
               Knowledge Graph Visualization
             </span>
           </CardTitle>
-          <CardDescription className="text-gray-700 font-medium">
+          <CardDescription className="text-gray-300 font-medium">
             {showIntraPaperRelations 
               ? 'Real-time analysis of relationships between selected papers'
               : 'Interactive visualization - hover to see labels, click to select and view details'
@@ -368,7 +368,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             </div>
           )}
 
-          <div className="relative h-[600px] bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 rounded-xl overflow-hidden border border-blue-200 shadow-lg">
+          <div className="relative h-[600px] bg-transparent rounded-xl overflow-hidden border border-blue-200 shadow-lg">
             {/* Animated background particles */}
             <div className="absolute inset-0 opacity-20">
               <div className="absolute top-10 left-10 w-2 h-2 bg-blue-400 rounded-full animate-pulse"></div>
@@ -378,7 +378,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             </div>
             
             {/* Hover instruction */}
-            <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-gray-600 border border-gray-200">
+            <div className="absolute top-4 right-4 bg-transparent backdrop-blur-sm px-3 py-1 rounded-full text-xs font-medium text-white border border-gray-200">
               💡 Hover to see labels • Click to select
             </div>
             
@@ -811,14 +811,14 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
           {/* Enhanced Legend */}
           <div className="mt-6 grid grid-cols-2 md:grid-cols-3 gap-3">
             {(showIntraPaperRelations ? intraPaperData.nodes : filteredNodes).map((node) => (
-              <div key={`legend-${node.id}`} className="flex items-center space-x-2 p-2 bg-white/60 rounded-lg border border-gray-100">
+              <div key={`legend-${node.id}`} className="flex items-center space-x-2 p-2 bg-transparent rounded-lg">
                 <div 
                   className="w-4 h-4 rounded-full shadow-sm" 
                   style={{ backgroundColor: node.color }}
                 />
-                <span className="text-sm font-semibold text-gray-700">{node.label}</span>
+                <span className="text-sm font-semibold text-white">{node.label}</span>
                 {showIntraPaperRelations && (
-                  <span className="text-xs text-gray-500 font-medium">({node.citations} citations)</span>
+                  <span className="text-xs text-white font-medium">({node.citations} citations)</span>
                 )}
               </div>
             ))}
@@ -826,24 +826,24 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
 
           {/* Enhanced Relationship Legend for Real Data */}
           {!showIntraPaperRelations && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
-              <h4 className="text-sm font-bold text-gray-700 mb-3">Relationship Types (Real Data):</h4>
+            <div className="mt-6 p-4 bg-transparent rounded-xl border border-gray-200">
+              <h4 className="text-sm font-bold text-white mb-3">Relationship Types (Real Data):</h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Content Similarity (TF-IDF)</span>
+                  <span className="text-white font-medium">Content Similarity (TF-IDF)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-green-500 to-green-600 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Citation Network</span>
+                  <span className="text-white font-medium">Citation Network</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-yellow-500 to-orange-500 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Keyword Co-occurrence</span>
+                  <span className="text-white font-medium">Keyword Co-occurrence</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-red-500 to-pink-500 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Author Collaboration</span>
+                  <span className="text-white font-medium">Author Collaboration</span>
                 </div>
               </div>
             </div>
@@ -851,16 +851,16 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
 
           {/* Enhanced Relationship Legend for Intrapaper View */}
           {showIntraPaperRelations && (
-            <div className="mt-6 p-4 bg-gradient-to-r from-gray-50 to-slate-50 rounded-xl border border-gray-200">
-              <h4 className="text-sm font-bold text-gray-700 mb-3">Relationship Types:</h4>
+            <div className="mt-6 p-4 bg-transparent rounded-xl border border-gray-200">
+              <h4 className="text-sm font-bold text-white mb-3">Relationship Types:</h4>
               <div className="grid grid-cols-2 gap-4 text-xs">
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-blue-500 to-blue-600 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Strong similarity (&gt;50%)</span>
+                  <span className="text-white font-medium">Strong similarity (&gt;50%)</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-1 bg-gradient-to-r from-gray-400 to-gray-500 rounded-full"></div>
-                  <span className="text-gray-600 font-medium">Weak similarity (20-50%)</span>
+                  <span className="text-white font-medium">Weak similarity (20-50%)</span>
                 </div>
               </div>
             </div>

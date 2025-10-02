@@ -86,7 +86,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
       {/* Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold flex items-center">
+          <h1 className="text-3xl font-bold flex items-center text-white">
             <Rocket className="h-8 w-8 mr-3 text-purple-600" />
             Mission Planner Dashboard
           </h1>
@@ -118,7 +118,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             <Button
               variant={selectedMission === 'mars-exploration' ? 'default' : 'outline'}
               onClick={() => setSelectedMission('mars-exploration')}
-              className="flex items-center"
+              className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
               Mars Exploration Mission
@@ -126,7 +126,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             <Button
               variant={selectedMission === 'lunar-base' ? 'default' : 'outline'}
               onClick={() => setSelectedMission('lunar-base')}
-              className="flex items-center"
+              className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
               Lunar Base Construction
@@ -134,7 +134,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             <Button
               variant={selectedMission === 'asteroid-mining' ? 'default' : 'outline'}
               onClick={() => setSelectedMission('asteroid-mining')}
-              className="flex items-center"
+              className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
               Asteroid Mining Mission
@@ -201,7 +201,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
                   {riskData.map((risk, index) => (
                     <div key={index} className="border rounded-lg p-4">
                       <div className="flex justify-between items-center mb-2">
-                        <h3 className="font-semibold">{risk.category}</h3>
+                        <h3 className="font-semibold text-white">{risk.category}</h3>
                         <Badge 
                           variant={risk.impact === 'High' ? 'destructive' : 
                                   risk.impact === 'Medium' ? 'default' : 'secondary'}
@@ -238,24 +238,24 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div className="border rounded-lg p-4 bg-green-50">
-                  <h4 className="font-semibold text-green-800 mb-2">Technical Risks</h4>
+                <div className="border rounded-lg p-4 bg-transparent">
+                  <h4 className="font-semibold text-white mb-2">Technical Risks</h4>
                   <ul className="text-sm text-green-700 space-y-1">
                     <li>• Redundant systems implementation</li>
                     <li>• Extensive testing protocols</li>
                     <li>• Backup communication systems</li>
                   </ul>
                 </div>
-                <div className="border rounded-lg p-4 bg-blue-50">
-                  <h4 className="font-semibold text-blue-800 mb-2">Environmental Risks</h4>
+                <div className="border rounded-lg p-4 bg-transparent">
+                  <h4 className="font-semibold text-white mb-2">Environmental Risks</h4>
                   <ul className="text-sm text-blue-700 space-y-1">
                     <li>• Radiation shielding systems</li>
                     <li>• Dust storm monitoring</li>
                     <li>• Temperature regulation</li>
                   </ul>
                 </div>
-                <div className="border rounded-lg p-4 bg-purple-50">
-                  <h4 className="font-semibold text-purple-800 mb-2">Human Factors</h4>
+                <div className="border rounded-lg p-4 bg-transparent">
+                  <h4 className="font-semibold text-white mb-2">Human Factors</h4>
                   <ul className="text-sm text-purple-700 space-y-1">
                     <li>• Psychological support systems</li>
                     <li>• Medical emergency protocols</li>
@@ -340,7 +340,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
                 {resourceData.map((resource, index) => (
                   <div key={index} className="border rounded-lg p-4">
                     <div className="flex justify-between items-center mb-3">
-                      <h3 className="font-semibold text-lg">{resource.resource}</h3>
+                      <h3 className="font-semibold text-lg text-white">{resource.resource}</h3>
                       <div className="text-right">
                         <div className="text-sm text-gray-600">Cost: ${resource.cost.toLocaleString()}</div>
                         <div className="text-sm text-gray-600">
@@ -397,7 +397,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-center">
-                          <h3 className="font-semibold">{phase.phase}</h3>
+                          <h3 className="font-semibold text-white">{phase.phase}</h3>
                           <Badge variant={
                             phase.status === 'Completed' ? 'default' :
                             phase.status === 'In Progress' ? 'secondary' : 'outline'
@@ -437,8 +437,8 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  <div className="border rounded-lg p-4 bg-blue-50">
-                    <h4 className="font-semibold text-blue-800 mb-2">Launch Vehicle</h4>
+                  <div className="border rounded-lg p-4 bg-transparent">
+                    <h4 className="font-semibold text-white mb-2">Launch Vehicle</h4>
                     <div className="text-sm text-blue-700">
                       <div>• Heavy-lift rocket system</div>
                       <div>• Payload capacity: 50,000 kg</div>

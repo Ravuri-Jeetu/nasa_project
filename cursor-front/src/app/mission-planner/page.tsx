@@ -24,7 +24,8 @@ import {
   Activity,
   RefreshCw
 } from 'lucide-react';
-import { useMissionAnalysis, MissionPlannerRequest } from '@/api/hooks';
+import { useMissionAnalysis } from '@/api/hooks';
+import { MissionPlannerRequest } from '@/api/api';
 
 const destinations = [
   { value: 'mars', label: 'Mars' },

@@ -41,13 +41,13 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
     if (!papers || papers.length === 0) return null;
 
     return (
-      <Card>
+      <Card className="bg-transparent">
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-white">
             <FileText className="h-5 w-5 mr-2" />
             Methodology Comparison Table
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-300">
             Side-by-side comparison of research methodologies
           </CardDescription>
         </CardHeader>
@@ -67,7 +67,7 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
               </thead>
               <tbody>
                 {papers.map((paper, index) => (
-                  <tr key={index} className="border-b hover:bg-gray-50">
+                  <tr key={index} className="border-b transition-all duration-300 hover:outline hover:outline-2 hover:outline-white/50">
                     <td className="p-3">
                       <div className="max-w-xs">
                         <div className="font-medium text-sm">{paper.title}</div>
@@ -120,9 +120,9 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
     return (
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {/* Similarities */}
-        <Card className="border-green-200 bg-green-50">
+        <Card className="border-green-200 bg-transparent">
           <CardHeader className="pb-3">
-            <CardTitle className="text-green-800 flex items-center text-sm">
+            <CardTitle className="text-white flex items-center text-sm">
               <CheckCircle className="h-4 w-4 mr-2" />
               Similarities
             </CardTitle>
@@ -131,21 +131,21 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
             <div className="space-y-2">
               {comparison.similarities.length > 0 ? (
                 comparison.similarities.map((similarity, index) => (
-                  <div key={index} className="text-xs text-green-700 bg-green-100 p-2 rounded">
+                  <div key={index} className="text-xs text-white bg-transparent p-2 rounded">
                     {similarity}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-green-600">No similarities found</div>
+                <div className="text-xs text-white">No similarities found</div>
               )}
             </div>
           </CardContent>
         </Card>
 
         {/* Differences */}
-        <Card className="border-blue-200 bg-blue-50">
+        <Card className="border-blue-200 bg-transparent">
           <CardHeader className="pb-3">
-            <CardTitle className="text-blue-800 flex items-center text-sm">
+            <CardTitle className="text-white flex items-center text-sm">
               <Target className="h-4 w-4 mr-2" />
               Differences
             </CardTitle>
@@ -154,21 +154,21 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
             <div className="space-y-2">
               {comparison.differences.length > 0 ? (
                 comparison.differences.map((difference, index) => (
-                  <div key={index} className="text-xs text-blue-700 bg-blue-100 p-2 rounded">
+                  <div key={index} className="text-xs text-white bg-transparent p-2 rounded">
                     {difference}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-blue-600">No differences found</div>
+                <div className="text-xs text-white">No differences found</div>
               )}
             </div>
           </CardContent>
         </Card>
 
         {/* Research Gaps */}
-        <Card className="border-yellow-200 bg-yellow-50">
+        <Card className="border-yellow-200 bg-transparent">
           <CardHeader className="pb-3">
-            <CardTitle className="text-yellow-800 flex items-center text-sm">
+            <CardTitle className="text-white flex items-center text-sm">
               <Lightbulb className="h-4 w-4 mr-2" />
               Research Gaps
             </CardTitle>
@@ -177,21 +177,21 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
             <div className="space-y-2">
               {comparison.gaps.length > 0 ? (
                 comparison.gaps.map((gap, index) => (
-                  <div key={index} className="text-xs text-yellow-700 bg-yellow-100 p-2 rounded">
+                  <div key={index} className="text-xs text-white bg-transparent p-2 rounded">
                     {gap}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-yellow-600">No gaps identified</div>
+                <div className="text-xs text-white">No gaps identified</div>
               )}
             </div>
           </CardContent>
         </Card>
 
         {/* Contradictions */}
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 bg-transparent">
           <CardHeader className="pb-3">
-            <CardTitle className="text-red-800 flex items-center text-sm">
+            <CardTitle className="text-white flex items-center text-sm">
               <AlertTriangle className="h-4 w-4 mr-2" />
               Contradictions
             </CardTitle>
@@ -200,12 +200,12 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
             <div className="space-y-2">
               {comparison.contradictions.length > 0 ? (
                 comparison.contradictions.map((contradiction, index) => (
-                  <div key={index} className="text-xs text-red-700 bg-red-100 p-2 rounded">
+                  <div key={index} className="text-xs text-white bg-transparent p-2 rounded">
                     {contradiction}
                   </div>
                 ))
               ) : (
-                <div className="text-xs text-red-600">No contradictions found</div>
+                <div className="text-xs text-white">No contradictions found</div>
               )}
             </div>
           </CardContent>
@@ -217,13 +217,13 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
   return (
     <div className="space-y-6">
       {/* Search Section */}
-      <Card>
+      <Card className="bg-transparent">
         <CardHeader>
-          <CardTitle className="flex items-center">
+          <CardTitle className="flex items-center text-white">
             <Search className="h-5 w-5 mr-2" />
             Methodology Comparison Search
           </CardTitle>
-          <CardDescription>
+          <CardDescription className="text-gray-300">
             Enter a research query to compare methodologies across relevant papers
           </CardDescription>
         </CardHeader>
@@ -261,11 +261,11 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
 
       {/* Loading State */}
       {isLoading && (
-        <Card>
+        <Card className="bg-transparent">
           <CardContent className="py-8">
             <div className="text-center">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-              <p className="text-gray-600">Analyzing methodologies...</p>
+              <p className="text-white">Analyzing methodologies...</p>
             </div>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
 
       {/* Error State */}
       {error && (
-        <Card className="border-red-200 bg-red-50">
+        <Card className="border-red-200 bg-transparent">
           <CardContent className="py-8">
             <div className="text-center text-red-600">
               <XCircle className="h-8 w-8 mx-auto mb-4" />
@@ -287,9 +287,9 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
       {comparisonData && (
         <div className="space-y-6">
           {/* Summary */}
-          <Card className="border-blue-200 bg-blue-50">
+          <Card className="border-blue-200 bg-transparent">
             <CardHeader>
-              <CardTitle className="text-blue-800">
+              <CardTitle className="text-white">
                 Analysis Summary
               </CardTitle>
             </CardHeader>
@@ -327,12 +327,12 @@ export default function MethodologyComparisonComponent({ role }: MethodologyComp
 
       {/* Empty State */}
       {!comparisonData && !isLoading && !error && (
-        <Card>
+        <Card className="bg-transparent">
           <CardContent className="py-12">
-            <div className="text-center text-gray-500">
+            <div className="text-center text-white">
               <FlaskConical className="h-12 w-12 mx-auto mb-4 text-gray-300" />
               <p className="text-lg font-medium">Search for Methodology Comparison</p>
-              <p className="text-sm">Enter a research query to compare methodologies across relevant papers</p>
+              <p className="text-sm text-gray-300">Enter a research query to compare methodologies across relevant papers</p>
             </div>
           </CardContent>
         </Card>

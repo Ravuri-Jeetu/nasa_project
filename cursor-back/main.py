@@ -1269,6 +1269,55 @@ def compare_methodologies(papers: list[MethodologyExtraction]) -> MethodologyCom
         contradictions=contradictions
     )
 
+@app.post("/api/methodology-compare", response_model=MethodologyCompareResponse)
+def methodology_compare(request: dict):
+    """
+    Compare methodologies across papers for a given query.
+    """
+    try:
+        query = request.get("query", "")
+        max_papers = request.get("max_papers", 5)
+        
+        if not query:
+            raise HTTPException(status_code=400, detail="Query is required")
+        
+        # Find relevant papers
+        relevant_papers = find_relevant_papers(query, max_papers)
+        
+        if not relevant_papers:
+            return MethodologyCompareResponse(
+                query=query,
+                papers=[],
+                comparison=MethodologyComparison(
+                    similarities=[],
+                    differences=[],
+                    gaps=["No relevant papers found for the query"],
+                    contradictions=[]
+                ),
+                total_papers_found=0
+            )
+        
+        # Extract methodologies from each paper
+        extracted_methodologies = []
+        for paper in relevant_papers:
+            # Combine title and abstract for methodology extraction
+            paper_text = f"{paper.get('title', '')} {paper.get('abstract', '')}"
+            methodology = extract_methodology_with_ai(paper_text, paper.get('title', ''))
+            extracted_methodologies.append(methodology)
+        
+        # Compare methodologies
+        comparison = compare_methodologies(extracted_methodologies)
+        
+        return MethodologyCompareResponse(
+            query=query,
+            papers=extracted_methodologies,
+            comparison=comparison,
+            total_papers_found=len(relevant_papers)
+        )
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in methodology comparison: {str(e)}")
+
 # Mission Planner API
 class MissionPlannerRequest(BaseModel):
     destination: str

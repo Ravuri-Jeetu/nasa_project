@@ -34,8 +34,8 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
       setMessages(prev => [...prev, summaryMessage]);
     };
 
-    window.addEventListener('showSummary', handleShowSummary);
-    return () => window.removeEventListener('showSummary', handleShowSummary);
+    window.addEventListener('showSummary', handleShowSummary as EventListener);
+    return () => window.removeEventListener('showSummary', handleShowSummary as EventListener);
   }, []);
 
   const handleSendMessage = async () => {
@@ -109,7 +109,7 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
             <div className="flex flex-col h-full">
               {/* Header */}
               <div className="flex items-center justify-between p-4 border-b border-border/50">
-                <h2 className="text-lg font-semibold text-foreground">AI Assistant</h2>
+                <h2 className="text-lg font-semibold text-white">AI Assistant</h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -139,8 +139,8 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
                       <Card
                         className={`max-w-[80%] p-3 ${
                           msg.role === 'user'
-                            ? 'bg-blue-600 text-white'
-                            : 'bg-gray-100 text-gray-900'
+                            ? 'bg-sky-500 text-white'
+                            : 'bg-gray-100 text-white'
                         }`}
                       >
                         <div className="text-sm whitespace-pre-wrap">

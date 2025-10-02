@@ -168,7 +168,7 @@ export default function PapersPage() {
         {/* Header */}
         <div className="flex items-center justify-between">
           <div>
-            <h1 className="text-3xl font-bold text-gray-900">Research Papers</h1>
+            <h1 className="text-3xl font-bold text-white">Research Papers</h1>
             <p className="text-gray-600 mt-1">
               {role === 'Scientist' ? 'Technical analysis and research insights' : 'Business intelligence and investment opportunities'}
             </p>
@@ -230,7 +230,7 @@ export default function PapersPage() {
                   <SelectContent>
                     <SelectItem value="all">All Methodologies</SelectItem>
                     {getUniqueMethodologies().map(methodology => (
-                      <SelectItem key={methodology} value={methodology.toLowerCase()}>
+                      <SelectItem key={methodology} value={methodology?.toLowerCase() || ''}>
                         {methodology}
                       </SelectItem>
                     ))}
@@ -269,7 +269,7 @@ export default function PapersPage() {
             <Card>
               <CardContent className="text-center py-8">
                 <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">No papers found</h3>
+                <h3 className="text-lg font-semibold text-white mb-2">No papers found</h3>
                 <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
               </CardContent>
             </Card>
@@ -279,8 +279,8 @@ export default function PapersPage() {
               return (
                 <Card 
                   key={paper.id} 
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+                  className={`cursor-pointer transition-all duration-300 ${
+                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-sky-400 bg-sky-100/20 border-sky-300' : 'hover:outline hover:outline-2 hover:outline-white/50'
                   }`}
                   onClick={() => handlePaperSelect(paper.id)}
                 >
@@ -342,8 +342,8 @@ export default function PapersPage() {
                       </div>
 
                       {/* Role-specific Summary */}
-                      <div className="bg-gray-50 rounded-lg p-4">
-                        <h4 className="font-semibold text-gray-900 mb-2">{summary.title}</h4>
+                      <div className="bg-transparent rounded-lg p-4 border border-gray-200">
+                        <h4 className="font-semibold text-white mb-2">{summary.title}</h4>
                         <p className="text-sm text-gray-700 mb-3">{summary.content}</p>
                         <div className="flex flex-wrap gap-2">
                           {summary.metrics.map((metric, index) => (

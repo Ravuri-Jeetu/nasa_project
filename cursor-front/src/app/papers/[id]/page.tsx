@@ -118,7 +118,7 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
               </Link>
             </Button>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900">{paper.title}</h1>
+              <h1 className="text-3xl font-bold text-white">{paper.title}</h1>
               <p className="text-gray-600 mt-1">
                 {role === 'Scientist' ? 'Technical Analysis' : 'Business Intelligence'}
               </p>

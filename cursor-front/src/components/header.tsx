@@ -28,7 +28,7 @@ export default function Header() {
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Logo and Navigation */}
           <div className="flex items-center justify-between lg:justify-start">
-            <Link href="/" className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <Link href="/" className="text-xl sm:text-2xl font-bold text-white">
               Research Analytics
             </Link>
             
