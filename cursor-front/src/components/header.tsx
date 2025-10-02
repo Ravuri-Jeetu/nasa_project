@@ -23,18 +23,18 @@ export default function Header() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <header className="border-b bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+    <header className="border-b border-border/50 bg-card/80 backdrop-blur-sm sticky top-0 z-50 cosmic-glow">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-4">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Logo and Navigation */}
           <div className="flex items-center justify-between lg:justify-start">
-            <Link href="/" className="text-xl sm:text-2xl font-bold text-gray-900">
+            <Link href="/" className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Research Analytics
             </Link>
             
             {/* Mobile menu button could go here */}
             <div className="lg:hidden">
-              <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-xs">
+              <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-xs cosmic-glow">
                 {role}
               </Badge>
             </div>
@@ -43,40 +43,40 @@ export default function Header() {
           <nav className="flex flex-wrap items-center gap-4 lg:gap-6">
             <Link
               href="/landing"
-              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                isActive('/landing') ? 'text-blue-600' : 'text-gray-600'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/landing') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Home
             </Link>
             <Link
               href="/dashboard"
-              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                isActive('/dashboard') ? 'text-blue-600' : 'text-gray-600'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/dashboard') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Dashboard
             </Link>
             <Link
               href="/search"
-              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                isActive('/search') ? 'text-blue-600' : 'text-gray-600'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/search') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Search
             </Link>
             <Link
               href="/papers"
-              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                isActive('/papers') ? 'text-blue-600' : 'text-gray-600'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/papers') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Papers
             </Link>
             <Link
               href="/mission-planner"
-              className={`text-sm font-medium transition-colors hover:text-blue-600 ${
-                isActive('/mission-planner') ? 'text-blue-600' : 'text-gray-600'
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/mission-planner') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Mission Planner
@@ -86,8 +86,8 @@ export default function Header() {
           {/* Role Toggle - Hidden on mobile */}
           <div className="hidden lg:flex items-center space-x-4">
             <div className="flex items-center space-x-2">
-              <span className="text-sm text-gray-600">Role:</span>
-              <div className="flex bg-gray-100 rounded-lg p-1">
+              <span className="text-sm text-muted-foreground">Role:</span>
+              <div className="flex bg-muted/50 rounded-lg p-1 border border-border/50">
                 <Button
                   variant={role === 'Scientist' ? 'default' : 'ghost'}
                   size="sm"
@@ -115,7 +115,7 @@ export default function Header() {
               </div>
             </div>
             
-            <Badge variant="secondary" className="bg-blue-100 text-blue-800">
+            <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 cosmic-glow">
               {role}
             </Badge>
           </div>

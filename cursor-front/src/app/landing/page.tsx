@@ -77,19 +77,20 @@ export default function LandingPage() {
     <MainLayout>
       <div className="min-h-screen">
         {/* Hero Section */}
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-100 rounded-2xl p-8 mb-8">
-          <div className="max-w-4xl mx-auto text-center">
-            <h1 className="text-5xl font-bold text-gray-900 mb-6">
+        <div className="relative overflow-hidden cosmic-gradient rounded-2xl p-8 mb-8 cosmic-glow">
+          <div className="absolute inset-0 bg-gradient-to-br from-transparent via-blue-500/5 to-purple-500/5"></div>
+          <div className="relative max-w-4xl mx-auto text-center">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent mb-6">
               Space Biology Research Platform
             </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
               Explore 607+ space biology publications with AI-powered insights, comprehensive analytics, 
               and role-specific intelligence for scientists and research managers.
             </p>
             
             {/* Role Selection */}
-            <div className="bg-white rounded-xl p-6 shadow-lg mb-8">
-              <h2 className="text-2xl font-semibold text-gray-900 mb-4">Choose Your Role</h2>
+            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg mb-8 cosmic-hover">
+              <h2 className="text-2xl font-semibold text-foreground mb-4">Choose Your Role</h2>
               <div className="flex justify-center space-x-4 mb-6">
                 <Button
                   variant={role === 'Scientist' ? 'default' : 'outline'}
@@ -121,7 +122,7 @@ export default function LandingPage() {
               </div>
               
               <div className="flex items-center justify-center space-x-2 mb-6">
-                <Badge variant="secondary" className="bg-blue-100 text-blue-800 text-lg px-4 py-2">
+                <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-lg px-4 py-2 cosmic-glow">
                   {role} Mode
                 </Badge>
               </div>
@@ -138,20 +139,20 @@ export default function LandingPage() {
 
         {/* Features Section */}
         <div className="mb-12">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-8">
+          <h2 className="text-3xl font-bold text-center bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent mb-8">
             Powerful Features for Research Excellence
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {features.map((feature, index) => (
-              <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+              <Card key={index} className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
                 <CardHeader>
-                  <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+                  <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary/20 to-accent/20 rounded-lg flex items-center justify-center text-primary mb-4 cosmic-glow">
                     {feature.icon}
                   </div>
-                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                  <CardTitle className="text-lg text-foreground">{feature.title}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-sm">
+                  <CardDescription className="text-sm text-muted-foreground">
                     {feature.description}
                   </CardDescription>
                 </CardContent>
@@ -163,13 +164,13 @@ export default function LandingPage() {
         {/* Role-Specific Benefits */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
           {/* Scientist Benefits */}
-          <Card className="border-blue-200">
-            <CardHeader className="bg-blue-50 rounded-t-lg">
-              <CardTitle className="flex items-center text-blue-900">
+          <Card className="border-primary/30 cosmic-hover bg-card/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-primary/10 to-transparent rounded-t-lg">
+              <CardTitle className="flex items-center text-primary">
                 <Brain className="h-6 w-6 mr-2" />
                 For Scientists
               </CardTitle>
-              <CardDescription className="text-blue-700">
+              <CardDescription className="text-muted-foreground">
                 Deep technical insights and research analysis
               </CardDescription>
             </CardHeader>
@@ -177,8 +178,8 @@ export default function LandingPage() {
               <ul className="space-y-3">
                 {scientistFeatures.map((feature, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
+                    <CheckCircle className="h-5 w-5 text-chart-2 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -186,13 +187,13 @@ export default function LandingPage() {
           </Card>
 
           {/* Manager Benefits */}
-          <Card className="border-green-200">
-            <CardHeader className="bg-green-50 rounded-t-lg">
-              <CardTitle className="flex items-center text-green-900">
+          <Card className="border-chart-2/30 cosmic-hover bg-card/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-chart-2/10 to-transparent rounded-t-lg">
+              <CardTitle className="flex items-center text-chart-2">
                 <DollarSign className="h-6 w-6 mr-2" />
                 For Managers
               </CardTitle>
-              <CardDescription className="text-green-700">
+              <CardDescription className="text-muted-foreground">
                 Business intelligence and investment analytics
               </CardDescription>
             </CardHeader>
@@ -200,8 +201,8 @@ export default function LandingPage() {
               <ul className="space-y-3">
                 {managerFeatures.map((feature, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
+                    <CheckCircle className="h-5 w-5 text-chart-2 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -209,13 +210,13 @@ export default function LandingPage() {
           </Card>
 
           {/* Mission Planner Benefits */}
-          <Card className="border-purple-200">
-            <CardHeader className="bg-purple-50 rounded-t-lg">
-              <CardTitle className="flex items-center text-purple-900">
+          <Card className="border-accent/30 cosmic-hover bg-card/80 backdrop-blur-sm">
+            <CardHeader className="bg-gradient-to-r from-accent/10 to-transparent rounded-t-lg">
+              <CardTitle className="flex items-center text-accent">
                 <Rocket className="h-6 w-6 mr-2" />
                 For Mission Planners
               </CardTitle>
-              <CardDescription className="text-purple-700">
+              <CardDescription className="text-muted-foreground">
                 Mission design and strategic planning tools
               </CardDescription>
             </CardHeader>
@@ -223,8 +224,8 @@ export default function LandingPage() {
               <ul className="space-y-3">
                 {missionPlannerFeatures.map((feature, index) => (
                   <li key={index} className="flex items-start">
-                    <CheckCircle className="h-5 w-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                    <span className="text-gray-700">{feature}</span>
+                    <CheckCircle className="h-5 w-5 text-chart-2 mr-3 mt-0.5 flex-shrink-0" />
+                    <span className="text-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -233,57 +234,57 @@ export default function LandingPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="bg-gray-50 rounded-2xl p-8">
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-8">
+        <div className="cosmic-gradient rounded-2xl p-8 border border-border/50">
+          <h2 className="text-2xl font-bold text-center bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent mb-8">
             Quick Actions
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600 mb-4">
+                <div className="mx-auto w-12 h-12 bg-gradient-to-br from-primary/20 to-primary/40 rounded-lg flex items-center justify-center text-primary mb-4 cosmic-glow">
                   <Search className="h-6 w-6" />
                 </div>
-                <CardTitle>Search Papers</CardTitle>
+                <CardTitle className="text-foreground">Search Papers</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="mb-4">
+                <CardDescription className="mb-4 text-muted-foreground">
                   Find relevant research papers with advanced search capabilities
                 </CardDescription>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full border-primary/30 hover:bg-primary/10">
                   <Link href="/search">Start Searching</Link>
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center text-green-600 mb-4">
+                <div className="mx-auto w-12 h-12 bg-gradient-to-br from-chart-2/20 to-chart-2/40 rounded-lg flex items-center justify-center text-chart-2 mb-4 cosmic-glow">
                   <BookOpen className="h-6 w-6" />
                 </div>
-                <CardTitle>Browse Papers</CardTitle>
+                <CardTitle className="text-foreground">Browse Papers</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="mb-4">
+                <CardDescription className="mb-4 text-muted-foreground">
                   Explore all available research papers with filtering options
                 </CardDescription>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full border-chart-2/30 hover:bg-chart-2/10">
                   <Link href="/papers">Browse All</Link>
                 </Button>
               </CardContent>
             </Card>
 
-            <Card className="text-center hover:shadow-lg transition-shadow cursor-pointer">
+            <Card className="text-center cosmic-hover cursor-pointer bg-card/80 backdrop-blur-sm border-border/50">
               <CardHeader>
-                <div className="mx-auto w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600 mb-4">
+                <div className="mx-auto w-12 h-12 bg-gradient-to-br from-accent/20 to-accent/40 rounded-lg flex items-center justify-center text-accent mb-4 cosmic-glow">
                   <BarChart3 className="h-6 w-6" />
                 </div>
-                <CardTitle>View Dashboard</CardTitle>
+                <CardTitle className="text-foreground">View Dashboard</CardTitle>
               </CardHeader>
               <CardContent>
-                <CardDescription className="mb-4">
+                <CardDescription className="mb-4 text-muted-foreground">
                   Access your personalized dashboard with analytics and insights
                 </CardDescription>
-                <Button asChild variant="outline" className="w-full">
+                <Button asChild variant="outline" className="w-full border-accent/30 hover:bg-accent/10">
                   <Link href="/dashboard">Go to Dashboard</Link>
                 </Button>
               </CardContent>
@@ -293,28 +294,28 @@ export default function LandingPage() {
 
         {/* Stats Section */}
         <div className="mt-12 grid grid-cols-1 md:grid-cols-4 gap-6">
-          <Card className="text-center">
+          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-blue-600 mb-2">607+</div>
-              <div className="text-sm text-gray-600">Space Biology Papers</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-primary to-blue-400 bg-clip-text text-transparent mb-2">607+</div>
+              <div className="text-sm text-muted-foreground">Space Biology Papers</div>
             </CardContent>
           </Card>
-          <Card className="text-center">
+          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-green-600 mb-2">500+</div>
-              <div className="text-sm text-gray-600">Active Users</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-chart-2 to-green-400 bg-clip-text text-transparent mb-2">500+</div>
+              <div className="text-sm text-muted-foreground">Active Users</div>
             </CardContent>
           </Card>
-          <Card className="text-center">
+          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-purple-600 mb-2">50+</div>
-              <div className="text-sm text-gray-600">Research Institutions</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-accent to-purple-400 bg-clip-text text-transparent mb-2">50+</div>
+              <div className="text-sm text-muted-foreground">Research Institutions</div>
             </CardContent>
           </Card>
-          <Card className="text-center">
+          <Card className="text-center cosmic-hover bg-card/80 backdrop-blur-sm border-border/50">
             <CardContent className="pt-6">
-              <div className="text-3xl font-bold text-orange-600 mb-2">99%</div>
-              <div className="text-sm text-gray-600">User Satisfaction</div>
+              <div className="text-3xl font-bold bg-gradient-to-r from-chart-4 to-orange-400 bg-clip-text text-transparent mb-2">99%</div>
+              <div className="text-sm text-muted-foreground">User Satisfaction</div>
             </CardContent>
           </Card>
         </div>

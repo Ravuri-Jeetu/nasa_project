@@ -104,12 +104,12 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-            className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-2xl z-50 max-h-[80vh]"
+            className="fixed bottom-0 left-0 right-0 bg-card/95 backdrop-blur-sm border-t border-border/50 rounded-t-2xl shadow-2xl z-50 max-h-[80vh] cosmic-glow"
           >
             <div className="flex flex-col h-full">
               {/* Header */}
-              <div className="flex items-center justify-between p-4 border-b">
-                <h2 className="text-lg font-semibold">AI Assistant</h2>
+              <div className="flex items-center justify-between p-4 border-b border-border/50">
+                <h2 className="text-lg font-semibold text-foreground">AI Assistant</h2>
                 <Button
                   variant="ghost"
                   size="sm"
@@ -123,7 +123,7 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (
-                  <div className="text-center text-gray-500 py-8">
+                  <div className="text-center text-muted-foreground py-8">
                     <p>Ask me anything about your research!</p>
                     <p className="text-sm mt-2">
                       I&apos;ll provide {role === 'Scientist' ? 'technical insights' : 'business-focused analysis'} 
