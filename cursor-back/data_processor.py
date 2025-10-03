@@ -320,37 +320,36 @@ class DynamicDataProcessor:
         return gaps
     
     def _analyze_scientific_gaps(self, current_year: int) -> List[Dict[str, Any]]:
-        """Analyze scientific research gaps using AI-powered text analysis"""
+        """Analyze scientific research gaps using traditional analysis (AI disabled for performance)"""
         gaps = []
         
-        # First, get traditional gaps as fallback
+        # Use only traditional gaps for now to prevent timeout issues
         traditional_gaps = self._analyze_traditional_scientific_gaps(current_year)
-        
-        try:
-            # Get sample of research papers for AI analysis
-            sample_papers = self._get_sample_papers_for_analysis()
-            
-            # Use AI to analyze each paper for gaps (with timeout protection)
-            for paper in sample_papers:
-                try:
-                    ai_gaps = self._analyze_paper_gaps_with_ai(paper)
-                    gaps.extend(ai_gaps)
-                except Exception:
-                    # Skip this paper if AI analysis fails
-                    continue
-                    
-                # Limit AI analysis to prevent timeout
-                if len(gaps) >= 3:
-                    break
-                    
-        except Exception:
-            # If AI analysis completely fails, return only traditional gaps
-            pass
-        
-        # Combine AI gaps with traditional gaps
         gaps.extend(traditional_gaps)
         
-        return gaps[:8]  # Return top 8 gaps (reduced for performance)
+        # TODO: Re-enable AI analysis once performance is optimized
+        # try:
+        #     # Get sample of research papers for AI analysis
+        #     sample_papers = self._get_sample_papers_for_analysis()
+        #     
+        #     # Use AI to analyze each paper for gaps (with timeout protection)
+        #     for paper in sample_papers:
+        #         try:
+        #             ai_gaps = self._analyze_paper_gaps_with_ai(paper)
+        #             gaps.extend(ai_gaps)
+        #         except Exception:
+        #             # Skip this paper if AI analysis fails
+        #             continue
+        #             
+        #         # Limit AI analysis to prevent timeout
+        #         if len(gaps) >= 3:
+        #             break
+        #             
+        # except Exception:
+        #     # If AI analysis completely fails, return only traditional gaps
+        #     pass
+        
+        return gaps[:8]  # Return top 8 gaps
     
     def _get_sample_papers_for_analysis(self) -> List[Dict[str, Any]]:
         """Get a sample of papers for AI analysis"""
