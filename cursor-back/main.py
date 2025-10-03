@@ -16,6 +16,7 @@ from sentence_transformers import SentenceTransformer
 import faiss
 from nasa_ai_service import nasa_ai
 from hybrid_nasa_ai_service import hybrid_nasa_ai
+from hypothesis_generator import hypothesis_generator
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant Backend")
@@ -942,6 +943,47 @@ def gap_finder(role: str = "Scientist"):
             "gaps": [],
             "role": role,
             "error": f"Error analyzing gaps: {str(e)}",
+            "success": False
+        }
+
+@app.post("/api/hypothesis")
+def generate_hypotheses(request: dict):
+    """
+    Generate scientific hypotheses based on research query.
+    """
+    try:
+        query = request.get("query", "")
+        role = request.get("role", "scientist")
+        
+        if not query.strip():
+            return {
+                "hypotheses": [],
+                "error": "Query cannot be empty",
+                "success": False
+            }
+        
+        # Generate hypotheses using the hypothesis generator
+        hypotheses = hypothesis_generator.generate_hypotheses(query, role)
+        
+        # Add metadata
+        metadata = {
+            "query": query,
+            "role": role,
+            "total_papers_analyzed": len(hypothesis_generator.papers_df),
+            "generation_date": str(pd.Timestamp.now()),
+            "hypothesis_types": list(set([h.get("type", "Unknown") for h in hypotheses]))
+        }
+        
+        return {
+            "hypotheses": hypotheses,
+            "metadata": metadata,
+            "success": True
+        }
+        
+    except Exception as e:
+        return {
+            "hypotheses": [],
+            "error": f"Error generating hypotheses: {str(e)}",
             "success": False
         }
 

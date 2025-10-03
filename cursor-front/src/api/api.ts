@@ -74,6 +74,27 @@ export const sendHybridNasaAiChatMessage = async (data: ChatRequest): Promise<Ch
   return res.data as ChatResponse;
 };
 
+export const generateHypotheses = async (data: { query: string; role: string }): Promise<{
+  hypotheses: Array<{
+    hypothesis: string;
+    supporting_evidence: string;
+    confidence: number;
+    type: string;
+    related_papers: Array<{ title: string; link: string }>;
+  }>;
+  metadata: {
+    query: string;
+    role: string;
+    total_papers_analyzed: number;
+    generation_date: string;
+    hypothesis_types: string[];
+  };
+  success: boolean;
+}> => {
+  const res = await apiClient.post('/api/hypothesis', data);
+  return res.data;
+};
+
 // Analytics API
 export const fetchAnalytics = async (role: string) => {
   const res = await apiClient.get('/api/analytics', { params: { role } });
