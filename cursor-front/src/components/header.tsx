@@ -50,36 +50,12 @@ export default function Header() {
               Home
             </Link>
             <Link
-              href="/dashboard"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive('/dashboard') ? 'text-primary' : 'text-muted-foreground'
-              }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              href="/search"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive('/search') ? 'text-primary' : 'text-muted-foreground'
-              }`}
-            >
-              Search
-            </Link>
-            <Link
               href="/papers"
               className={`text-sm font-medium transition-colors hover:text-primary ${
                 isActive('/papers') ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               Papers
-            </Link>
-            <Link
-              href="/mission-planner"
-              className={`text-sm font-medium transition-colors hover:text-primary ${
-                isActive('/mission-planner') ? 'text-primary' : 'text-muted-foreground'
-              }`}
-            >
-              Mission Planner
             </Link>
           </nav>
 
