@@ -64,6 +64,11 @@ export const sendChatMessage = async (data: ChatRequest): Promise<ChatResponse> 
   return res.data as ChatResponse;
 };
 
+export const sendNasaAiChatMessage = async (data: ChatRequest): Promise<ChatResponse> => {
+  const res = await apiClient.post('/api/nasa-ai-chat', data);
+  return res.data as ChatResponse;
+};
+
 // Analytics API
 export const fetchAnalytics = async (role: string) => {
   const res = await apiClient.get('/api/analytics', { params: { role } });

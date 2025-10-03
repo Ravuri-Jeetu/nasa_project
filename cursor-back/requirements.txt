@@ -7,3 +7,5 @@ accelerate
 pandas
 scikit-learn
 numpy
+sentence-transformers
+faiss-cpu

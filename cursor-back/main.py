@@ -10,6 +10,11 @@ import pandas as pd
 import uuid
 from data_processor import data_processor
 import requests
+import pickle
+import numpy as np
+from sentence_transformers import SentenceTransformer
+import faiss
+from nasa_ai_service import nasa_ai
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant Backend")
@@ -26,11 +31,72 @@ CHUNKS_DATA = []
 try:
     with open("step5_all_chunks.json", "r", encoding="utf-8") as f:
         CHUNKS_DATA = json.load(f)
-    print(f"✅ Loaded {len(CHUNKS_DATA)} chunks from {len(set(item['Title'] for item in CHUNKS_DATA))} unique papers")
+    print(f"Loaded {len(CHUNKS_DATA)} chunks from {len(set(item['Title'] for item in CHUNKS_DATA))} unique papers")
 except FileNotFoundError:
-    print("⚠️ Warning: step5_all_chunks.json not found. Paper-based summarization will not be available.")
+    print("Warning: step5_all_chunks.json not found. Paper-based summarization will not be available.")
 except Exception as e:
-    print(f"❌ Error loading chunks data: {e}")
+    print(f"Error loading chunks data: {e}")
+
+# Load AI chatbot data and model
+print("Loading AI chatbot components...")
+AI_CHUNKS = []
+AI_EMBEDDINGS = None
+AI_INDEX = None
+AI_MODEL = None
+
+try:
+    # Load chunks from JSONL
+    with open("all_papers_chunked.jsonl", "r", encoding="utf-8") as f:
+        for line in f:
+            data = json.loads(line)
+            AI_CHUNKS.append({
+                'chunk': data['chunk_text_clean'],
+                'metadata': {
+                    'title': f"Paper {data.get('paper_id', 'N/A')}",
+                    'url': 'N/A',
+                    'paper_id': data.get('paper_id', 'N/A'),
+                    'section': data.get('section', 'N/A'),
+                    'chunk_index': data.get('chunk_index', 'N/A')
+                }
+            })
+    
+    # Load or create embeddings
+    if os.path.exists("ai_embeddings.pkl"):
+        with open("ai_embeddings.pkl", 'rb') as f:
+            AI_EMBEDDINGS = pickle.load(f)
+        print("Loaded existing AI embeddings")
+    else:
+        print("Creating AI embeddings...")
+        AI_MODEL = SentenceTransformer('all-MiniLM-L6-v2')
+        texts = [chunk['chunk'] for chunk in AI_CHUNKS]
+        AI_EMBEDDINGS = AI_MODEL.encode(texts, show_progress_bar=True)
+        with open("ai_embeddings.pkl", 'wb') as f:
+            pickle.dump(AI_EMBEDDINGS, f)
+        print("AI embeddings created and saved")
+    
+    # Load or create FAISS index
+    if os.path.exists("ai_faiss_index.bin"):
+        AI_INDEX = faiss.read_index("ai_faiss_index.bin")
+        print("Loaded existing AI FAISS index")
+    else:
+        print("Creating AI FAISS index...")
+        dimension = AI_EMBEDDINGS.shape[1]
+        AI_INDEX = faiss.IndexFlatIP(dimension)
+        faiss.normalize_L2(AI_EMBEDDINGS)
+        AI_INDEX.add(AI_EMBEDDINGS.astype('float32'))
+        faiss.write_index(AI_INDEX, "ai_faiss_index.bin")
+        print("AI FAISS index created and saved")
+    
+    # Load model for search if not already loaded
+    if AI_MODEL is None:
+        AI_MODEL = SentenceTransformer('all-MiniLM-L6-v2')
+    
+    print(f"AI chatbot loaded with {len(AI_CHUNKS)} chunks from {len(set(chunk['metadata']['paper_id'] for chunk in AI_CHUNKS))} unique papers")
+    
+except FileNotFoundError:
+    print("Warning: all_papers_chunked.jsonl not found. AI chatbot will not be available.")
+except Exception as e:
+    print(f"Error loading AI chatbot: {e}")
 
 # Load papers data from CSV
 print("Loading papers data from CSV...")
@@ -44,7 +110,7 @@ try:
             csv_file = 'SB_publication_PMC.csv'
         else:
             csv_file = csv_files[0]  # Use the first CSV file found
-        print(f"📄 Found CSV file: {csv_file}")
+        print(f"Found CSV file: {csv_file}")
         
         # Read CSV file
         df = pd.read_csv(csv_file)
@@ -123,11 +189,11 @@ try:
                 }
                 PAPERS_DATA.append(paper)
             
-            print(f"✅ Loaded {len(PAPERS_DATA)} papers from CSV")
+            print(f"Loaded {len(PAPERS_DATA)} papers from CSV")
         else:
-            print("⚠️ Warning: CSV file must contain 'title' and 'link' columns (case insensitive)")
+            print("Warning: CSV file must contain 'title' and 'link' columns (case insensitive)")
     else:
-        print("⚠️ Warning: No CSV file found. Creating sample data...")
+        print("Warning: No CSV file found. Creating sample data...")
         # Create sample data if no CSV is found
         PAPERS_DATA = [
             {
@@ -159,10 +225,10 @@ try:
                 'return': 450000,
             }
         ]
-        print(f"✅ Created {len(PAPERS_DATA)} sample papers")
+        print(f"Created {len(PAPERS_DATA)} sample papers")
         
 except Exception as e:
-    print(f"❌ Error loading papers data: {e}")
+    print(f"Error loading papers data: {e}")
     PAPERS_DATA = []
 
 # Enable CORS for frontend
@@ -546,62 +612,72 @@ def get_analytics(role: str = "Scientist"):
                 keyword_counts[keyword] = keyword_counts.get(keyword, 0) + 1
             top_keywords = sorted(keyword_counts.items(), key=lambda x: x[1], reverse=True)[:10]
             top_keywords = [k[0] for k in top_keywords]
+        else:
+            methodologies = []
+            top_keywords = []
             
-            return {
-                "total_papers": len(PAPERS_DATA),
-                "total_citations": sum(p.get('citations', 0) for p in PAPERS_DATA),
-                "avg_citations": sum(p.get('citations', 0) for p in PAPERS_DATA) / len(PAPERS_DATA) if PAPERS_DATA else 0,
-                "methodologies": methodologies,
-                "top_keywords": top_keywords,
-                "publication_trends": [
-                    {"year": "2023", "count": len(PAPERS_DATA) // 2},
-                    {"year": "2024", "count": len(PAPERS_DATA) // 2},
-                ],
-                "research_focus": "Space Biology and Microgravity Research"
-            }
-        elif role.lower() == "manager":
-            total_funding = sum(p.get('funding', 0) for p in PAPERS_DATA if p.get('funding'))
-            total_return = sum(p.get('return', 0) for p in PAPERS_DATA if p.get('return'))
-            roi = ((total_return - total_funding) / total_funding * 100) if total_funding > 0 else 0
-            
-            return {
-                "total_projects": len(PAPERS_DATA),
-                "total_funding": total_funding,
-                "total_return": total_return,
-                "roi": roi,
-                "avg_funding": total_funding / len(PAPERS_DATA) if PAPERS_DATA else 0,
-                "avg_return": total_return / len(PAPERS_DATA) if PAPERS_DATA else 0,
-                "funding_trends": [
-                    {"month": "Jan", "funding": 100000, "return": 150000},
-                    {"month": "Feb", "funding": 120000, "return": 180000},
-                    {"month": "Mar", "funding": 140000, "return": 210000},
-                ]
-            }
-        elif role.lower() == "mission planner":
-            return {
-                "total_missions": 3,
-                "active_missions": 1,
-                "completed_missions": 2,
-                "mission_success_rate": 95.5,
-                "total_budget": 10100000,
-                "budget_utilization": 78.5,
-                "risk_levels": {
-                    "technical": 25,
-                    "environmental": 40,
-                    "human_factors": 30,
-                    "resource": 20,
-                    "timeline": 35
-                },
-                "resource_allocation": {
-                    "personnel": 45,
-                    "equipment": 80,
-                    "fuel": 70,
-                    "supplies": 90,
-                    "communication": 95
-                }
-            }
     except Exception as e:
-        return {"error": f"Error fetching analytics: {str(e)}"}
+        print(f"Error in analytics: {e}")
+        methodologies = []
+        top_keywords = []
+    
+    # Return scientist analytics
+    if role.lower() == "scientist":
+        return {
+            "total_papers": len(PAPERS_DATA),
+            "total_citations": sum(p.get('citations', 0) for p in PAPERS_DATA),
+            "avg_citations": sum(p.get('citations', 0) for p in PAPERS_DATA) / len(PAPERS_DATA) if PAPERS_DATA else 0,
+            "methodologies": methodologies,
+            "top_keywords": top_keywords,
+            "publication_trends": [
+                {"year": "2023", "count": len(PAPERS_DATA) // 2},
+                {"year": "2024", "count": len(PAPERS_DATA) // 2},
+            ],
+            "research_focus": "Space Biology and Microgravity Research"
+        }
+    elif role.lower() == "manager":
+        total_funding = sum(p.get('funding', 0) for p in PAPERS_DATA if p.get('funding'))
+        total_return = sum(p.get('return', 0) for p in PAPERS_DATA if p.get('return'))
+        roi = ((total_return - total_funding) / total_funding * 100) if total_funding > 0 else 0
+        
+        return {
+            "total_projects": len(PAPERS_DATA),
+            "total_funding": total_funding,
+            "total_return": total_return,
+            "roi": roi,
+            "avg_funding": total_funding / len(PAPERS_DATA) if PAPERS_DATA else 0,
+            "avg_return": total_return / len(PAPERS_DATA) if PAPERS_DATA else 0,
+            "funding_trends": [
+                {"month": "Jan", "funding": 100000, "return": 150000},
+                {"month": "Feb", "funding": 120000, "return": 180000},
+                {"month": "Mar", "funding": 140000, "return": 210000},
+            ]
+        }
+    elif role.lower() == "mission planner":
+        return {
+            "total_missions": 3,
+            "active_missions": 1,
+            "completed_missions": 2,
+            "mission_success_rate": 95.5,
+            "total_budget": 10100000,
+            "budget_utilization": 78.5,
+            "risk_levels": {
+                "technical": 25,
+                "environmental": 40,
+                "human_factors": 30,
+                "resource": 20,
+                "timeline": 35
+            },
+            "resource_allocation": {
+                "personnel": 45,
+                "equipment": 80,
+                "fuel": 70,
+                "supplies": 90,
+                "communication": 95
+            }
+        }
+    else:
+        return {"error": "Invalid role specified"}
 
 @app.get("/api/knowledge-graph")
 def knowledge_graph(role: str = "Scientist"):
@@ -1783,3 +1859,241 @@ def mission_planner_endpoint(request: MissionPlannerRequest):
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error analyzing mission: {str(e)}")
+
+# AI Chatbot Models
+class ChatMessage(BaseModel):
+    message: str
+    session_id: str = "default"
+
+class ChatResponse(BaseModel):
+    response: str
+    sources: List[Dict[str, Any]]
+    timestamp: str
+    session_id: str
+
+def search_ai_chunks(query: str, top_k: int = 5) -> List[Dict[str, Any]]:
+    """Search for relevant chunks using FAISS."""
+    if AI_MODEL is None or AI_INDEX is None:
+        return []
+    
+    try:
+        # Encode query
+        query_embedding = AI_MODEL.encode([query])
+        faiss.normalize_L2(query_embedding)
+        
+        # Search
+        scores, indices = AI_INDEX.search(query_embedding.astype('float32'), top_k)
+        
+        # Format results
+        results = []
+        for score, idx in zip(scores[0], indices[0]):
+            if idx < len(AI_CHUNKS):
+                chunk = AI_CHUNKS[idx]
+                results.append({
+                    'id': int(idx),
+                    'title': chunk['metadata']['title'],
+                    'snippet': chunk['chunk'][:200] + "..." if len(chunk['chunk']) > 200 else chunk['chunk'],
+                    'url': chunk['metadata']['url'],
+                    'score': float(score),
+                    'paper_id': chunk['metadata']['paper_id'],
+                    'section': chunk['metadata']['section']
+                })
+        
+        return results
+    except Exception as e:
+        print(f"Error in search_ai_chunks: {e}")
+        return []
+
+def generate_ai_response(query: str, search_results: List[Dict[str, Any]]) -> str:
+    """Generate detailed AI response based on search results."""
+    if not search_results:
+        return "I'm sorry, I couldn't find relevant information about that in NASA's bioscience research. Could you try rephrasing your question?"
+    
+    # Analyze the query to provide more contextual responses
+    query_lower = query.lower()
+    
+    if any(word in query_lower for word in ['hello', 'hi', 'hey', 'how are you']):
+        return f"Hello! I'm your NASA Bioscience Research Assistant. I have access to {len(AI_CHUNKS)} research chunks from 572 unique publications and I'm here to help you explore the fascinating world of space biology. What would you like to know about?"
+    
+    if any(word in query_lower for word in ['thank', 'thanks']):
+        return "You're welcome! I'm always here to help you explore NASA's bioscience research. Feel free to ask me anything about space biology, astronaut health, or related topics!"
+    
+    if any(word in query_lower for word in ['bye', 'goodbye', 'see you']):
+        return "Goodbye! I hope I was able to help you with your NASA bioscience research questions. Feel free to come back anytime!"
+    
+    # Build comprehensive context from search results
+    detailed_context = []
+    for i, result in enumerate(search_results[:8]):  # Use more sources
+        snippet = result['snippet']
+        paper_id = result.get('paper_id', 'Unknown')
+        section = result.get('section', 'Unknown')
+        
+        # Clean and expand the snippet
+        if len(snippet) < 100:  # If snippet is too short, try to get more context
+            snippet = f"{snippet} (from Paper {paper_id}, {section} section)"
+        
+        detailed_context.append(f"**Research Source {i+1}** (Paper {paper_id}):\n{snippet}")
+    
+    context_text = "\n\n".join(detailed_context)
+    
+    # Generate detailed response based on query type
+    if any(word in query_lower for word in ['what', 'how', 'why', 'explain']):
+        response = f"""**Detailed Analysis of Your Query: "{query}"**
+
+Based on NASA's comprehensive bioscience research database, here's what I found:
+
+{context_text}
+
+**Key Insights:**
+• This information comes from {len(search_results)} relevant research sources across multiple NASA studies
+• The research spans various aspects of space biology and microgravity effects
+• These findings represent cutting-edge research in space bioscience
+
+**Research Context:**
+The studies referenced above contribute to our understanding of how biological systems adapt to space environments, which is crucial for long-duration space missions and future space exploration.
+
+Would you like me to elaborate on any specific aspect or provide more detailed information about particular findings?"""
+
+    elif any(word in query_lower for word in ['compare', 'difference', 'similar']):
+        response = f"""**Comparative Analysis: "{query}"**
+
+Here's a detailed comparison based on the research I found:
+
+{context_text}
+
+**Comparative Insights:**
+• These findings show different perspectives and methodologies from multiple NASA studies
+• The research demonstrates various approaches to studying space biology phenomena
+• Each source provides unique insights into the topic
+
+**Research Implications:**
+Understanding these different approaches helps researchers develop more comprehensive strategies for space biology research and astronaut health management.
+
+Would you like me to focus on specific differences or similarities between these studies?"""
+
+    elif any(word in query_lower for word in ['effect', 'impact', 'influence', 'change']):
+        response = f"""**Effects and Impacts Analysis: "{query}"**
+
+Based on NASA's research, here are the detailed effects and impacts:
+
+{context_text}
+
+**Key Effects Identified:**
+• Multiple studies demonstrate various biological responses to space conditions
+• The research shows both short-term and long-term effects on biological systems
+• These findings have important implications for space mission planning
+
+**Research Significance:**
+Understanding these effects is crucial for developing countermeasures and ensuring astronaut health during space missions.
+
+Would you like me to explain the mechanisms behind these effects or discuss potential countermeasures?"""
+
+    else:
+        response = f"""**Comprehensive Research Overview: "{query}"**
+
+Based on NASA's bioscience research database, here's a detailed overview:
+
+{context_text}
+
+**Research Summary:**
+• This data comes from {len(search_results)} relevant research sources in NASA's database
+• The studies represent diverse approaches to space biology research
+• These findings contribute to our understanding of life in space environments
+
+**Scientific Context:**
+These research findings are part of NASA's ongoing efforts to understand biological systems in space, which is essential for future space exploration missions.
+
+Would you like me to provide more specific details about any particular aspect of this research?"""
+    
+    return response
+
+@app.post("/api/ai-chat", response_model=ChatResponse)
+def ai_chat_endpoint(request: ChatMessage):
+    """
+    AI-powered chat endpoint for research assistance.
+    """
+    try:
+        if not AI_CHUNKS or AI_MODEL is None or AI_INDEX is None:
+            raise HTTPException(status_code=503, detail="AI chatbot is not available")
+        
+        # Search for relevant chunks
+        search_results = search_ai_chunks(request.message, top_k=8)
+        
+        # Generate response
+        response = generate_ai_response(request.message, search_results)
+        
+        # Convert all numpy types to Python types
+        clean_sources = []
+        for source in search_results:
+            clean_source = {}
+            for key, value in source.items():
+                if hasattr(value, 'item'):  # numpy scalar
+                    clean_source[key] = value.item()
+                else:
+                    clean_source[key] = value
+            clean_sources.append(clean_source)
+        
+        return ChatResponse(
+            response=response,
+            sources=clean_sources,
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error in AI chat: {str(e)}")
+
+@app.post("/api/nasa-ai-chat", response_model=ChatResponse)
+def nasa_ai_chat_endpoint(request: ChatMessage):
+    """
+    Enhanced NASA AI-powered chat endpoint with detailed scientific explanations.
+    """
+    try:
+        # Use the enhanced NASA AI service
+        result = nasa_ai.chat(request.message)
+        
+        # Convert sources to clean format
+        clean_sources = []
+        for source in result.get("sources", []):
+            clean_source = {}
+            for key, value in source.items():
+                if hasattr(value, 'item'):  # numpy scalar
+                    clean_source[key] = value.item()
+                else:
+                    clean_source[key] = value
+            clean_sources.append(clean_source)
+        
+        # Format the response with NASA AI branding
+        formatted_response = f"""🤖 **NASA Bioscience Assistant**
+
+**Question:** {request.message}
+
+**Answer:** {result['response']}
+
+**Sources:** {result.get('sources_info', 'No sources found')}
+**Confidence:** {result.get('confidence', 'Low')} (relevant NASA research found)"""
+        
+        return ChatResponse(
+            response=formatted_response,
+            sources=clean_sources,
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+        
+    except Exception as e:
+        return ChatResponse(
+            response=f"❌ Error: {str(e)}",
+            sources=[],
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+
+if __name__ == "__main__":
+    import uvicorn
+    print("🚀 Starting NASA AI Research Assistant Backend...")
+    print("📡 Backend will be available at: http://localhost:8000")
+    print("📚 API Documentation: http://localhost:8000/docs")
+    print("🤖 NASA AI Chat: http://localhost:8000/api/nasa-ai-chat")
+    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)

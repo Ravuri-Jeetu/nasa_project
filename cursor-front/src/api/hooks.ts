@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, sendNasaAiChatMessage, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -25,6 +25,19 @@ export const useChatMutation = () => {
   
   return useMutation({
     mutationFn: (data: ChatRequest) => sendChatMessage(data),
+    onSuccess: () => {
+      // Invalidate relevant queries if needed
+      queryClient.invalidateQueries({ queryKey: ['analytics'] });
+    },
+  });
+};
+
+// NASA AI Chat mutation
+export const useNasaAiChatMutation = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: (data: ChatRequest) => sendNasaAiChatMessage(data),
     onSuccess: () => {
       // Invalidate relevant queries if needed
       queryClient.invalidateQueries({ queryKey: ['analytics'] });
