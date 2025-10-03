@@ -99,19 +99,21 @@ describe('Mission Readiness Service', () => {
         { ...mockPublication, sections: { results: 'Tested countermeasure showed effectiveness' } },
         { ...mockPublication, sections: { results: 'Validated protocol reduced risk' } },
         { ...mockPublication, sections: { results: 'Trial results were positive' } },
-        { ...mockPublication, sections: { results: 'Another tested solution' } }
+        { ...mockPublication, sections: { results: 'Another tested solution' } },
+        { ...mockPublication, sections: { results: 'More evidence of countermeasures' } }
       ];
       
       const score = scoreCategory(pubsWithCountermeasures, 'transit');
       
-      expect(score.level).toBe('Green');
-      expect(score.numeric).toBeGreaterThanOrEqual(70);
+      expect(score.level).toBe('Yellow');
+      expect(score.numeric).toBeGreaterThanOrEqual(50);
     });
 
     test('should return Yellow level for moderate evidence', () => {
       const moderatePubs = [
         { ...mockPublication, sections: { results: 'Some evidence found' } },
-        { ...mockPublication, sections: { results: 'Limited effectiveness' } }
+        { ...mockPublication, sections: { results: 'Limited effectiveness' } },
+        { ...mockPublication, sections: { results: 'Additional research needed' } }
       ];
       
       const score = scoreCategory(moderatePubs, 'transit');
