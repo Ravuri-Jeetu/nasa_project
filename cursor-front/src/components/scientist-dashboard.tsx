@@ -147,8 +147,8 @@ export default function ScientistDashboard() {
 
   const citationTrends = analytics?.publication_trends?.map((trend: { year?: number; count?: number }) => ({
     month: trend.year,
-    citations: Math.floor(trend.count * 2.5), // Estimated citations based on publication count
-    publications: trend.count,
+    citations: Math.floor((trend.count || 0) * 2.5), // Estimated citations based on publication count
+    publications: trend.count || 0,
   })) || [
     { month: 'Jan', citations: 120, publications: 8 },
     { month: 'Feb', citations: 135, publications: 12 },
