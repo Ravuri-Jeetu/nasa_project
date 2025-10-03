@@ -331,8 +331,10 @@ class DynamicDataProcessor:
         try:
             real_data_gaps = self._analyze_real_data_gaps()
             gaps.extend(real_data_gaps)
+            print(f"✅ Added {len(real_data_gaps)} real data gaps")
         except Exception as e:
             # If real data analysis fails, continue with traditional gaps only
+            print(f"⚠️ Real data analysis failed: {e}")
             pass
         
         return gaps[:10]  # Return top 10 gaps
@@ -342,16 +344,22 @@ class DynamicDataProcessor:
         gaps = []
         
         try:
+            print("🔍 Loading paper chunks data for real data analysis...")
             # Load paper chunks data
             with open("step5_all_chunks.json", "r", encoding="utf-8", errors='ignore') as f:
                 chunks_data = json.load(f)
+            
+            print(f"📄 Loaded {len(chunks_data)} paper chunks")
             
             # Analyze paper content for gaps without AI
             paper_gaps = self._extract_gaps_from_papers(chunks_data)
             gaps.extend(paper_gaps)
             
+            print(f"🎯 Extracted {len(paper_gaps)} gaps from papers")
+            
         except Exception as e:
             # If paper analysis fails, return empty list
+            print(f"❌ Real data analysis error: {e}")
             pass
             
         return gaps[:5]  # Return top 5 real data gaps
@@ -360,26 +368,42 @@ class DynamicDataProcessor:
         """Extract gaps from papers using keyword analysis (no AI)"""
         gaps = []
         
-        # Sample a few papers for analysis
-        sample_papers = {}
-        for chunk in chunks_data[:50]:  # Limit to first 50 chunks for performance
+        # Collect all chunks for each paper to get more content
+        papers_dict = {}
+        for chunk in chunks_data[:100]:  # Check more chunks for better coverage
             title = chunk.get('Title', '')
             chunk_text = chunk.get('Chunk', '')
+            paper_id = chunk.get('Paper_ID', '')
             
-            if title and chunk_text and title not in sample_papers:
-                sample_papers[title] = {
-                    'title': title,
-                    'content': chunk_text,
-                    'paper_id': chunk.get('Paper_ID', '')
-                }
+            if title and chunk_text:
+                if title not in papers_dict:
+                    papers_dict[title] = {
+                        'title': title,
+                        'content': '',
+                        'paper_id': paper_id,
+                        'chunks': []
+                    }
+                
+                papers_dict[title]['chunks'].append(chunk_text)
         
-        # Analyze each paper for gaps using keyword matching
-        for paper_title, paper_data in list(sample_papers.items())[:3]:  # Limit to 3 papers
+        # Combine chunks for each paper
+        for title in papers_dict:
+            papers_dict[title]['content'] = ' '.join(papers_dict[title]['chunks'])
+        
+        # Analyze each paper for gaps using improved keyword matching
+        for paper_title, paper_data in list(papers_dict.items())[:5]:  # Check 5 papers
             content = paper_data['content'].lower()
             paper_id = paper_data['paper_id']
             
-            # Look for limitation keywords
-            if any(word in content for word in ['limit', 'constrain', 'restrict', 'insufficient', 'lack']):
+            # Skip if content is too short (likely just titles)
+            if len(content) < 50:
+                continue
+            
+            print(f"📝 Analyzing paper: {paper_title[:50]}... (content length: {len(content)})")
+            
+            # Look for limitation keywords (expanded list)
+            limitation_words = ['limit', 'constrain', 'restrict', 'insufficient', 'lack', 'weakness', 'drawback', 'shortcoming', 'challenge', 'difficult', 'problem', 'issue']
+            if any(word in content for word in limitation_words):
                 gaps.append({
                     "area": f"Research Limitations - {paper_title[:40]}",
                     "gap": f"Study identifies limitations: {paper_data['content'][:200]}...",
@@ -387,9 +411,11 @@ class DynamicDataProcessor:
                     "evidence": f"Paper: {paper_title} (ID: {paper_id})",
                     "recommendation": "Address identified limitations in future research"
                 })
+                print(f"✅ Found limitation gap in: {paper_title[:30]}")
             
-            # Look for future work keywords
-            if any(word in content for word in ['future', 'further study', 'next step', 'recommend', 'suggest']):
+            # Look for future work keywords (expanded list)
+            future_words = ['future', 'further study', 'next step', 'recommend', 'suggest', 'should be', 'need to', 'require', 'propose', 'advance', 'develop', 'improve']
+            if any(word in content for word in future_words):
                 gaps.append({
                     "area": f"Future Research - {paper_title[:40]}",
                     "gap": f"Study suggests future work: {paper_data['content'][:200]}...",
@@ -397,9 +423,11 @@ class DynamicDataProcessor:
                     "evidence": f"Paper: {paper_title} (ID: {paper_id})",
                     "recommendation": "Follow suggested research directions"
                 })
+                print(f"✅ Found future work gap in: {paper_title[:30]}")
             
-            # Look for question/unknown keywords
-            if any(word in content for word in ['unknown', 'unclear', 'question', 'remains to be', 'investigate']):
+            # Look for question/unknown keywords (expanded list)
+            question_words = ['unknown', 'unclear', 'question', 'remains to be', 'investigate', 'explore', 'understand', 'determine', 'elucidate', 'clarify', 'resolve']
+            if any(word in content for word in question_words):
                 gaps.append({
                     "area": f"Open Questions - {paper_title[:40]}",
                     "gap": f"Study raises questions: {paper_data['content'][:200]}...",
@@ -407,7 +435,21 @@ class DynamicDataProcessor:
                     "evidence": f"Paper: {paper_title} (ID: {paper_id})",
                     "recommendation": "Investigate unresolved questions through targeted research"
                 })
+                print(f"✅ Found open question gap in: {paper_title[:30]}")
+            
+            # Look for methodology keywords
+            method_words = ['method', 'technique', 'approach', 'protocol', 'procedure', 'experiment', 'study design', 'measurement', 'analysis']
+            if any(word in content for word in method_words) and len(content) > 100:
+                gaps.append({
+                    "area": f"Methodology Research - {paper_title[:40]}",
+                    "gap": f"Study discusses methodology: {paper_data['content'][:200]}...",
+                    "priority": "Medium",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Consider methodology improvements and validation"
+                })
+                print(f"✅ Found methodology gap in: {paper_title[:30]}")
         
+        print(f"🎯 Total gaps extracted from papers: {len(gaps)}")
         return gaps
     
     def _get_sample_papers_for_analysis(self) -> List[Dict[str, Any]]:
