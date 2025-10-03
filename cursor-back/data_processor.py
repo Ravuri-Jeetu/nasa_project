@@ -323,19 +323,34 @@ class DynamicDataProcessor:
         """Analyze scientific research gaps using AI-powered text analysis"""
         gaps = []
         
-        # Get sample of research papers for AI analysis
-        sample_papers = self._get_sample_papers_for_analysis()
-        
-        # Use AI to analyze each paper for gaps
-        for paper in sample_papers:
-            ai_gaps = self._analyze_paper_gaps_with_ai(paper)
-            gaps.extend(ai_gaps)
-        
-        # Add traditional statistical gaps as backup
+        # First, get traditional gaps as fallback
         traditional_gaps = self._analyze_traditional_scientific_gaps(current_year)
+        
+        try:
+            # Get sample of research papers for AI analysis
+            sample_papers = self._get_sample_papers_for_analysis()
+            
+            # Use AI to analyze each paper for gaps (with timeout protection)
+            for paper in sample_papers:
+                try:
+                    ai_gaps = self._analyze_paper_gaps_with_ai(paper)
+                    gaps.extend(ai_gaps)
+                except Exception:
+                    # Skip this paper if AI analysis fails
+                    continue
+                    
+                # Limit AI analysis to prevent timeout
+                if len(gaps) >= 3:
+                    break
+                    
+        except Exception:
+            # If AI analysis completely fails, return only traditional gaps
+            pass
+        
+        # Combine AI gaps with traditional gaps
         gaps.extend(traditional_gaps)
         
-        return gaps[:10]  # Return top 10 gaps
+        return gaps[:8]  # Return top 8 gaps (reduced for performance)
     
     def _get_sample_papers_for_analysis(self) -> List[Dict[str, Any]]:
         """Get a sample of papers for AI analysis"""
@@ -385,8 +400,8 @@ class DynamicDataProcessor:
                 papers_dict[title]['results'] = papers_dict[title]['results'].strip()
                 papers_dict[title]['conclusion'] = papers_dict[title]['conclusion'].strip()
             
-            # Return sample of papers (first 5 for analysis)
-            return list(papers_dict.values())[:5]
+            # Return sample of papers (first 3 for faster analysis)
+            return list(papers_dict.values())[:3]
             
         except Exception as e:
             return []
