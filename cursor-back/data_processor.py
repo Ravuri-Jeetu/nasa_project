@@ -320,36 +320,95 @@ class DynamicDataProcessor:
         return gaps
     
     def _analyze_scientific_gaps(self, current_year: int) -> List[Dict[str, Any]]:
-        """Analyze scientific research gaps using traditional analysis (AI disabled for performance)"""
+        """Analyze scientific research gaps using real data analysis (optimized for performance)"""
         gaps = []
         
-        # Use only traditional gaps for now to prevent timeout issues
+        # First, get traditional gaps as fallback
         traditional_gaps = self._analyze_traditional_scientific_gaps(current_year)
         gaps.extend(traditional_gaps)
         
-        # TODO: Re-enable AI analysis once performance is optimized
-        # try:
-        #     # Get sample of research papers for AI analysis
-        #     sample_papers = self._get_sample_papers_for_analysis()
-        #     
-        #     # Use AI to analyze each paper for gaps (with timeout protection)
-        #     for paper in sample_papers:
-        #         try:
-        #             ai_gaps = self._analyze_paper_gaps_with_ai(paper)
-        #             gaps.extend(ai_gaps)
-        #         except Exception:
-        #             # Skip this paper if AI analysis fails
-        #             continue
-        #             
-        #         # Limit AI analysis to prevent timeout
-        #         if len(gaps) >= 3:
-        #             break
-        #             
-        # except Exception:
-        #     # If AI analysis completely fails, return only traditional gaps
-        #     pass
+        # Add real data analysis from NASA papers (without heavy AI processing)
+        try:
+            real_data_gaps = self._analyze_real_data_gaps()
+            gaps.extend(real_data_gaps)
+        except Exception as e:
+            # If real data analysis fails, continue with traditional gaps only
+            pass
         
-        return gaps[:8]  # Return top 8 gaps
+        return gaps[:10]  # Return top 10 gaps
+    
+    def _analyze_real_data_gaps(self) -> List[Dict[str, Any]]:
+        """Analyze gaps from real NASA paper data without AI processing"""
+        gaps = []
+        
+        try:
+            # Load paper chunks data
+            with open("step5_all_chunks.json", "r", encoding="utf-8", errors='ignore') as f:
+                chunks_data = json.load(f)
+            
+            # Analyze paper content for gaps without AI
+            paper_gaps = self._extract_gaps_from_papers(chunks_data)
+            gaps.extend(paper_gaps)
+            
+        except Exception as e:
+            # If paper analysis fails, return empty list
+            pass
+            
+        return gaps[:5]  # Return top 5 real data gaps
+    
+    def _extract_gaps_from_papers(self, chunks_data: List[Dict]) -> List[Dict[str, Any]]:
+        """Extract gaps from papers using keyword analysis (no AI)"""
+        gaps = []
+        
+        # Sample a few papers for analysis
+        sample_papers = {}
+        for chunk in chunks_data[:50]:  # Limit to first 50 chunks for performance
+            title = chunk.get('Title', '')
+            chunk_text = chunk.get('Chunk', '')
+            
+            if title and chunk_text and title not in sample_papers:
+                sample_papers[title] = {
+                    'title': title,
+                    'content': chunk_text,
+                    'paper_id': chunk.get('Paper_ID', '')
+                }
+        
+        # Analyze each paper for gaps using keyword matching
+        for paper_title, paper_data in list(sample_papers.items())[:3]:  # Limit to 3 papers
+            content = paper_data['content'].lower()
+            paper_id = paper_data['paper_id']
+            
+            # Look for limitation keywords
+            if any(word in content for word in ['limit', 'constrain', 'restrict', 'insufficient', 'lack']):
+                gaps.append({
+                    "area": f"Research Limitations - {paper_title[:40]}",
+                    "gap": f"Study identifies limitations: {paper_data['content'][:200]}...",
+                    "priority": "Medium",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Address identified limitations in future research"
+                })
+            
+            # Look for future work keywords
+            if any(word in content for word in ['future', 'further study', 'next step', 'recommend', 'suggest']):
+                gaps.append({
+                    "area": f"Future Research - {paper_title[:40]}",
+                    "gap": f"Study suggests future work: {paper_data['content'][:200]}...",
+                    "priority": "High",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Follow suggested research directions"
+                })
+            
+            # Look for question/unknown keywords
+            if any(word in content for word in ['unknown', 'unclear', 'question', 'remains to be', 'investigate']):
+                gaps.append({
+                    "area": f"Open Questions - {paper_title[:40]}",
+                    "gap": f"Study raises questions: {paper_data['content'][:200]}...",
+                    "priority": "High",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Investigate unresolved questions through targeted research"
+                })
+        
+        return gaps
     
     def _get_sample_papers_for_analysis(self) -> List[Dict[str, Any]]:
         """Get a sample of papers for AI analysis"""
