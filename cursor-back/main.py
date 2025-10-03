@@ -15,6 +15,8 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import faiss
 from nasa_ai_service import nasa_ai
+from hybrid_nasa_ai_service import hybrid_nasa_ai
+from hypothesis_generator import hypothesis_generator
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant Backend")
@@ -915,41 +917,75 @@ def knowledge_graph(role: str = "Scientist"):
 @app.get("/api/gap-finder")
 def gap_finder(role: str = "Scientist"):
     """
-    Get research gaps based on role.
+    Get research gaps based on real data analysis.
     """
     try:
-        if role.lower() == "scientist":
-            gaps = [
-                {"area": "Long-term Microgravity Effects", "gap": "Limited data on multi-year space mission impacts on human biology", "priority": "High"},
-                {"area": "Space Radiation Protection", "gap": "Need for advanced shielding materials and biological countermeasures", "priority": "High"},
-                {"area": "Regenerative Medicine in Space", "gap": "Stem cell therapy protocols for space environments", "priority": "Medium"},
-                {"area": "Bone Loss Prevention", "gap": "More effective exercise and pharmaceutical interventions", "priority": "High"},
-                {"area": "Space Agriculture", "gap": "Optimized crop growth systems for long-duration missions", "priority": "Medium"},
-                {"area": "Psychological Health", "gap": "Better understanding of isolation effects on astronaut mental health", "priority": "Medium"},
-            ]
-        elif role.lower() == "manager":
-            gaps = [
-                {"area": "Market Analysis", "gap": "Insufficient market research for emerging technologies", "priority": "High"},
-                {"area": "ROI Tracking", "gap": "Need for better long-term ROI measurement tools", "priority": "Medium"},
-                {"area": "Risk Assessment", "gap": "Limited risk evaluation frameworks for space investments", "priority": "High"},
-                {"area": "Competitive Intelligence", "gap": "Lack of comprehensive competitive analysis", "priority": "Medium"},
-            ]
-        else:  # Mission Planner role
-            gaps = [
-                {"area": "Mission Risk Assessment", "gap": "Need for more comprehensive risk modeling tools", "priority": "High"},
-                {"area": "Resource Optimization", "gap": "Limited tools for dynamic resource allocation", "priority": "High"},
-                {"area": "Mission Architecture", "gap": "Insufficient modular design frameworks", "priority": "Medium"},
-                {"area": "Timeline Management", "gap": "Need for better critical path analysis tools", "priority": "Medium"},
-                {"area": "Cost Estimation", "gap": "Limited accurate cost prediction models", "priority": "High"},
-                {"area": "Safety Protocols", "gap": "Need for enhanced safety assessment frameworks", "priority": "High"},
-            ]
+        # Use real data analysis instead of mock data
+        gaps = data_processor.analyze_research_gaps(role)
+        
+        # Add metadata about the analysis
+        analysis_metadata = {
+            "analysis_type": "Real Data Analysis",
+            "data_source": "NASA Taskbook Projects",
+            "total_projects_analyzed": len(data_processor.df),
+            "analysis_date": str(pd.Timestamp.now()),
+            "role_specific": True
+        }
         
         return {
             "gaps": gaps,
-            "role": role
+            "role": role,
+            "metadata": analysis_metadata,
+            "success": True
         }
     except Exception as e:
-        return {"error": f"Error fetching gaps: {str(e)}"}
+        return {
+            "gaps": [],
+            "role": role,
+            "error": f"Error analyzing gaps: {str(e)}",
+            "success": False
+        }
+
+@app.post("/api/hypothesis")
+def generate_hypotheses(request: dict):
+    """
+    Generate scientific hypotheses based on research query.
+    """
+    try:
+        query = request.get("query", "")
+        role = request.get("role", "scientist")
+        
+        if not query.strip():
+            return {
+                "hypotheses": [],
+                "error": "Query cannot be empty",
+                "success": False
+            }
+        
+        # Generate hypotheses using the hypothesis generator
+        hypotheses = hypothesis_generator.generate_hypotheses(query, role)
+        
+        # Add metadata
+        metadata = {
+            "query": query,
+            "role": role,
+            "total_papers_analyzed": len(hypothesis_generator.papers_df),
+            "generation_date": str(pd.Timestamp.now()),
+            "hypothesis_types": list(set([h.get("type", "Unknown") for h in hypotheses]))
+        }
+        
+        return {
+            "hypotheses": hypotheses,
+            "metadata": metadata,
+            "success": True
+        }
+        
+    except Exception as e:
+        return {
+            "hypotheses": [],
+            "error": f"Error generating hypotheses: {str(e)}",
+            "success": False
+        }
 
 # ==================== DYNAMIC MANAGER DASHBOARD ENDPOINTS ====================
 
@@ -2074,6 +2110,55 @@ def nasa_ai_chat_endpoint(request: ChatMessage):
 
 **Sources:** {result.get('sources_info', 'No sources found')}
 **Confidence:** {result.get('confidence', 'Low')} (relevant NASA research found)"""
+        
+        return ChatResponse(
+            response=formatted_response,
+            sources=clean_sources,
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+        
+    except Exception as e:
+        return ChatResponse(
+            response=f"❌ Error: {str(e)}",
+            sources=[],
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+
+@app.post("/api/hybrid-nasa-ai-chat", response_model=ChatResponse)
+def hybrid_nasa_ai_chat_endpoint(request: ChatMessage):
+    """
+    Hybrid NASA AI-powered chat endpoint combining Ollama model with RAG system.
+    """
+    try:
+        # Use the hybrid NASA AI service
+        result = hybrid_nasa_ai.chat(request.message)
+        
+        # Convert sources to clean format
+        clean_sources = []
+        for source in result.get("sources", []):
+            clean_source = {}
+            for key, value in source.items():
+                if hasattr(value, 'item'):  # numpy scalar
+                    clean_source[key] = value.item()
+                else:
+                    clean_source[key] = value
+            clean_sources.append(clean_source)
+        
+        # Format the response with hybrid AI branding
+        response_type = result.get("response_type", "Hybrid AI")
+        ollama_status = "✅ Ollama Model Active" if result.get("ollama_available", False) else "⚠️ RAG System Only"
+        
+        formatted_response = f"""🤖 **NASA Hybrid AI Assistant** ({response_type})
+
+**Question:** {request.message}
+
+**Answer:** {result['response']}
+
+**Sources:** {result.get('sources_info', 'No sources found')}
+**Confidence:** {result.get('confidence', 'Low')} (relevant NASA research found)
+**System Status:** {ollama_status}"""
         
         return ChatResponse(
             response=formatted_response,

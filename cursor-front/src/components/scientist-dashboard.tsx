@@ -8,6 +8,7 @@ import Pagination from '@/components/ui/pagination';
 import { useAppStore } from '@/store/appStore';
 import { usePapers, useAnalytics, useKnowledgeGraph, useGapFinder } from '@/api/hooks';
 import MethodologyComparisonComponent from '@/components/methodology-comparison';
+import HypothesisGenerator from '@/components/hypothesis-generator';
 import { Paper } from '@/api/api';
 import { 
   BarChart, 
@@ -192,6 +193,7 @@ export default function ScientistDashboard() {
           <TabsTrigger value="knowledge-graph">Knowledge Graph</TabsTrigger>
           <TabsTrigger value="methodology">Methodology Comparison</TabsTrigger>
           <TabsTrigger value="topics">Topic Comparison</TabsTrigger>
+          <TabsTrigger value="hypothesis">Hypothesis Generation</TabsTrigger>
           <TabsTrigger value="gaps">Gap Finder</TabsTrigger>
         </TabsList>
 
@@ -509,6 +511,11 @@ export default function ScientistDashboard() {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* Hypothesis Generation Tab */}
+        <TabsContent value="hypothesis" className="space-y-4">
+          <HypothesisGenerator />
         </TabsContent>
 
         {/* Gap Finder Tab */}
