@@ -14,7 +14,7 @@ import {
 import { 
   TrendingUp, TrendingDown, AlertTriangle, DollarSign, 
   RefreshCw, Target, Activity, Users, Briefcase, BarChart3, 
-  Investment, AlertCircle, Calculator
+  PiggyBank as Investment, AlertCircle, Calculator
 } from 'lucide-react';
 import { 
   fetchDomainAnalytics, 
