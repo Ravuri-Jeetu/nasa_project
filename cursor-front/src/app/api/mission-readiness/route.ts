@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { computeMissionReadinessIndex } from '../../../../services/missionReadinessService';
-import { loadPublications } from '../../../../scripts/load_sample';
+import { computeMissionReadinessIndex } from '../../../../../services/missionReadinessService';
+import { loadPublications } from '../../../../../scripts/load_sample';
 
 /**
  * Mission Readiness API Endpoint
