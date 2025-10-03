@@ -81,6 +81,14 @@ export default function Header() {
             >
               Mission Planner
             </Link>
+            <Link
+              href="/mission-readiness"
+              className={`text-sm font-medium transition-colors hover:text-primary ${
+                isActive('/mission-readiness') ? 'text-primary' : 'text-muted-foreground'
+              }`}
+            >
+              Mission Readiness
+            </Link>
           </nav>
 
           {/* Role Toggle - Hidden on mobile */}
