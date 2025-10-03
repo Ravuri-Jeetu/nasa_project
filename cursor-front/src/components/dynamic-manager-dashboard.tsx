@@ -6,13 +6,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Slider } from '@/components/ui/slider';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { 
   BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   PieChart, Pie, Cell, LineChart, Line
 } from 'recharts';
 import { 
   TrendingUp, TrendingDown, AlertTriangle, DollarSign, 
-  RefreshCw, Target, Activity, Users, Briefcase 
+  RefreshCw, Target, Activity, Users, Briefcase, BarChart3, 
+  Investment, AlertCircle, Calculator
 } from 'lucide-react';
 import { 
   fetchDomainAnalytics, 
@@ -146,8 +148,31 @@ export default function DynamicManagerDashboard() {
         </Button>
       </div>
 
-      {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Main Content with Tabs */}
+      <Tabs defaultValue="analytics" className="space-y-4">
+        <TabsList>
+          <TabsTrigger value="analytics" className="flex items-center gap-2">
+            <BarChart3 className="h-4 w-4" />
+            Analytics
+          </TabsTrigger>
+          <TabsTrigger value="investment" className="flex items-center gap-2">
+            <Investment className="h-4 w-4" />
+            Investment
+          </TabsTrigger>
+          <TabsTrigger value="alerts" className="flex items-center gap-2">
+            <AlertCircle className="h-4 w-4" />
+            Alerts
+          </TabsTrigger>
+          <TabsTrigger value="simulation" className="flex items-center gap-2">
+            <Calculator className="h-4 w-4" />
+            Simulation
+          </TabsTrigger>
+        </TabsList>
+
+        {/* Analytics Tab */}
+        <TabsContent value="analytics" className="space-y-4">
+          {/* Key Metrics */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Projects</CardTitle>
@@ -201,38 +226,95 @@ export default function DynamicManagerDashboard() {
         </Card>
       </div>
 
-      {/* Domain Distribution and Investment Recommendations */}
+      {/* Domain Distribution Chart */}
+      <Card>
+        <CardHeader>
+          <CardTitle>Research Domain Distribution</CardTitle>
+          <CardDescription>Current funding allocation across research areas</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart>
+              <Pie
+                data={domainChartData}
+                cx="50%"
+                cy="50%"
+                labelLine={false}
+                label={({ domain, percentage }) => `${domain}: ${percentage}%`}
+                outerRadius={80}
+                fill="#8884d8"
+                dataKey="count"
+              >
+                {domainChartData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                ))}
+              </Pie>
+              <Tooltip />
+            </PieChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+
+      {/* Emerging Areas and Project Status */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Domain Distribution Chart */}
+        {/* Emerging Areas */}
         <Card>
           <CardHeader>
-            <CardTitle>Research Domain Distribution</CardTitle>
-            <CardDescription>Current funding allocation across research areas</CardDescription>
+            <CardTitle>Emerging Research Areas</CardTitle>
+            <CardDescription>Fastest growing research domains</CardDescription>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={domainChartData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ domain, percentage }) => `${domain}: ${percentage}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="count"
-                >
-                  {domainChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div className="space-y-3">
+              {emergingAreas.slice(0, 5).map((area, index) => (
+                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
+                  <div>
+                    <div className="font-semibold">{area.domain}</div>
+                    <div className="text-sm text-gray-600">
+                      {area.recent_studies} recent studies • {area.total_studies} total
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <Badge variant={area.status === 'GROWING' ? 'default' : 'secondary'}>
+                      {area.status}
+                    </Badge>
+                    <div className="text-sm font-semibold mt-1">
+                      {area.growth_score > 0 ? '+' : ''}{area.growth_score}%
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 
-        {/* Investment Recommendations - Dark Style from manager.py */}
+        {/* Project Status Overview */}
+        <Card>
+          <CardHeader>
+            <CardTitle>Project Status Overview</CardTitle>
+            <CardDescription>Current project completion status</CardDescription>
+          </CardHeader>
+          <CardContent>
+            {projectStatus && (
+              <div className="space-y-4">
+                {Object.entries(projectStatus.status_percentages).map(([status, percentage]) => (
+                  <div key={status} className="space-y-2">
+                    <div className="flex justify-between text-sm">
+                      <span>{status}</span>
+                      <span>{percentage}% ({projectStatus.overall_status[status]} projects)</span>
+                    </div>
+                    <Progress value={percentage} className="h-2" />
+                  </div>
+                ))}
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </div>
+        </TabsContent>
+
+        {/* Investment Tab */}
+        <TabsContent value="investment" className="space-y-4">
+          {/* Investment Recommendations - Dark Style from manager.py */}
         <Card className="bg-transparent border-gray-700 text-white">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
@@ -278,9 +360,11 @@ export default function DynamicManagerDashboard() {
             )}
           </CardContent>
         </Card>
-      </div>
+        </TabsContent>
 
-      {/* Red Flag Alerts - Dark Style from manager.py */}
+        {/* Alerts Tab */}
+        <TabsContent value="alerts" className="space-y-4">
+          {/* Red Flag Alerts - Dark Style from manager.py */}
       <Card className="bg-transparent border-gray-700 text-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
@@ -388,8 +472,11 @@ export default function DynamicManagerDashboard() {
           </div>
         </CardContent>
       </Card>
+        </TabsContent>
 
-      {/* Budget Simulation - Enhanced from manager.py */}
+        {/* Simulation Tab */}
+        <TabsContent value="simulation" className="space-y-4">
+          {/* Budget Simulation - Enhanced from manager.py */}
       <Card className="bg-transparent border-gray-700 text-white">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-white">
@@ -524,62 +611,8 @@ export default function DynamicManagerDashboard() {
           </div>
         </CardContent>
       </Card>
-
-      {/* Emerging Areas and Project Status */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Emerging Areas */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Emerging Research Areas</CardTitle>
-            <CardDescription>Fastest growing research domains</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-3">
-              {emergingAreas.slice(0, 5).map((area, index) => (
-                <div key={index} className="flex items-center justify-between p-3 border rounded-lg">
-                  <div>
-                    <div className="font-semibold">{area.domain}</div>
-                    <div className="text-sm text-gray-600">
-                      {area.recent_studies} recent studies • {area.total_studies} total
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <Badge variant={area.status === 'GROWING' ? 'default' : 'secondary'}>
-                      {area.status}
-                    </Badge>
-                    <div className="text-sm font-semibold mt-1">
-                      {area.growth_score > 0 ? '+' : ''}{area.growth_score}%
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Project Status Overview */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Project Status Overview</CardTitle>
-            <CardDescription>Current project completion status</CardDescription>
-          </CardHeader>
-          <CardContent>
-            {projectStatus && (
-              <div className="space-y-4">
-                {Object.entries(projectStatus.status_percentages).map(([status, percentage]) => (
-                  <div key={status} className="space-y-2">
-                    <div className="flex justify-between text-sm">
-                      <span>{status}</span>
-                      <span>{percentage}% ({projectStatus.overall_status[status]} projects)</span>
-                    </div>
-                    <Progress value={percentage} className="h-2" />
-                  </div>
-                ))}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
