@@ -340,99 +340,167 @@ class DynamicDataProcessor:
     def _get_sample_papers_for_analysis(self) -> List[Dict[str, Any]]:
         """Get a sample of papers for AI analysis"""
         try:
-            # Try to load paper chunks data
-            with open("step5_all_chunks.json", "r", encoding="utf-8") as f:
+            # Try to load paper chunks data with proper encoding
+            with open("step5_all_chunks.json", "r", encoding="utf-8", errors='ignore') as f:
                 chunks_data = json.load(f)
             
-            # Get unique papers and sample them
-            unique_papers = {}
+            # Group chunks by paper title
+            papers_dict = {}
             for chunk in chunks_data:
                 title = chunk.get('Title', '')
-                if title not in unique_papers:
-                    unique_papers[title] = {
-                        'title': title,
-                        'abstract': chunk.get('Abstract', ''),
-                        'methods': chunk.get('Methods', ''),
-                        'results': chunk.get('Results', ''),
-                        'conclusion': chunk.get('Conclusion', ''),
-                        'combined_text': f"{chunk.get('Abstract', '')} {chunk.get('Methods', '')} {chunk.get('Results', '')} {chunk.get('Conclusion', '')}"
-                    }
+                chunk_text = chunk.get('Chunk', '')
+                section = chunk.get('Section', '')
+                
+                if title and chunk_text:
+                    if title not in papers_dict:
+                        papers_dict[title] = {
+                            'title': title,
+                            'abstract': '',
+                            'methods': '',
+                            'results': '',
+                            'conclusion': '',
+                            'all_chunks': []
+                        }
+                    
+                    # Add chunk to appropriate section
+                    papers_dict[title]['all_chunks'].append(chunk_text)
+                    
+                    # Organize by section type
+                    section_lower = section.lower()
+                    if 'abstract' in section_lower or 'introduction' in section_lower:
+                        papers_dict[title]['abstract'] += ' ' + chunk_text
+                    elif 'method' in section_lower or 'material' in section_lower:
+                        papers_dict[title]['methods'] += ' ' + chunk_text
+                    elif 'result' in section_lower or 'finding' in section_lower:
+                        papers_dict[title]['results'] += ' ' + chunk_text
+                    elif 'conclusion' in section_lower or 'discussion' in section_lower:
+                        papers_dict[title]['conclusion'] += ' ' + chunk_text
+            
+            # Combine all chunks for each paper
+            for title in papers_dict:
+                papers_dict[title]['combined_text'] = ' '.join(papers_dict[title]['all_chunks'])
+                # Trim whitespace
+                papers_dict[title]['abstract'] = papers_dict[title]['abstract'].strip()
+                papers_dict[title]['methods'] = papers_dict[title]['methods'].strip()
+                papers_dict[title]['results'] = papers_dict[title]['results'].strip()
+                papers_dict[title]['conclusion'] = papers_dict[title]['conclusion'].strip()
             
             # Return sample of papers (first 5 for analysis)
-            return list(unique_papers.values())[:5]
+            return list(papers_dict.values())[:5]
             
         except Exception as e:
-            print(f"Error loading paper data for AI analysis: {e}")
             return []
     
     def _analyze_paper_gaps_with_ai(self, paper: Dict[str, Any]) -> List[Dict[str, Any]]:
         """Use AI to analyze a paper for research gaps"""
         try:
-            # Import the summarizer from main.py
-            from main import summarizer
+            # Import the summarizer (avoid importing from main to prevent circular dependencies)
+            from transformers import pipeline
+            import torch
+            
+            # Initialize summarizer locally if needed
+            try:
+                from main import summarizer
+            except:
+                summarizer = pipeline("summarization", model="sshleifer/distilbart-cnn-12-6", framework="pt", device=0 if torch.cuda.is_available() else -1)
             
             # Prepare text for analysis (truncate if too long)
             text_to_analyze = paper.get('combined_text', '') or paper.get('abstract', '')
             if len(text_to_analyze) > 2000:
-                text_to_analyze = text_to_analyze[:2000] + "..."
+                truncated_text = text_to_analyze[:2000]
+            else:
+                truncated_text = text_to_analyze
             
-            if len(text_to_analyze) < 100:
+            if len(truncated_text) < 100:
                 return []  # Skip papers with insufficient content
             
-            # Create the AI prompt for gap analysis
-            prompt = f"""
-            Analyze the following scientific text to identify research gaps.
-            Based ONLY on the text provided, extract the following:
-            1. Limitations mentioned in the study.
-            2. Contradictions or open questions.
-            3. Suggested next steps or future work.
-
-            Return your findings as a valid JSON object with three keys: "limitations", "contradictions", and "suggested_next_steps".
-            Text: "{text_to_analyze}"
-            """
-            
-            # Use AI to analyze the text
-            result = summarizer(prompt, max_length=300, min_length=100, do_sample=False)
-            ai_analysis = result[0]['summary_text']
+            # Use AI to generate a summary that highlights gaps
+            result = summarizer(truncated_text, max_length=200, min_length=50, do_sample=False)
+            ai_summary = result[0]['summary_text']
             
             # Parse AI response and create gap entries
             gaps = []
             paper_title = paper.get('title', 'Unknown Study')
+            paper_id = paper.get('paper_id', '')
             
-            # Extract limitations
-            if 'limitations' in ai_analysis.lower():
+            # Analyze the text for key gap indicators
+            text_lower = truncated_text.lower()
+            
+            # Look for limitations
+            if any(word in text_lower for word in ['limit', 'constrain', 'drawback', 'weakness', 'shortcoming']):
+                # Extract the sentence containing the limitation
+                sentences = truncated_text.split('.')
+                limitation_text = ""
+                for sent in sentences:
+                    if any(word in sent.lower() for word in ['limit', 'constrain', 'drawback']):
+                        limitation_text = sent.strip()
+                        break
+                
+                if not limitation_text:
+                    limitation_text = ai_summary
+                
                 gaps.append({
-                    "area": f"Study Limitations - {paper_title[:50]}...",
-                    "gap": f"AI-identified limitations: {ai_analysis[:200]}...",
+                    "area": f"Study Limitations - {paper_title[:50]}",
+                    "gap": f"{limitation_text[:300]}",
                     "priority": "Medium",
-                    "evidence": f"Based on AI analysis of: {paper_title}",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
                     "recommendation": "Address identified limitations in future research"
                 })
             
-            # Extract contradictions/open questions
-            if any(word in ai_analysis.lower() for word in ['contradiction', 'unclear', 'unknown', 'question']):
+            # Look for contradictions/open questions
+            if any(word in text_lower for word in ['unclear', 'unknown', 'question', 'investigate', 'further study', 'remains to be']):
+                sentences = truncated_text.split('.')
+                question_text = ""
+                for sent in sentences:
+                    if any(word in sent.lower() for word in ['unclear', 'unknown', 'question', 'remains to be']):
+                        question_text = sent.strip()
+                        break
+                
+                if not question_text:
+                    question_text = ai_summary
+                
                 gaps.append({
-                    "area": f"Open Questions - {paper_title[:50]}...",
-                    "gap": f"AI-identified open questions: {ai_analysis[:200]}...",
+                    "area": f"Open Questions - {paper_title[:50]}",
+                    "gap": f"{question_text[:300]}",
                     "priority": "High",
-                    "evidence": f"Based on AI analysis of: {paper_title}",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
                     "recommendation": "Investigate unresolved questions through targeted research"
                 })
             
-            # Extract suggested next steps
-            if any(word in ai_analysis.lower() for word in ['future', 'next', 'suggest', 'recommend']):
+            # Look for future work suggestions
+            if any(word in text_lower for word in ['future', 'next step', 'suggest', 'recommend', 'should be', 'need to', 'require']):
+                sentences = truncated_text.split('.')
+                future_text = ""
+                for sent in sentences:
+                    if any(word in sent.lower() for word in ['future', 'suggest', 'recommend', 'should be', 'need to']):
+                        future_text = sent.strip()
+                        break
+                
+                if not future_text:
+                    future_text = ai_summary
+                
                 gaps.append({
-                    "area": f"Future Research Directions - {paper_title[:50]}...",
-                    "gap": f"AI-suggested next steps: {ai_analysis[:200]}...",
+                    "area": f"Future Research - {paper_title[:50]}",
+                    "gap": f"{future_text[:300]}",
                     "priority": "Medium",
-                    "evidence": f"Based on AI analysis of: {paper_title}",
-                    "recommendation": "Follow AI-suggested research directions"
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Follow suggested research directions"
+                })
+            
+            # If no specific gaps found but we have a summary, create a general gap
+            if not gaps and len(ai_summary) > 20:
+                gaps.append({
+                    "area": f"Research Insights - {paper_title[:50]}",
+                    "gap": f"Key findings: {ai_summary[:250]}",
+                    "priority": "Medium",
+                    "evidence": f"Paper: {paper_title} (ID: {paper_id})",
+                    "recommendation": "Consider building upon these findings in future work"
                 })
             
             return gaps
             
         except Exception as e:
-            print(f"Error in AI gap analysis: {e}")
+            # Return empty list silently to avoid console encoding errors
             return []
     
     def _analyze_traditional_scientific_gaps(self, current_year: int) -> List[Dict[str, Any]]:
