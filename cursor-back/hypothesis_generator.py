@@ -12,12 +12,15 @@ from sklearn.metrics.pairwise import cosine_similarity
 class HypothesisGenerator:
     """Generate scientific hypotheses based on NASA space biology research data"""
     
-    def __init__(self, papers_data_path="../cursor-back/SB_publication_PMC.csv"):
+    def __init__(self, papers_data_path="SB_publication_PMC.csv", hypotheses_data_path="all_papers_hypotheses_merged.jsonl"):
         self.papers_data_path = papers_data_path
+        self.hypotheses_data_path = hypotheses_data_path
         self.papers_df = None
         self.tfidf_vectorizer = None
         self.tfidf_matrix = None
+        self.pre_generated_hypotheses = {}
         self.load_papers_data()
+        self.load_pre_generated_hypotheses()
         self.setup_text_analysis()
     
     def load_papers_data(self):
@@ -30,6 +33,24 @@ class HypothesisGenerator:
         except Exception as e:
             print(f"❌ Error loading papers data: {e}")
             self.papers_df = pd.DataFrame()
+    
+    def load_pre_generated_hypotheses(self):
+        """Load pre-generated hypotheses from JSONL file"""
+        try:
+            if os.path.exists(self.hypotheses_data_path):
+                with open(self.hypotheses_data_path, 'r', encoding='utf-8') as f:
+                    for line in f:
+                        data = json.loads(line.strip())
+                        paper_id = data['paper_id']
+                        hypotheses = data['hypotheses']
+                        self.pre_generated_hypotheses[paper_id] = hypotheses
+                print(f"✅ Loaded {len(self.pre_generated_hypotheses)} pre-generated hypothesis sets")
+            else:
+                print(f"⚠️ Pre-generated hypotheses file not found: {self.hypotheses_data_path}")
+                self.pre_generated_hypotheses = {}
+        except Exception as e:
+            print(f"❌ Error loading pre-generated hypotheses: {e}")
+            self.pre_generated_hypotheses = {}
     
     def setup_text_analysis(self):
         """Setup TF-IDF analysis for text similarity"""
@@ -55,6 +76,19 @@ class HypothesisGenerator:
             print("✅ TF-IDF analysis setup complete")
         except Exception as e:
             print(f"❌ Error setting up text analysis: {e}")
+    
+    def _extract_pmc_id(self, link: str) -> Optional[str]:
+        """Extract PMC ID from paper link"""
+        try:
+            if pd.isna(link) or not link:
+                return None
+            # Extract PMC ID from URL like https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4136787/
+            match = re.search(r'PMC(\d+)', str(link))
+            if match:
+                return f"PMC{match.group(1)}"
+            return None
+        except Exception:
+            return None
     
     def _assign_domain_from_title(self, title: str) -> str:
         """Assign research domain based on title keywords"""
@@ -86,21 +120,42 @@ class HypothesisGenerator:
         
         hypotheses = []
         
-        # 1. Gap-based hypothesis generation
-        gap_hypotheses = self._generate_gap_based_hypotheses(query)
-        hypotheses.extend(gap_hypotheses)
+        # First, try to find pre-generated hypotheses for related papers
+        related_papers = self._find_related_papers(query, top_k=5)
+        pre_generated_found = False
         
-        # 2. Methodology-driven hypotheses
-        method_hypotheses = self._generate_methodology_hypotheses(query)
-        hypotheses.extend(method_hypotheses)
+        for paper in related_papers:
+            pmc_id = self._extract_pmc_id(paper.get('link', ''))
+            if pmc_id and pmc_id in self.pre_generated_hypotheses:
+                paper_hypotheses = self.pre_generated_hypotheses[pmc_id]
+                for i, hypothesis_text in enumerate(paper_hypotheses):
+                    hypotheses.append({
+                        "hypothesis": hypothesis_text,
+                        "supporting_evidence": f"Based on research from {paper['title']}",
+                        "confidence": 95 - (i * 5),  # High confidence for real hypotheses
+                        "type": "Pre-generated",
+                        "related_papers": [{'title': paper['title'], 'link': paper['link']}]
+                    })
+                pre_generated_found = True
+                break  # Use the first matching paper's hypotheses
         
-        # 3. Trend-based hypotheses
-        trend_hypotheses = self._generate_trend_based_hypotheses(query)
-        hypotheses.extend(trend_hypotheses)
-        
-        # 4. Custom query hypotheses
-        custom_hypotheses = self._generate_custom_query_hypotheses(query)
-        hypotheses.extend(custom_hypotheses)
+        # If no pre-generated hypotheses found, generate AI hypotheses
+        if not pre_generated_found:
+            # 1. Gap-based hypothesis generation
+            gap_hypotheses = self._generate_gap_based_hypotheses(query)
+            hypotheses.extend(gap_hypotheses)
+            
+            # 2. Methodology-driven hypotheses
+            method_hypotheses = self._generate_methodology_hypotheses(query)
+            hypotheses.extend(method_hypotheses)
+            
+            # 3. Trend-based hypotheses
+            trend_hypotheses = self._generate_trend_based_hypotheses(query)
+            hypotheses.extend(trend_hypotheses)
+            
+            # 4. Custom query hypotheses
+            custom_hypotheses = self._generate_custom_query_hypotheses(query)
+            hypotheses.extend(custom_hypotheses)
         
         # Sort by confidence score and return top 5
         hypotheses.sort(key=lambda x: x['confidence'], reverse=True)
