@@ -7,7 +7,7 @@ import { useState, useEffect } from 'react';
 import { CheckCircle, Star, Link, Brain, Target, BarChart3, TrendingUp } from 'lucide-react';
 
 interface KnowledgeGraphProps {
-  papers: Array<{ id: string; title: string; keywords?: string[] }>;
+  papers: Array<{ id: string; title: string; keywords?: string[]; citations?: number; funding?: number; methodology?: string }>;
   role: string;
 }
 
@@ -598,7 +598,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                         <path
                           d={`M ${sourcePos.x} ${sourcePos.y} Q ${controlX} ${controlY} ${targetPos.x} ${targetPos.y}`}
                           stroke={`url(#edgeGradient-${index})`}
-                          strokeWidth={Math.max(3, edge.weight * 8)}
+                          strokeWidth={Math.max(3, (edge.weight as number) * 8)}
                           fill="none"
                           opacity="0.6"
                           filter="url(#shadow)"
@@ -640,7 +640,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     const nodeSize = isSelected ? 35 : baseSize;
                     
                     // Use the node's color from backend data
-                    const nodeColor = node.color || `hsl(${(index * 60) % 360}, 70%, 55%)`;
+                    const nodeColor = (node.color as string) || `hsl(${(index * 60) % 360}, 70%, 55%)`;
                     
                     return (
                       <g key={node.id}>
@@ -730,7 +730,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                             textShadow: '0 1px 2px rgba(0,0,0,0.8)'
                           }}
                         >
-                          {node.count || node.citations || ''}
+                          {(node.count as number) || (node.citations as number) || ''}
                         </text>
                         
                         {/* Node type indicator - REMOVED */}
@@ -761,7 +761,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
                     <div className="flex items-center justify-center gap-1">
                       <div 
                         className="w-2 h-2 rounded-full" 
-                        style={{ backgroundColor: node.color }}
+                        style={{ backgroundColor: node.color as string }}
                       />
                       <span className="truncate">{node.label}</span>
                     </div>
@@ -776,7 +776,7 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
             <div className="mt-6 p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl border border-blue-200 shadow-lg">
               <h3 className="font-bold text-blue-900 mb-3 text-lg">{selectedNodeData.label}</h3>
               <p className="text-sm text-blue-700 mb-4 font-medium">
-                {selectedNodeData.count || selectedNodeData.citations || 0} {selectedNodeData.type === 'paper' ? 'citations' : 'papers'} in this area
+                {(selectedNodeData.count as number) || (selectedNodeData.citations as number) || 0} {selectedNodeData.type === 'paper' ? 'citations' : 'papers'} in this area
               </p>
               <div className="flex flex-wrap gap-3">
                 <Badge variant="secondary" className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 font-semibold px-3 py-1">
@@ -814,11 +814,11 @@ export default function KnowledgeGraph({ papers, role }: KnowledgeGraphProps) {
               <div key={`legend-${node.id}`} className="flex items-center space-x-2 p-2 bg-transparent rounded-lg">
                 <div 
                   className="w-4 h-4 rounded-full shadow-sm" 
-                  style={{ backgroundColor: node.color }}
+                  style={{ backgroundColor: node.color as string }}
                 />
                 <span className="text-sm font-semibold text-white">{node.label}</span>
                 {showIntraPaperRelations && (
-                  <span className="text-xs text-white font-medium">({node.citations} citations)</span>
+                  <span className="text-xs text-white font-medium">({node.citations as number} citations)</span>
                 )}
               </div>
             ))}

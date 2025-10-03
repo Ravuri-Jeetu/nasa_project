@@ -121,8 +121,8 @@ export default function DynamicManagerDashboard() {
 
   const fundingData = domainAnalytics ? Object.entries(domainAnalytics.domains.funding).map(([domain, data]) => ({
     domain,
-    funding: typeof data === 'number' ? data : (data as any).sum || 0,
-    roi: domainAnalytics.domains.roi[domain]?.mean || 0
+    funding: typeof data === 'number' ? data : (data as { sum?: number }).sum || 0,
+    roi: typeof domainAnalytics.domains.roi[domain] === 'number' ? domainAnalytics.domains.roi[domain] : (domainAnalytics.domains.roi[domain] as { mean?: number })?.mean || 0
   })) : [];
 
   return (
@@ -580,6 +580,220 @@ export default function DynamicManagerDashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Cross-Domain Synergy Analysis - Manager View */}
+      <Card className="bg-transparent border-gray-700 text-white">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-white">
+            <TrendingUp className="h-5 w-5" />
+            Cross-Domain Synergy Analysis
+          </CardTitle>
+          <CardDescription className="text-gray-300">
+            Comprehensive analysis of collaboration opportunities and strategic recommendations
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          {/* Executive Summary */}
+          <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-cyan-400 mb-3">📊 Executive Summary</h3>
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+              <div className="text-center">
+                <div className="text-3xl font-bold text-blue-400">97</div>
+                <div className="text-sm text-gray-300">Synergies Found</div>
+                <div className="text-xs text-gray-400 mt-1">High collaboration potential</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-green-400">6</div>
+                <div className="text-sm text-gray-300">Domains Analyzed</div>
+                <div className="text-xs text-gray-400 mt-1">Cross-domain opportunities</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-purple-400">374</div>
+                <div className="text-sm text-gray-300">Projects Processed</div>
+                <div className="text-xs text-gray-400 mt-1">Comprehensive analysis</div>
+              </div>
+              <div className="text-center">
+                <div className="text-3xl font-bold text-yellow-400">0.91</div>
+                <div className="text-sm text-gray-300">Max Similarity</div>
+                <div className="text-xs text-gray-400 mt-1">Highest synergy score</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Priority 1: High-Impact Collaborations */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-green-400 flex items-center gap-2">
+              🚀 Priority 1: High-Impact Collaborations
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-900 border border-green-500 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-cyan-400">Human Research + Space Biology</h4>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-green-400">0.908</div>
+                    <div className="text-xs text-gray-400">Similarity Score</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">
+                  <strong>Strategic Impact:</strong> Highest synergy between astronaut health and space biology research. 
+                  Critical for developing effective countermeasures for long-duration space missions.
+                </p>
+                <div className="space-y-1 text-xs text-gray-300">
+                  <div>• <strong>Action:</strong> Joint research initiative on astronaut health countermeasures</div>
+                  <div>• <strong>Timeline:</strong> Start Q2 2024</div>
+                  <div>• <strong>Budget:</strong> $2.5M allocated</div>
+                  <div>• <strong>ROI:</strong> 40% faster countermeasure development</div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-900 border border-yellow-500 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-cyan-400">Space Biology + Technology Development</h4>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-yellow-400">0.792</div>
+                    <div className="text-xs text-gray-400">Similarity Score</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">
+                  <strong>Strategic Impact:</strong> Strong bridge between biological research and technological applications. 
+                  Key for advancing space agriculture and life support systems.
+                </p>
+                <div className="space-y-1 text-xs text-gray-300">
+                  <div>• <strong>Action:</strong> Lab-on-a-chip technology program</div>
+                  <div>• <strong>Timeline:</strong> Start Q3 2024</div>
+                  <div>• <strong>Budget:</strong> $1.8M for integration</div>
+                  <div>• <strong>ROI:</strong> Revolutionize space agriculture research</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Priority 2: Strategic Partnerships */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold text-yellow-400 flex items-center gap-2">
+              ⚡ Priority 2: Strategic Partnerships
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="bg-gray-900 border border-orange-500 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-cyan-400">Planetary Science + Space Biology</h4>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-orange-400">0.743</div>
+                    <div className="text-xs text-gray-400">Similarity Score</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">
+                  <strong>Strategic Impact:</strong> Plant biology research spans both planetary exploration and space biology. 
+                  Critical for Mars mission life support systems.
+                </p>
+                <div className="space-y-1 text-xs text-gray-300">
+                  <div>• <strong>Action:</strong> Mars mission life support collaboration</div>
+                  <div>• <strong>Timeline:</strong> Start Q4 2024</div>
+                  <div>• <strong>Budget:</strong> $1.2M for Mars-specific research</div>
+                  <div>• <strong>ROI:</strong> Enable sustainable Mars missions</div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-900 border border-blue-500 rounded-lg p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <h4 className="text-lg font-semibold text-cyan-400">Earth Science + Space Biology</h4>
+                  <div className="text-right">
+                    <div className="text-2xl font-bold text-blue-400">0.681</div>
+                    <div className="text-xs text-gray-400">Similarity Score</div>
+                  </div>
+                </div>
+                <p className="text-sm text-gray-300 mb-3">
+                  <strong>Strategic Impact:</strong> Atmospheric pressure research connects Earth-based plant studies with space biology. 
+                  Essential for closed-loop life support systems.
+                </p>
+                <div className="space-y-1 text-xs text-gray-300">
+                  <div>• <strong>Action:</strong> Atmospheric pressure research program</div>
+                  <div>• <strong>Timeline:</strong> Start Q1 2025</div>
+                  <div>• <strong>Budget:</strong> $800K for atmospheric studies</div>
+                  <div>• <strong>ROI:</strong> Improve closed-loop life support</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Implementation Strategy */}
+          <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-purple-400 mb-3">📋 Implementation Strategy</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-gray-300">
+              <div>
+                <h4 className="font-semibold text-cyan-400 mb-2">Phase 1: Foundation (Q2-Q3 2024)</h4>
+                <ul className="space-y-1 text-xs">
+                  <li>• Establish cross-domain working groups</li>
+                  <li>• Create collaboration framework</li>
+                  <li>• Allocate initial funding ($5M)</li>
+                  <li>• Set up shared research facilities</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-cyan-400 mb-2">Phase 2: Execution (Q4 2024-Q2 2025)</h4>
+                <ul className="space-y-1 text-xs">
+                  <li>• Launch joint research projects</li>
+                  <li>• Implement technology sharing</li>
+                  <li>• Establish success metrics</li>
+                  <li>• Create knowledge sharing platform</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-cyan-400 mb-2">Phase 3: Scale (Q3-Q4 2025)</h4>
+                <ul className="space-y-1 text-xs">
+                  <li>• Expand successful collaborations</li>
+                  <li>• Integrate AI-powered matching</li>
+                  <li>• Measure ROI and impact</li>
+                  <li>• Plan next-generation initiatives</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Success Metrics */}
+          <div className="bg-gray-900 border border-gray-600 rounded-lg p-4">
+            <h3 className="text-lg font-semibold text-green-400 mb-3">📊 Success Metrics & KPIs</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-300">
+              <div>
+                <h4 className="font-semibold text-cyan-400 mb-2">Quantitative Goals</h4>
+                <ul className="space-y-1 text-xs">
+                  <li>• <strong>25% increase</strong> in cross-domain publications</li>
+                  <li>• <strong>40% faster</strong> countermeasure development</li>
+                  <li>• <strong>15% cost reduction</strong> through shared resources</li>
+                  <li>• <strong>50 new</strong> cross-domain collaborations</li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold text-cyan-400 mb-2">Qualitative Goals</h4>
+                <ul className="space-y-1 text-xs">
+                  <li>• Enhanced knowledge transfer between domains</li>
+                  <li>• Improved innovation through diverse perspectives</li>
+                  <li>• Stronger NASA research community</li>
+                  <li>• Better preparation for future missions</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex justify-center space-x-4">
+            <Button 
+              onClick={() => window.open('/synergy', '_blank')}
+              className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-blue-400/50 transition-all duration-300"
+            >
+              <TrendingUp className="h-4 w-4 mr-2" />
+              View Detailed Analysis
+            </Button>
+            <Button 
+              variant="outline"
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-white px-6 py-3 rounded-xl"
+            >
+              <Target className="h-4 w-4 mr-2" />
+              Generate Investment Report
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

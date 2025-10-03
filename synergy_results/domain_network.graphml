@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<graphml xmlns="http://graphml.graphdrawing.org/xmlns" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://graphml.graphdrawing.org/xmlns http://graphml.graphdrawing.org/xmlns/1.0/graphml.xsd">
+  <key id="d2" for="edge" attr.name="count" attr.type="long" />
+  <key id="d1" for="edge" attr.name="weight" attr.type="double" />
+  <key id="d0" for="node" attr.name="size" attr.type="long" />
+  <graph edgedefault="undirected">
+    <node id="Space Biology">
+      <data key="d0">337</data>
+    </node>
+    <node id="Human Research">
+      <data key="d0">22</data>
+    </node>
+    <node id="Planetary Science">
+      <data key="d0">6</data>
+    </node>
+    <node id="Technology Development">
+      <data key="d0">5</data>
+    </node>
+    <edge source="Space Biology" target="Human Research">
+      <data key="d1">0.36672188478120893</data>
+      <data key="d2">11</data>
+    </edge>
+    <edge source="Space Biology" target="Technology Development">
+      <data key="d1">0.5135741456300641</data>
+      <data key="d2">3</data>
+    </edge>
+    <edge source="Space Biology" target="Planetary Science">
+      <data key="d1">0.48977148573910023</data>
+      <data key="d2">5</data>
+    </edge>
+    <edge source="Planetary Science" target="Technology Development">
+      <data key="d1">0.6791056310443505</data>
+      <data key="d2">1</data>
+    </edge>
+  </graph>
+</graphml>

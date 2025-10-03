@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Search, FileText, Users, Clock, FlaskConical, Target, AlertTriangle, CheckCircle, XCircle, Lightbulb } from 'lucide-react';
-import { useMethodologyComparison, MethodologyCompareRequest } from '@/api/hooks';
-import { MethodologyExtraction, MethodologyComparison } from '@/api/api';
+import { useMethodologyComparison } from '@/api/hooks';
+import { MethodologyExtraction, MethodologyComparison, MethodologyCompareRequest } from '@/api/api';
 
 interface MethodologyComparisonProps {
   role: string;
