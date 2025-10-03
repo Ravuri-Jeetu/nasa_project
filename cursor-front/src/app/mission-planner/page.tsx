@@ -24,8 +24,7 @@ import {
   Activity,
   RefreshCw
 } from 'lucide-react';
-import { useMissionAnalysis } from '@/api/hooks';
-import { MissionPlannerRequest } from '@/api/api';
+import { MissionPlannerRequest, MissionPlannerResponse } from '@/api/api';
 
 const destinations = [
   { value: 'mars', label: 'Mars' },
@@ -40,6 +39,144 @@ const severityColors = {
   'Low': 'bg-green-100 text-green-800 border-green-200'
 };
 
+// Mock data generation function
+const generateMockMissionAnalysis = (request: MissionPlannerRequest): MissionPlannerResponse => {
+  const { destination, crew_size, duration_days, payload_capacity, use_realtime_data } = request;
+  
+  // Calculate base feasibility score based on parameters
+  let baseScore = 70;
+  
+  // Adjust score based on destination
+  const destinationScores = {
+    'moon': 85,
+    'mars': 65,
+    'asteroid': 55,
+    'space station': 90
+  };
+  baseScore = destinationScores[destination as keyof typeof destinationScores] || 70;
+  
+  // Adjust based on crew size (optimal range: 2-6)
+  if (crew_size < 2 || crew_size > 8) baseScore -= 15;
+  else if (crew_size >= 2 && crew_size <= 6) baseScore += 10;
+  
+  // Adjust based on duration (shorter missions are more feasible)
+  if (duration_days > 500) baseScore -= 20;
+  else if (duration_days < 100) baseScore += 15;
+  
+  // Generate risks based on destination and duration
+  const risks = [];
+  
+  if (destination === 'mars') {
+    risks.push({
+      risk: 'Radiation Exposure',
+      severity: duration_days > 500 ? 'High' : 'Medium',
+      dose: `${Math.round(0.5 + duration_days * 0.001)} mSv`,
+      notes: 'Mars missions face significant cosmic radiation exposure'
+    });
+    risks.push({
+      risk: 'Psychological Isolation',
+      severity: 'Medium',
+      notes: 'Extended isolation may impact crew mental health'
+    });
+  } else if (destination === 'moon') {
+    risks.push({
+      risk: 'Lunar Dust Exposure',
+      severity: 'Medium',
+      notes: 'Lunar regolith can cause respiratory issues'
+    });
+    risks.push({
+      risk: 'Radiation from Solar Events',
+      severity: 'Low',
+      notes: 'Moon missions face periodic solar particle events'
+    });
+  }
+  
+  // Add duration-based risks
+  if (duration_days > 300) {
+    risks.push({
+      risk: 'Muscle Atrophy',
+      severity: 'High',
+      notes: 'Extended microgravity causes significant muscle loss'
+    });
+    risks.push({
+      risk: 'Bone Density Loss',
+      severity: 'High',
+      notes: 'Bone loss accelerates in microgravity environments'
+    });
+  }
+  
+  // Generate resource requirements
+  const foodPerPersonPerDay = 1.8; // kg
+  const waterPerPersonPerDay = 3.5; // kg
+  const oxygenPerPersonPerDay = 0.84; // kg
+  
+  const totalFood = Math.round(crew_size * duration_days * foodPerPersonPerDay);
+  const totalWater = Math.round(crew_size * duration_days * waterPerPersonPerDay);
+  const totalOxygen = Math.round(crew_size * duration_days * oxygenPerPersonPerDay);
+  
+  // Generate recommendations
+  const recommendations = [
+    'Implement comprehensive exercise protocols to mitigate muscle atrophy',
+    'Deploy advanced radiation shielding systems for crew protection',
+    'Establish psychological support systems for long-duration missions',
+    'Design redundant life support systems for mission safety',
+    'Conduct extensive pre-mission training and simulations'
+  ];
+  
+  if (duration_days > 500) {
+    recommendations.push('Consider crew rotation schedules for extended missions');
+  }
+  
+  if (crew_size > 6) {
+    recommendations.push('Implement conflict resolution protocols for larger crews');
+  }
+  
+  // Generate real-time data if requested
+  let realtime_data = undefined;
+  if (use_realtime_data) {
+    realtime_data = {
+      iss_crew: {
+        current_size: 7,
+        mission_duration: 180,
+        exercise_hours: 2.5,
+        health_status: 'Good'
+      },
+      radiation: {
+        current_level: 0.5,
+        solar_activity: 'Low',
+        space_weather: 'Quiet'
+      },
+      research_updates: {
+        latest_bone_loss_study: 'ARED exercise reduces bone loss by 70%',
+        muscle_atrophy_rate: '2-3% per month in microgravity',
+        psychological_stress_index: 'Moderate - within acceptable limits'
+      },
+      resource_consumption: {
+        food_per_person_per_day: 1.8,
+        water_per_person_per_day: 3.5,
+        oxygen_per_person_per_day: 0.84
+      }
+    };
+  }
+  
+  return {
+    mission_feasibility_score: Math.max(0, Math.min(100, baseScore)),
+    risks,
+    resources: {
+      food: `${totalFood} kg total (${foodPerPersonPerDay} kg/person/day)`,
+      water: `${totalWater} kg total (${waterPerPersonPerDay} kg/person/day)`,
+      oxygen: `${totalOxygen} kg total (${oxygenPerPersonPerDay} kg/person/day)`
+    },
+    crew_health: {
+      exercise: `Minimum ${Math.round(duration_days / 30 * 2)} hours/day of resistive exercise required`,
+      medical_support: 'Full medical kit, telemedicine capabilities, emergency protocols'
+    },
+    recommendations,
+    realtime_data,
+    data_timestamp: new Date().toISOString()
+  };
+};
+
 export default function MissionPlannerPage() {
   const [missionParams, setMissionParams] = useState<MissionPlannerRequest>({
     destination: 'mars',
@@ -50,13 +187,22 @@ export default function MissionPlannerPage() {
   });
 
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-
-  const { data: analysis, isLoading, error, refetch } = useMissionAnalysis(missionParams, false);
+  const [analysis, setAnalysis] = useState<MissionPlannerResponse | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const handleAnalyze = async () => {
     setIsAnalyzing(true);
+    setError(null);
+    
     try {
-      await refetch();
+      // Simulate API delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Generate mock analysis
+      const mockAnalysis = generateMockMissionAnalysis(missionParams);
+      setAnalysis(mockAnalysis);
+    } catch (err) {
+      setError('Error analyzing mission. Please try again.');
     } finally {
       setIsAnalyzing(false);
     }
@@ -91,7 +237,7 @@ export default function MissionPlannerPage() {
         </div>
         <Button 
           onClick={handleAnalyze} 
-          disabled={isAnalyzing || isLoading}
+          disabled={isAnalyzing}
           className="flex items-center gap-2"
         >
           <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
@@ -249,7 +395,7 @@ export default function MissionPlannerPage() {
 
         {/* Results Dashboard */}
         <div className="lg:col-span-2 space-y-6">
-          {isLoading || isAnalyzing ? (
+          {isAnalyzing ? (
             <Card>
               <CardContent className="flex items-center justify-center py-12">
                 <div className="text-center">
