@@ -15,6 +15,7 @@ import numpy as np
 from sentence_transformers import SentenceTransformer
 import faiss
 from nasa_ai_service import nasa_ai
+from hybrid_nasa_ai_service import hybrid_nasa_ai
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant Backend")
@@ -2074,6 +2075,55 @@ def nasa_ai_chat_endpoint(request: ChatMessage):
 
 **Sources:** {result.get('sources_info', 'No sources found')}
 **Confidence:** {result.get('confidence', 'Low')} (relevant NASA research found)"""
+        
+        return ChatResponse(
+            response=formatted_response,
+            sources=clean_sources,
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+        
+    except Exception as e:
+        return ChatResponse(
+            response=f"❌ Error: {str(e)}",
+            sources=[],
+            timestamp=str(pd.Timestamp.now()),
+            session_id=request.session_id
+        )
+
+@app.post("/api/hybrid-nasa-ai-chat", response_model=ChatResponse)
+def hybrid_nasa_ai_chat_endpoint(request: ChatMessage):
+    """
+    Hybrid NASA AI-powered chat endpoint combining Ollama model with RAG system.
+    """
+    try:
+        # Use the hybrid NASA AI service
+        result = hybrid_nasa_ai.chat(request.message)
+        
+        # Convert sources to clean format
+        clean_sources = []
+        for source in result.get("sources", []):
+            clean_source = {}
+            for key, value in source.items():
+                if hasattr(value, 'item'):  # numpy scalar
+                    clean_source[key] = value.item()
+                else:
+                    clean_source[key] = value
+            clean_sources.append(clean_source)
+        
+        # Format the response with hybrid AI branding
+        response_type = result.get("response_type", "Hybrid AI")
+        ollama_status = "✅ Ollama Model Active" if result.get("ollama_available", False) else "⚠️ RAG System Only"
+        
+        formatted_response = f"""🤖 **NASA Hybrid AI Assistant** ({response_type})
+
+**Question:** {request.message}
+
+**Answer:** {result['response']}
+
+**Sources:** {result.get('sources_info', 'No sources found')}
+**Confidence:** {result.get('confidence', 'Low')} (relevant NASA research found)
+**System Status:** {ollama_status}"""
         
         return ChatResponse(
             response=formatted_response,

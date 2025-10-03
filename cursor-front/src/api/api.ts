@@ -69,6 +69,11 @@ export const sendNasaAiChatMessage = async (data: ChatRequest): Promise<ChatResp
   return res.data as ChatResponse;
 };
 
+export const sendHybridNasaAiChatMessage = async (data: ChatRequest): Promise<ChatResponse> => {
+  const res = await apiClient.post('/api/hybrid-nasa-ai-chat', data);
+  return res.data as ChatResponse;
+};
+
 // Analytics API
 export const fetchAnalytics = async (role: string) => {
   const res = await apiClient.get('/api/analytics', { params: { role } });

@@ -9,3 +9,4 @@ scikit-learn
 numpy
 sentence-transformers
 faiss-cpu
+requests

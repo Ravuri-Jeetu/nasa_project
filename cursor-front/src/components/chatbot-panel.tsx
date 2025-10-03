@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Card } from '@/components/ui/card';
 import { useAppStore } from '@/store/appStore';
 import { ChatMessage } from '@/api/api';
-import { useNasaAiChatMutation } from '@/api/hooks';
+import { useHybridNasaAiChatMutation } from '@/api/hooks';
 
 interface ChatbotPanelProps {
   isOpen: boolean;
@@ -68,8 +68,8 @@ export default function ChatbotPanel({ isOpen, onClose }: ChatbotPanelProps) {
     console.log('Sending message:', messageToSend);
 
     try {
-      // Use the enhanced NASA AI chat endpoint
-      const response = await fetch('http://localhost:8000/api/nasa-ai-chat', {
+      // Use the hybrid NASA AI chat endpoint (Ollama + RAG)
+      const response = await fetch('http://localhost:8000/api/hybrid-nasa-ai-chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
