@@ -47,27 +47,108 @@ interface MissionPlannerDashboardProps {
 
 export default function MissionPlannerDashboard({ role }: MissionPlannerDashboardProps) {
   const [selectedMission, setSelectedMission] = useState('mars-exploration');
+  const [activeTab, setActiveTab] = useState('risk-assessment');
   const [missionReadinessData, setMissionReadinessData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // Mock data for Mission Risk Assessment
-  const riskData = [
-    { category: 'Technical', risk: 25, mitigation: 75, impact: 'High' },
-    { category: 'Environmental', risk: 40, mitigation: 60, impact: 'Medium' },
-    { category: 'Human Factors', risk: 30, mitigation: 70, impact: 'High' },
-    { category: 'Resource', risk: 20, mitigation: 80, impact: 'Low' },
-    { category: 'Timeline', risk: 35, mitigation: 65, impact: 'Medium' }
-  ];
+  // Dynamic data for Mission Risk Assessment based on selected mission
+  const getRiskData = (mission: string) => {
+    const baseData = [
+      { category: 'Technical', risk: 25, mitigation: 75, impact: 'High' },
+      { category: 'Environmental', risk: 40, mitigation: 60, impact: 'Medium' },
+      { category: 'Human Factors', risk: 30, mitigation: 70, impact: 'High' },
+      { category: 'Resource', risk: 20, mitigation: 80, impact: 'Low' },
+      { category: 'Timeline', risk: 35, mitigation: 65, impact: 'Medium' }
+    ];
 
-  // Mock data for Resource Planning
-  const resourceData = [
-    { resource: 'Personnel', allocated: 45, required: 60, cost: 2500000 },
-    { resource: 'Equipment', allocated: 80, required: 85, cost: 5000000 },
-    { resource: 'Fuel', allocated: 70, required: 75, cost: 1200000 },
-    { resource: 'Supplies', allocated: 90, required: 95, cost: 800000 },
-    { resource: 'Communication', allocated: 95, required: 100, cost: 600000 }
-  ];
+    switch (mission) {
+      case 'mars-exploration':
+        return [
+          { category: 'Technical', risk: 45, mitigation: 55, impact: 'High' },
+          { category: 'Environmental', risk: 60, mitigation: 40, impact: 'High' },
+          { category: 'Human Factors', risk: 50, mitigation: 50, impact: 'High' },
+          { category: 'Resource', risk: 35, mitigation: 65, impact: 'Medium' },
+          { category: 'Timeline', risk: 40, mitigation: 60, impact: 'High' }
+        ];
+      case 'lunar-base':
+        return [
+          { category: 'Technical', risk: 30, mitigation: 70, impact: 'Medium' },
+          { category: 'Environmental', risk: 35, mitigation: 65, impact: 'Medium' },
+          { category: 'Human Factors', risk: 25, mitigation: 75, impact: 'Medium' },
+          { category: 'Resource', risk: 15, mitigation: 85, impact: 'Low' },
+          { category: 'Timeline', risk: 25, mitigation: 75, impact: 'Medium' }
+        ];
+      case 'asteroid-mining':
+        return [
+          { category: 'Technical', risk: 55, mitigation: 45, impact: 'High' },
+          { category: 'Environmental', risk: 45, mitigation: 55, impact: 'High' },
+          { category: 'Human Factors', risk: 40, mitigation: 60, impact: 'High' },
+          { category: 'Resource', risk: 50, mitigation: 50, impact: 'High' },
+          { category: 'Timeline', risk: 60, mitigation: 40, impact: 'High' }
+        ];
+      default:
+        return baseData;
+    }
+  };
+
+  const riskData = getRiskData(selectedMission);
+
+  // Dynamic data for Resource Planning based on selected mission
+  const getResourceData = (mission: string) => {
+    const baseData = [
+      { resource: 'Personnel', allocated: 45, required: 60, cost: 2500000 },
+      { resource: 'Equipment', allocated: 80, required: 85, cost: 5000000 },
+      { resource: 'Fuel', allocated: 70, required: 75, cost: 1200000 },
+      { resource: 'Supplies', allocated: 90, required: 95, cost: 800000 },
+      { resource: 'Communication', allocated: 95, required: 100, cost: 600000 }
+    ];
+
+    switch (mission) {
+      case 'mars-exploration':
+        return [
+          { resource: 'Personnel', allocated: 30, required: 85, cost: 4500000 },
+          { resource: 'Equipment', allocated: 60, required: 95, cost: 8000000 },
+          { resource: 'Fuel', allocated: 40, required: 90, cost: 2500000 },
+          { resource: 'Supplies', allocated: 70, required: 98, cost: 1500000 },
+          { resource: 'Communication', allocated: 85, required: 100, cost: 1200000 }
+        ];
+      case 'lunar-base':
+        return [
+          { resource: 'Personnel', allocated: 60, required: 70, cost: 3000000 },
+          { resource: 'Equipment', allocated: 85, required: 90, cost: 6000000 },
+          { resource: 'Fuel', allocated: 80, required: 85, cost: 1500000 },
+          { resource: 'Supplies', allocated: 95, required: 98, cost: 1000000 },
+          { resource: 'Communication', allocated: 90, required: 100, cost: 800000 }
+        ];
+      case 'asteroid-mining':
+        return [
+          { resource: 'Personnel', allocated: 25, required: 90, cost: 5500000 },
+          { resource: 'Equipment', allocated: 50, required: 98, cost: 10000000 },
+          { resource: 'Fuel', allocated: 30, required: 95, cost: 3000000 },
+          { resource: 'Supplies', allocated: 60, required: 99, cost: 2000000 },
+          { resource: 'Communication', allocated: 75, required: 100, cost: 1500000 }
+        ];
+      default:
+        return baseData;
+    }
+  };
+
+  const resourceData = getResourceData(selectedMission);
+
+  // Get mission title dynamically
+  const getMissionTitle = (mission: string) => {
+    switch (mission) {
+      case 'mars-exploration':
+        return 'Mars Exploration Mission';
+      case 'lunar-base':
+        return 'Lunar Base Construction';
+      case 'asteroid-mining':
+        return 'Asteroid Mining Mission';
+      default:
+        return 'Mission Planning';
+    }
+  };
 
   // Mock data for Mission Design
   const missionPhases = [
@@ -166,9 +247,18 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
           <Badge variant="outline" className="bg-purple-100 text-purple-700">
             Mission Planner Mode
           </Badge>
-          <Button className="bg-purple-600 hover:bg-purple-700">
+          <Button 
+            className="bg-purple-600 hover:bg-purple-700"
+            onClick={() => {
+              setLoading(true);
+              setTimeout(() => {
+                setLoading(false);
+                setActiveTab('mission-design');
+              }, 1000);
+            }}
+          >
             <Settings className="h-4 w-4 mr-2" />
-            Configure Mission
+            {loading ? 'Configuring...' : 'Configure Mission'}
           </Button>
         </div>
       </div>
@@ -176,16 +266,27 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
       {/* Mission Selection */}
       <Card>
         <CardHeader>
-          <CardTitle className="flex items-center">
-            <Target className="h-5 w-5 mr-2" />
-            Active Mission
+          <CardTitle className="flex items-center justify-between">
+            <div className="flex items-center">
+              <Target className="h-5 w-5 mr-2" />
+              Active Mission: {getMissionTitle(selectedMission)}
+            </div>
+            {loading && (
+              <Badge variant="outline" className="bg-blue-100 text-blue-700">
+                <Activity className="h-3 w-3 mr-1 animate-pulse" />
+                Updating...
+              </Badge>
+            )}
           </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex space-x-4">
             <Button
               variant={selectedMission === 'mars-exploration' ? 'default' : 'outline'}
-              onClick={() => setSelectedMission('mars-exploration')}
+              onClick={() => {
+                setSelectedMission('mars-exploration');
+                setActiveTab('risk-assessment');
+              }}
               className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
@@ -193,7 +294,10 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             </Button>
             <Button
               variant={selectedMission === 'lunar-base' ? 'default' : 'outline'}
-              onClick={() => setSelectedMission('lunar-base')}
+              onClick={() => {
+                setSelectedMission('lunar-base');
+                setActiveTab('risk-assessment');
+              }}
               className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
@@ -201,7 +305,10 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
             </Button>
             <Button
               variant={selectedMission === 'asteroid-mining' ? 'default' : 'outline'}
-              onClick={() => setSelectedMission('asteroid-mining')}
+              onClick={() => {
+                setSelectedMission('asteroid-mining');
+                setActiveTab('risk-assessment');
+              }}
               className="flex items-center transition-all duration-300"
             >
               <MapPin className="h-4 w-4 mr-2" />
@@ -212,7 +319,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
       </Card>
 
       {/* Main Tabs */}
-      <Tabs defaultValue="risk-assessment" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="risk-assessment" className="flex items-center">
             <Shield className="h-4 w-4 mr-2" />
