@@ -138,19 +138,149 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
 
   const resourceData = getResourceData(selectedMission);
 
-  // Get mission title dynamically
-  const getMissionTitle = (mission: string) => {
-    switch (mission) {
-      case 'mars-exploration':
-        return 'Mars Exploration Mission';
-      case 'lunar-base':
-        return 'Lunar Base Construction';
-      case 'asteroid-mining':
-        return 'Asteroid Mining Mission';
-      default:
-        return 'Mission Planning';
-    }
-  };
+        // Get mission title dynamically
+        const getMissionTitle = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return 'Mars Exploration Mission';
+            case 'lunar-base':
+              return 'Lunar Base Construction';
+            case 'asteroid-mining':
+              return 'Asteroid Mining Mission';
+            default:
+              return 'Mission Planning';
+          }
+        };
+
+        // Get mission goal
+        const getMissionGoal = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return 'Establish human presence on Mars';
+            case 'lunar-base':
+              return 'Build sustainable lunar settlement';
+            case 'asteroid-mining':
+              return 'Extract valuable resources from asteroids';
+            default:
+              return 'Space exploration mission';
+          }
+        };
+
+        // Get mission duration
+        const getMissionDuration = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return '2-3 years (including transit)';
+            case 'lunar-base':
+              return '6 months - 2 years';
+            case 'asteroid-mining':
+              return '1-4 years (depending on target)';
+            default:
+              return 'Variable duration';
+          }
+        };
+
+        // Get crew size
+        const getCrewSize = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return '4-6 astronauts';
+            case 'lunar-base':
+              return '6-12 astronauts';
+            case 'asteroid-mining':
+              return '3-8 astronauts';
+            default:
+              return 'TBD';
+          }
+        };
+
+        // Get launch vehicle
+        const getLaunchVehicle = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return 'Super Heavy Launch System';
+            case 'lunar-base':
+              return 'SLS Block 2 or Starship';
+            case 'asteroid-mining':
+              return 'Falcon Heavy or SLS';
+            default:
+              return 'TBD';
+          }
+        };
+
+        // Get payload capacity
+        const getPayloadCapacity = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return '100+ tons';
+            case 'lunar-base':
+              return '150+ tons';
+            case 'asteroid-mining':
+              return '50-100 tons';
+            default:
+              return 'Variable';
+          }
+        };
+
+        // Get power system
+        const getPowerSystem = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return 'Solar + Nuclear (RTG)';
+            case 'lunar-base':
+              return 'Solar + Battery + Nuclear';
+            case 'asteroid-mining':
+              return 'Solar + Battery backup';
+            default:
+              return 'TBD';
+          }
+        };
+
+        // Get communication
+        const getCommunication = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return 'Deep Space Network + Relay';
+            case 'lunar-base':
+              return 'Lunar Relay + Direct Earth';
+            case 'asteroid-mining':
+              return 'Deep Space Network';
+            default:
+              return 'Standard';
+          }
+        };
+
+        // Get mission objectives
+        const getMissionObjectives = (mission: string) => {
+          switch (mission) {
+            case 'mars-exploration':
+              return [
+                'Establish human settlement on Mars',
+                'Conduct scientific research on Martian surface',
+                'Test life support systems for long duration',
+                'Prepare infrastructure for future missions',
+                'Study Martian geology and climate'
+              ];
+            case 'lunar-base':
+              return [
+                'Build permanent lunar settlement',
+                'Test in-situ resource utilization (ISRU)',
+                'Develop lunar manufacturing capabilities',
+                'Establish lunar agriculture systems',
+                'Create launch platform for deep space missions'
+              ];
+            case 'asteroid-mining':
+              return [
+                'Identify and characterize target asteroids',
+                'Develop asteroid mining technologies',
+                'Extract valuable metals and minerals',
+                'Test space manufacturing processes',
+                'Establish economic viability of space mining'
+              ];
+            default:
+              return ['Mission objectives to be determined'];
+          }
+        };
 
   // Mock data for Mission Design
   const missionPhases = [
@@ -316,6 +446,81 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               <MapPin className="h-4 w-4 mr-2" />
               Asteroid Mining Mission
             </Button>
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Mission Details */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center">
+            <Rocket className="h-5 w-5 mr-2 text-blue-600" />
+            Mission Details: {getMissionTitle(selectedMission)}
+          </CardTitle>
+          <CardDescription>
+            Comprehensive overview of the selected mission parameters and specifications
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {/* Mission Overview */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-blue-600">Mission Overview</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Mission Type:</span>
+                  <span className="font-medium">{getMissionTitle(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Primary Goal:</span>
+                  <span className="font-medium">{getMissionGoal(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Duration:</span>
+                  <span className="font-medium">{getMissionDuration(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Crew Size:</span>
+                  <span className="font-medium">{getCrewSize(selectedMission)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Technical Specifications */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-green-600">Technical Specifications</h3>
+              <div className="space-y-2">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Launch Vehicle:</span>
+                  <span className="font-medium">{getLaunchVehicle(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Payload Capacity:</span>
+                  <span className="font-medium">{getPayloadCapacity(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Power System:</span>
+                  <span className="font-medium">{getPowerSystem(selectedMission)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Communication:</span>
+                  <span className="font-medium">{getCommunication(selectedMission)}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Mission Objectives */}
+            <div className="space-y-4">
+              <h3 className="text-lg font-semibold text-purple-600">Mission Objectives</h3>
+              <div className="space-y-2">
+                {getMissionObjectives(selectedMission).map((objective, index) => (
+                  <div key={index} className="flex items-start gap-2">
+                    <CheckCircle className="h-4 w-4 text-green-600 mt-0.5 flex-shrink-0" />
+                    <span className="text-sm">{objective}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </CardContent>
       </Card>
