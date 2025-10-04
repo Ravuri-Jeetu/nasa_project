@@ -21,7 +21,10 @@ import {
   MapPin,
   Zap,
   Activity,
-  Gauge
+  Gauge,
+  Heart,
+  Leaf,
+  Bug
 } from 'lucide-react';
 import { 
   BarChart, 
@@ -44,6 +47,9 @@ interface MissionPlannerDashboardProps {
 
 export default function MissionPlannerDashboard({ role }: MissionPlannerDashboardProps) {
   const [selectedMission, setSelectedMission] = useState('mars-exploration');
+  const [missionReadinessData, setMissionReadinessData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   // Mock data for Mission Risk Assessment
   const riskData = [
@@ -80,6 +86,68 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
     { name: 'Supplies', value: 12, color: '#EF4444' },
     { name: 'Communication', value: 8, color: '#8B5CF6' }
   ];
+
+  // Mission Readiness data
+  const missionReadinessCategories = [
+    {
+      id: 'crew-health',
+      name: 'Crew Health',
+      score: 85,
+      level: 'Green',
+      icon: Heart,
+      color: 'text-red-500',
+      bgColor: 'bg-red-50',
+      findings: ['ARED protocols reduce bone loss by 70%', 'Cardiovascular monitoring maintains 85% function'],
+      implications: ['Include resistive exercise system', 'Add bone density monitoring']
+    },
+    {
+      id: 'radiation',
+      name: 'Radiation',
+      score: 75,
+      level: 'Green',
+      icon: Shield,
+      color: 'text-blue-500',
+      bgColor: 'bg-blue-50',
+      findings: ['Hybrid shielding reduces exposure by 75%', 'Real-time monitoring provides accurate tracking'],
+      implications: ['Implement multi-layered shielding', 'Deploy radiation dosimetry systems']
+    },
+    {
+      id: 'food-life-support',
+      name: 'Food & Life Support',
+      score: 70,
+      level: 'Yellow',
+      icon: Leaf,
+      color: 'text-green-500',
+      bgColor: 'bg-green-50',
+      findings: ['ISS ECLSS achieves 98% water recovery', 'Hydroponic systems achieve 90% crop yield'],
+      implications: ['Design closed-loop life support', 'Implement controlled environment agriculture']
+    },
+    {
+      id: 'microbial-risks',
+      name: 'Microbial Risks',
+      score: 55,
+      level: 'Yellow',
+      icon: Bug,
+      color: 'text-yellow-500',
+      bgColor: 'bg-yellow-50',
+      findings: ['Automated monitoring detects contamination 3x faster', 'Sterilization protocols reduce risk by 95%'],
+      implications: ['Implement automated monitoring systems', 'Design sterilization protocols']
+    },
+    {
+      id: 'system-integration',
+      name: 'System Integration',
+      score: 65,
+      level: 'Yellow',
+      icon: Settings,
+      color: 'text-purple-500',
+      bgColor: 'bg-purple-50',
+      findings: ['Gateway architecture reduces complexity by 40%', 'Triple redundancy reduces failure probability by 99.9%'],
+      implications: ['Design modular systems', 'Implement comprehensive redundancy']
+    }
+  ];
+
+  const overallScore = Math.round(missionReadinessCategories.reduce((sum, cat) => sum + cat.score, 0) / missionReadinessCategories.length);
+  const overallLevel = overallScore >= 70 ? 'Green' : overallScore >= 40 ? 'Yellow' : 'Red';
 
   return (
     <div className="space-y-6">
@@ -145,7 +213,7 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
 
       {/* Main Tabs */}
       <Tabs defaultValue="risk-assessment" className="space-y-4">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="risk-assessment" className="flex items-center">
             <Shield className="h-4 w-4 mr-2" />
             Risk Assessment
@@ -156,7 +224,11 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
           </TabsTrigger>
           <TabsTrigger value="mission-design" className="flex items-center">
             <Rocket className="h-4 w-4 mr-2" />
-            Mission Design & Architecture
+            Mission Design
+          </TabsTrigger>
+          <TabsTrigger value="mission-readiness" className="flex items-center">
+            <Target className="h-4 w-4 mr-2" />
+            Mission Readiness
           </TabsTrigger>
         </TabsList>
 
@@ -491,6 +563,151 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
                 <div className="text-center p-4 border rounded-lg">
                   <div className="text-2xl font-bold text-orange-600">6</div>
                   <div className="text-sm text-gray-600">Crew Members</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Mission Readiness Tab */}
+        <TabsContent value="mission-readiness" className="space-y-4">
+          {/* Overall Mission Readiness Score */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <Target className="h-5 w-5 mr-2 text-purple-500" />
+                Mission Readiness Index
+              </CardTitle>
+              <CardDescription>
+                Comprehensive assessment of mission readiness across critical space mission categories
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="text-center">
+                    <div className={`text-4xl font-bold ${
+                      overallLevel === 'Green' ? 'text-green-600' :
+                      overallLevel === 'Yellow' ? 'text-yellow-600' : 'text-red-600'
+                    }`}>
+                      {overallScore}
+                    </div>
+                    <div className="text-sm text-gray-600">Overall Score</div>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <div className={`w-4 h-4 rounded-full ${
+                      overallLevel === 'Green' ? 'bg-green-500' :
+                      overallLevel === 'Yellow' ? 'bg-yellow-500' : 'bg-red-500'
+                    }`}></div>
+                    <span className={`font-semibold ${
+                      overallLevel === 'Green' ? 'text-green-700' :
+                      overallLevel === 'Yellow' ? 'text-yellow-700' : 'text-red-700'
+                    }`}>
+                      {overallLevel}
+                    </span>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <div className="text-sm text-gray-600">Based on 40+ NASA research publications</div>
+                  <div className="text-sm text-gray-600">Environment: {selectedMission.replace('-', ' ')}</div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Mission Readiness Categories */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {missionReadinessCategories.map((category) => {
+              const IconComponent = category.icon;
+              return (
+                <Card key={category.id} className="hover:shadow-lg transition-shadow">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-3">
+                        <IconComponent className={`h-6 w-6 ${category.color}`} />
+                        <CardTitle className="text-lg">{category.name}</CardTitle>
+                      </div>
+                      <Badge 
+                        variant="outline" 
+                        className={
+                          category.level === 'Green' ? 'bg-green-100 text-green-800' :
+                          category.level === 'Yellow' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'
+                        }
+                      >
+                        {category.level}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    {/* Score Display */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-2">
+                        <div className={`w-3 h-3 rounded-full ${
+                          category.level === 'Green' ? 'bg-green-500' :
+                          category.level === 'Yellow' ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}></div>
+                        <span className={`font-semibold ${
+                          category.level === 'Green' ? 'text-green-700' :
+                          category.level === 'Yellow' ? 'text-yellow-700' : 'text-red-700'
+                        }`}>
+                          {category.level}
+                        </span>
+                      </div>
+                      <div className="text-2xl font-bold text-gray-800">
+                        {category.score}
+                      </div>
+                    </div>
+                    
+                    {/* Key Findings */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">Key Findings:</h4>
+                      <div className="space-y-1">
+                        {category.findings.map((finding, index) => (
+                          <div key={index} className="text-xs text-gray-600 bg-gray-50 p-2 rounded">
+                            {finding}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Design Implications */}
+                    <div>
+                      <h4 className="font-semibold text-sm mb-2">Design Implications:</h4>
+                      <div className="space-y-1">
+                        {category.implications.map((implication, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs mr-1 mb-1">
+                            {implication}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+
+          {/* Mission Readiness Summary */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center">
+                <CheckCircle className="h-5 w-5 mr-2 text-green-500" />
+                Mission Readiness Summary
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg">
+                  <div className="text-2xl font-bold text-green-600">2</div>
+                  <div className="text-sm text-gray-600">Categories Ready (Green)</div>
+                </div>
+                <div className="text-center p-4 bg-yellow-50 rounded-lg">
+                  <div className="text-2xl font-bold text-yellow-600">3</div>
+                  <div className="text-sm text-gray-600">Categories Need Attention (Yellow)</div>
+                </div>
+                <div className="text-center p-4 bg-blue-50 rounded-lg">
+                  <div className="text-2xl font-bold text-blue-600">40+</div>
+                  <div className="text-sm text-gray-600">Research Publications Analyzed</div>
                 </div>
               </div>
             </CardContent>
