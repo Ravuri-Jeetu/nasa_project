@@ -274,17 +274,17 @@ export default function MissionPlannerPage() {
             <CardContent className="space-y-6">
               {/* Destination */}
               <div className="space-y-2">
-                <Label htmlFor="destination">Destination</Label>
+                <Label htmlFor="destination" className="text-white">Destination</Label>
                 <Select 
                   value={missionParams.destination} 
                   onValueChange={(value) => handleParameterChange('destination', value)}
                 >
-                  <SelectTrigger>
+                  <SelectTrigger className="bg-white/10 border-gray-300 text-white backdrop-blur-sm">
                     <SelectValue placeholder="Select destination" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white/90 backdrop-blur-sm border-gray-300">
                     {destinations.map((dest) => (
-                      <SelectItem key={dest.value} value={dest.value}>
+                      <SelectItem key={dest.value} value={dest.value} className="text-gray-900 hover:bg-gray-100">
                         {dest.label}
                       </SelectItem>
                     ))}
@@ -294,7 +294,7 @@ export default function MissionPlannerPage() {
 
               {/* Crew Size */}
               <div className="space-y-2">
-                <Label htmlFor="crew_size">Crew Size</Label>
+                <Label htmlFor="crew_size" className="text-white">Crew Size</Label>
                 <div className="flex items-center gap-2">
                   <Users className="h-4 w-4 text-gray-500" />
                   <Input
@@ -304,7 +304,7 @@ export default function MissionPlannerPage() {
                     max="12"
                     value={missionParams.crew_size}
                     onChange={(e) => handleParameterChange('crew_size', parseInt(e.target.value) || 1)}
-                    className="flex-1"
+                    className="flex-1 bg-white/10 border-gray-300 text-white backdrop-blur-sm placeholder:text-gray-300"
                   />
                   <span className="text-sm text-gray-500">astronauts</span>
                 </div>
@@ -312,7 +312,7 @@ export default function MissionPlannerPage() {
 
               {/* Duration */}
               <div className="space-y-2">
-                <Label htmlFor="duration">Mission Duration</Label>
+                <Label htmlFor="duration" className="text-white">Mission Duration</Label>
                 <div className="space-y-3">
                   <div className="flex items-center gap-2">
                     <Clock className="h-4 w-4 text-gray-500" />
@@ -338,7 +338,7 @@ export default function MissionPlannerPage() {
 
               {/* Payload Capacity */}
               <div className="space-y-2">
-                <Label htmlFor="payload">Payload Capacity</Label>
+                <Label htmlFor="payload" className="text-white">Payload Capacity</Label>
                 <div className="flex items-center gap-2">
                   <Package className="h-4 w-4 text-gray-500" />
                   <Input
@@ -346,13 +346,14 @@ export default function MissionPlannerPage() {
                     value={missionParams.payload_capacity}
                     onChange={(e) => handleParameterChange('payload_capacity', e.target.value)}
                     placeholder="e.g., 50 tons"
+                    className="bg-white/10 border-gray-300 text-white backdrop-blur-sm placeholder:text-gray-300"
                   />
                 </div>
               </div>
 
               {/* Real-time Data Toggle */}
               <div className="space-y-2">
-                <Label>Data Source</Label>
+                <Label className="text-white">Data Source</Label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -361,7 +362,7 @@ export default function MissionPlannerPage() {
                     onChange={(e) => handleParameterChange('use_realtime_data', e.target.checked)}
                     className="rounded"
                   />
-                  <Label htmlFor="realtime" className="text-sm">
+                  <Label htmlFor="realtime" className="text-sm text-white">
                     Use Real-time Data
                   </Label>
                 </div>
@@ -372,7 +373,7 @@ export default function MissionPlannerPage() {
 
               {/* Quick Presets */}
               <div className="space-y-2">
-                <Label>Quick Presets</Label>
+                <Label className="text-white">Quick Presets</Label>
                 <div className="grid grid-cols-2 gap-2">
                   <Button
                     variant="outline"
