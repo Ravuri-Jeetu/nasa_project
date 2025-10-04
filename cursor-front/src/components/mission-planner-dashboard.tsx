@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -46,6 +47,7 @@ interface MissionPlannerDashboardProps {
 }
 
 export default function MissionPlannerDashboard({ role }: MissionPlannerDashboardProps) {
+  const router = useRouter();
   const [selectedMission, setSelectedMission] = useState('mars-exploration');
   const [activeTab, setActiveTab] = useState('risk-assessment');
   const [missionReadinessData, setMissionReadinessData] = useState(null);
@@ -253,12 +255,12 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               setLoading(true);
               setTimeout(() => {
                 setLoading(false);
-                setActiveTab('mission-design');
+                router.push('/mission-planner');
               }, 1000);
             }}
           >
             <Settings className="h-4 w-4 mr-2" />
-            {loading ? 'Configuring...' : 'Configure Mission'}
+            {loading ? 'Redirecting...' : 'Configure Mission'}
           </Button>
         </div>
       </div>

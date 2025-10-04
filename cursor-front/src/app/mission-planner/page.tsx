@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import MainLayout from '@/components/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -22,7 +23,8 @@ import {
   TrendingUp,
   BarChart3,
   Activity,
-  RefreshCw
+  RefreshCw,
+  ArrowLeft
 } from 'lucide-react';
 import { MissionPlannerRequest, MissionPlannerResponse } from '@/api/api';
 
@@ -178,6 +180,7 @@ const generateMockMissionAnalysis = (request: MissionPlannerRequest): MissionPla
 };
 
 export default function MissionPlannerPage() {
+  const router = useRouter();
   const [missionParams, setMissionParams] = useState<MissionPlannerRequest>({
     destination: 'mars',
     crew_size: 4,
@@ -227,10 +230,20 @@ export default function MissionPlannerPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold flex items-center gap-2">
-            <Rocket className="h-8 w-8 text-blue-600" />
-            Mission Planner
-          </h1>
+          <div className="flex items-center gap-4 mb-2">
+            <Button
+              variant="outline"
+              onClick={() => router.push('/dashboard')}
+              className="flex items-center gap-2"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to Dashboard
+            </Button>
+            <h1 className="text-3xl font-bold flex items-center gap-2">
+              <Rocket className="h-8 w-8 text-blue-600" />
+              Mission Planner
+            </h1>
+          </div>
           <p className="text-gray-600 mt-2">
             Design and evaluate space missions based on biological constraints
           </p>
