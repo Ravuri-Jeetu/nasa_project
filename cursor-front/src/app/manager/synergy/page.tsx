@@ -7,10 +7,70 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Network, RefreshCw, TrendingUp, Users, Target } from 'lucide-react';
 import { 
-  type CrossDomainSynergy,
-  fetchCrossDomainSynergy,
   refreshManagerData
 } from '@/api/api';
+
+// Mock interface for CrossDomainSynergy until backend is implemented
+interface CrossDomainSynergy {
+  total_synergies: number;
+  high_potential_synergies: number;
+  collaboration_opportunities: number;
+  avg_synergy_score: number;
+  top_synergies: Array<{
+    domain1: string;
+    domain2: string;
+    synergy_score: number;
+    shared_resources: string[];
+    benefits: string[];
+    recommended_investment: number;
+  }>;
+  investment_recommendations: Array<{
+    title: string;
+    description: string;
+    investment_amount: number;
+    expected_roi: number;
+    timeline: string;
+    priority: string;
+  }>;
+}
+
+// Mock function until backend is implemented
+const fetchCrossDomainSynergy = async (): Promise<CrossDomainSynergy> => {
+  return {
+    total_synergies: 12,
+    high_potential_synergies: 4,
+    collaboration_opportunities: 8,
+    avg_synergy_score: 78,
+    top_synergies: [
+      {
+        domain1: "Microgravity Effects",
+        domain2: "Bone & Skeletal",
+        synergy_score: 92,
+        shared_resources: ["ISS", "Ground Facilities", "Research Teams"],
+        benefits: ["Shared experimental protocols", "Combined data analysis", "Reduced costs"],
+        recommended_investment: 250000
+      },
+      {
+        domain1: "Radiation Biology",
+        domain2: "Immunology",
+        synergy_score: 87,
+        shared_resources: ["Radiation Facilities", "Bioanalytical Equipment"],
+        benefits: ["Cross-disciplinary insights", "Enhanced research outcomes"],
+        recommended_investment: 180000
+      }
+    ],
+    investment_recommendations: [
+      {
+        title: "Cross-Domain Collaboration Initiative",
+        description: "Establish formal collaboration framework between high-synergy domains",
+        investment_amount: 500000,
+        expected_roi: 145,
+        timeline: "12 months",
+        priority: "High"
+      }
+    ]
+  };
+};
 
 export default function SynergyPage() {
   const [synergy, setSynergy] = useState<CrossDomainSynergy | null>(null);

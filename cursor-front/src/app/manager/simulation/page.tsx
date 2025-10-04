@@ -164,21 +164,21 @@ export default function SimulationPage() {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
                 <div className="bg-gray-900 p-4 rounded-lg">
               <div className="text-2xl font-bold text-white mb-2">
-                {simulation.projected.roi.toFixed(1)}%
+                {simulation?.projected?.roi?.toFixed(1) || '0.0'}%
               </div>
               <div className="text-sm text-gray-400">Projected ROI</div>
             </div>
             
             <div className="bg-gray-900 p-4 rounded-lg">
               <div className="text-2xl font-bold text-white mb-2">
-                {simulation.projected.studies}
+                {simulation?.projected?.studies || 0}
               </div>
               <div className="text-sm text-gray-400">Projected Studies</div>
             </div>
             
             <div className="bg-gray-900 p-4 rounded-lg">
               <div className="text-2xl font-bold text-white mb-2">
-                ${simulation.projected.funding.toLocaleString()}
+                ${(simulation?.projected?.funding || 0).toLocaleString()}
               </div>
               <div className="text-sm text-gray-400">Projected Funding</div>
             </div>
@@ -190,15 +190,15 @@ export default function SimulationPage() {
                   <ul className="space-y-2 text-gray-300">
                     <li className="flex items-start gap-2">
                       <span className="text-green-500 mt-1">•</span>
-                      <span>Study difference: {simulation.impact.study_difference} studies</span>
+                      <span>Study difference: {simulation?.impact?.study_difference || 0} studies</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-green-500 mt-1">•</span>
-                      <span>Funding difference: ${simulation.impact.funding_difference.toLocaleString()}</span>
+                      <span>Funding difference: ${(simulation?.impact?.funding_difference || 0).toLocaleString()}</span>
                     </li>
                     <li className="flex items-start gap-2">
                       <span className="text-green-500 mt-1">•</span>
-                      <span>Additional investment: ${simulation.impact.additional_investment.toLocaleString()}</span>
+                      <span>Additional investment: ${(simulation?.impact?.additional_investment || 0).toLocaleString()}</span>
                     </li>
                   </ul>
                 </div>
@@ -208,15 +208,15 @@ export default function SimulationPage() {
                   <div className="grid grid-cols-2 gap-4 text-sm">
                     <div>
                       <h5 className="font-medium text-gray-300 mb-1">Current:</h5>
-                      <p className="text-gray-400">Studies: {simulation.current.studies}</p>
-                      <p className="text-gray-400">Funding: ${simulation.current.funding.toLocaleString()}</p>
-                      <p className="text-gray-400">ROI: {simulation.current.roi}%</p>
+                      <p className="text-gray-400">Studies: {simulation?.current?.studies || 0}</p>
+                      <p className="text-gray-400">Funding: ${(simulation?.current?.funding || 0).toLocaleString()}</p>
+                      <p className="text-gray-400">ROI: {simulation?.current?.roi || 0}%</p>
                     </div>
                     <div>
                       <h5 className="font-medium text-gray-300 mb-1">Projected:</h5>
-                      <p className="text-gray-400">Studies: {simulation.projected.studies}</p>
-                      <p className="text-gray-400">Funding: ${simulation.projected.funding.toLocaleString()}</p>
-                      <p className="text-gray-400">ROI: {simulation.projected.roi}%</p>
+                      <p className="text-gray-400">Studies: {simulation?.projected?.studies || 0}</p>
+                      <p className="text-gray-400">Funding: ${(simulation?.projected?.funding || 0).toLocaleString()}</p>
+                      <p className="text-gray-400">ROI: {simulation?.projected?.roi || 0}%</p>
                     </div>
                   </div>
                 </div>
