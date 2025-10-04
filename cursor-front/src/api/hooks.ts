@@ -120,3 +120,12 @@ export const useMissionAnalysis = (request: MissionPlannerRequest, enabled: bool
   });
 };
 
+// Manager Dashboard Hooks
+export const useCrossDomainSynergy = () => {
+  return useQuery({
+    queryKey: ['cross-domain-synergy'],
+    queryFn: fetchCrossDomainSynergy,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+

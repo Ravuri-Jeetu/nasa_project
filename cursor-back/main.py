@@ -1076,6 +1076,17 @@ def refresh_data():
     except Exception as e:
         return {"success": False, "error": f"Error refreshing data: {str(e)}"}
 
+@app.get("/api/manager/cross-domain-synergy")
+def get_cross_domain_synergy():
+    """
+    Get cross-domain synergy analysis for manager dashboard
+    """
+    try:
+        synergy_data = data_processor.get_cross_domain_synergy()
+        return {"success": True, "data": synergy_data}
+    except Exception as e:
+        return {"success": False, "error": f"Error fetching cross-domain synergy: {str(e)}"}
+
 @app.get("/api/manager/dashboard-summary")
 def get_dashboard_summary():
     """

@@ -313,6 +313,29 @@ export interface ProjectStatus {
   total_completed: number;
 }
 
+export interface CrossDomainSynergy {
+  total_synergies: number;
+  high_potential_synergies: number;
+  collaboration_opportunities: number;
+  avg_synergy_score: number;
+  top_synergies: Array<{
+    domain1: string;
+    domain2: string;
+    synergy_score: number;
+    shared_resources: string[];
+    benefits: string[];
+    recommended_investment: number;
+  }>;
+  investment_recommendations: Array<{
+    title: string;
+    description: string;
+    investment_amount: number;
+    expected_roi: number;
+    timeline: string;
+    priority: string;
+  }>;
+}
+
 // Manager Dashboard API Functions
 export const fetchDomainAnalytics = async (): Promise<DomainAnalytics> => {
   const res = await apiClient.get('/api/manager/domain-analytics');
@@ -346,6 +369,11 @@ export const fetchEmergingAreas = async (): Promise<EmergingArea[]> => {
 
 export const fetchProjectStatus = async (): Promise<ProjectStatus> => {
   const res = await apiClient.get('/api/manager/project-status');
+  return res.data.data;
+};
+
+export const fetchCrossDomainSynergy = async (): Promise<CrossDomainSynergy> => {
+  const res = await apiClient.get('/api/manager/cross-domain-synergy');
   return res.data.data;
 };
 
