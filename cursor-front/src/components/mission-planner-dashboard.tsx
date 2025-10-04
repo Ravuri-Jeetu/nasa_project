@@ -49,7 +49,10 @@ interface MissionPlannerDashboardProps {
 export default function MissionPlannerDashboard({ role }: MissionPlannerDashboardProps) {
   const router = useRouter();
   const [selectedMission, setSelectedMission] = useState('mars-exploration');
+<<<<<<< HEAD
   const [activeTab, setActiveTab] = useState('risk-assessment');
+=======
+>>>>>>> 1a7a80ad2132771d7c6dbadf1f1ffc34a920a289
   const [missionReadinessData, setMissionReadinessData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -526,7 +529,11 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
       </Card>
 
       {/* Main Tabs */}
+<<<<<<< HEAD
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
+=======
+      <Tabs defaultValue="risk-assessment" className="space-y-4">
+>>>>>>> 1a7a80ad2132771d7c6dbadf1f1ffc34a920a289
         <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="risk-assessment" className="flex items-center">
             <Shield className="h-4 w-4 mr-2" />

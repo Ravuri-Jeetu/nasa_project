@@ -1,0 +1,561 @@
+[
+  {
+    "id": "pub_001",
+    "title": "Bone Loss Prevention in Microgravity: A Comprehensive Study",
+    "authors": ["Dr. Sarah Chen", "Dr. Michael Rodriguez"],
+    "year": 2023,
+    "abstract": "This study examines bone density loss in astronauts during long-duration space missions and evaluates the effectiveness of resistive exercise countermeasures.",
+    "sections": {
+      "introduction": "Spaceflight-induced bone loss is a critical concern for long-duration missions.",
+      "results": "Resistive exercise protocols showed 85% effectiveness in preventing bone loss when performed 6 days per week.",
+      "conclusion": "Implementing comprehensive exercise programs is essential for crew health during extended space missions."
+    },
+    "keywords": ["bone loss", "microgravity", "exercise", "countermeasure", "crew health"],
+    "source": "Journal of Space Medicine"
+  },
+  {
+    "id": "pub_002",
+    "title": "Radiation Exposure Mitigation Strategies for Mars Missions",
+    "authors": ["Dr. Elena Volkov", "Dr. James Park"],
+    "year": 2023,
+    "abstract": "Analysis of cosmic radiation exposure during Mars transit and surface operations, with focus on shielding technologies and biological countermeasures.",
+    "sections": {
+      "introduction": "Radiation exposure poses significant risks during interplanetary travel.",
+      "results": "Water-based shielding reduced radiation exposure by 40% compared to aluminum shielding.",
+      "conclusion": "Multi-layered shielding approaches are necessary for Mars mission safety."
+    },
+    "keywords": ["radiation", "shielding", "mars", "cosmic rays", "protection"],
+    "source": "Space Radiation Research Quarterly"
+  },
+  {
+    "id": "pub_003",
+    "title": "Closed-Loop Life Support Systems: Current Status and Future Directions",
+    "authors": ["Dr. Maria Santos", "Dr. David Kim"],
+    "year": 2022,
+    "abstract": "Review of closed-loop life support technologies for long-duration space missions, including air revitalization and water recycling systems.",
+    "sections": {
+      "introduction": "Sustainable life support systems are critical for deep space exploration.",
+      "results": "Current systems achieve 95% water recycling efficiency and 90% air revitalization.",
+      "conclusion": "Further development needed for complete closure of life support loops."
+    },
+    "keywords": ["life support", "closed loop", "air revitalization", "water recycling", "sustainability"],
+    "source": "Life Support Systems Journal"
+  },
+  {
+    "id": "pub_004",
+    "title": "Microbial Contamination Risks in Spacecraft Environments",
+    "authors": ["Dr. Anna Petrov", "Dr. Robert Lee"],
+    "year": 2023,
+    "abstract": "Investigation of microbial growth patterns in confined spacecraft environments and their impact on crew health and system integrity.",
+    "sections": {
+      "introduction": "Microbial contamination can compromise mission safety and crew health.",
+      "results": "Humidity levels above 60% significantly increase microbial growth rates.",
+      "conclusion": "Environmental controls are essential for preventing microbial contamination."
+    },
+    "keywords": ["microbial", "contamination", "spacecraft", "crew health", "environmental control"],
+    "source": "Astrobiology Research"
+  },
+  {
+    "id": "pub_005",
+    "title": "Cardiac Function Assessment During Long-Duration Spaceflight",
+    "authors": ["Dr. Jennifer Walsh", "Dr. Carlos Mendez"],
+    "year": 2022,
+    "abstract": "Longitudinal study of cardiac function changes in astronauts during 6-month ISS missions using advanced imaging techniques.",
+    "sections": {
+      "introduction": "Cardiac deconditioning is a known risk of spaceflight.",
+      "results": "Cardiac output decreased by 15% after 6 months in microgravity.",
+      "conclusion": "Regular cardiovascular monitoring and exercise protocols are essential."
+    },
+    "keywords": ["cardiac", "heart", "deconditioning", "exercise", "monitoring"],
+    "source": "Space Medicine Journal"
+  },
+  {
+    "id": "pub_006",
+    "title": "Food Production Systems for Mars Colonies",
+    "authors": ["Dr. Lisa Thompson", "Dr. Ahmed Hassan"],
+    "year": 2023,
+    "abstract": "Development of sustainable food production systems using Martian regolith and controlled environment agriculture.",
+    "sections": {
+      "introduction": "Food production is essential for long-term Mars colonization.",
+      "results": "Hydroponic systems achieved 80% crop yield compared to Earth-based agriculture.",
+      "conclusion": "Controlled environment agriculture shows promise for Mars food production."
+    },
+    "keywords": ["food production", "mars", "agriculture", "hydroponic", "sustainability"],
+    "source": "Mars Agriculture Research"
+  },
+  {
+    "id": "pub_007",
+    "title": "System Integration Challenges in Deep Space Missions",
+    "authors": ["Dr. Thomas Anderson", "Dr. Priya Patel"],
+    "year": 2023,
+    "abstract": "Analysis of system integration challenges when combining life support, power, and propulsion systems for deep space missions.",
+    "sections": {
+      "introduction": "System integration is critical for mission success.",
+      "results": "Modular design approaches reduced integration complexity by 30%.",
+      "conclusion": "Standardized interfaces improve system integration efficiency."
+    },
+    "keywords": ["system integration", "deep space", "modular design", "interfaces", "mission planning"],
+    "source": "Space Systems Engineering"
+  },
+  {
+    "id": "pub_008",
+    "title": "Muscle Atrophy Prevention Through Advanced Exercise Protocols",
+    "authors": ["Dr. Rachel Green", "Dr. Marcus Johnson"],
+    "year": 2022,
+    "abstract": "Evaluation of high-intensity resistance training protocols for preventing muscle atrophy during spaceflight.",
+    "sections": {
+      "introduction": "Muscle atrophy is a significant concern for long-duration missions.",
+      "results": "High-intensity protocols maintained 90% of pre-flight muscle mass.",
+      "conclusion": "Intensive exercise programs are effective countermeasures for muscle atrophy."
+    },
+    "keywords": ["muscle atrophy", "exercise", "resistance training", "countermeasure", "crew health"],
+    "source": "Exercise Physiology in Space"
+  },
+  {
+    "id": "pub_009",
+    "title": "Radiation Shielding Materials: A Comparative Analysis",
+    "authors": ["Dr. Yuki Tanaka", "Dr. Sofia Rodriguez"],
+    "year": 2023,
+    "abstract": "Comparative study of radiation shielding materials including polyethylene, water, and novel composite materials.",
+    "sections": {
+      "introduction": "Effective radiation shielding is essential for crew safety.",
+      "results": "Polyethylene composites showed superior shielding properties per unit mass.",
+      "conclusion": "Composite materials offer optimal radiation protection for space missions."
+    },
+    "keywords": ["radiation", "shielding", "polyethylene", "composite materials", "protection"],
+    "source": "Materials Science in Space"
+  },
+  {
+    "id": "pub_010",
+    "title": "Water Recycling Efficiency in Closed-Loop Systems",
+    "authors": ["Dr. Kevin O'Brien", "Dr. Fatima Al-Zahra"],
+    "year": 2022,
+    "abstract": "Assessment of water recycling technologies and their efficiency in closed-loop life support systems.",
+    "sections": {
+      "introduction": "Water recycling is critical for sustainable space missions.",
+      "results": "Advanced filtration systems achieved 98% water recovery rates.",
+      "conclusion": "High-efficiency water recycling systems are ready for deployment."
+    },
+    "keywords": ["water recycling", "life support", "filtration", "sustainability", "closed loop"],
+    "source": "Environmental Systems in Space"
+  },
+  {
+    "id": "pub_011",
+    "title": "Microbial Monitoring Systems for Spacecraft",
+    "authors": ["Dr. Alex Chen", "Dr. Isabella Martinez"],
+    "year": 2023,
+    "abstract": "Development of automated microbial monitoring systems for real-time contamination detection in spacecraft.",
+    "sections": {
+      "introduction": "Real-time microbial monitoring is essential for crew safety.",
+      "results": "Automated systems detected contamination 50% faster than manual methods.",
+      "conclusion": "Automated monitoring systems improve contamination response times."
+    },
+    "keywords": ["microbial monitoring", "automation", "contamination", "real-time", "spacecraft"],
+    "source": "Space Microbiology Journal"
+  },
+  {
+    "id": "pub_012",
+    "title": "Psychological Adaptation to Long-Duration Spaceflight",
+    "authors": ["Dr. Amanda Foster", "Dr. Hiroshi Yamamoto"],
+    "year": 2022,
+    "abstract": "Study of psychological adaptation patterns in astronauts during extended space missions and countermeasures for isolation stress.",
+    "sections": {
+      "introduction": "Psychological health is crucial for mission success.",
+      "results": "Regular communication with Earth reduced isolation stress by 40%.",
+      "conclusion": "Psychological support systems are essential for long-duration missions."
+    },
+    "keywords": ["psychological", "adaptation", "isolation", "stress", "crew health"],
+    "source": "Space Psychology Research"
+  },
+  {
+    "id": "pub_013",
+    "title": "Air Quality Management in Confined Spacecraft",
+    "authors": ["Dr. Michael Brown", "Dr. Elena Popov"],
+    "year": 2023,
+    "abstract": "Analysis of air quality challenges in confined spacecraft environments and filtration system effectiveness.",
+    "sections": {
+      "introduction": "Maintaining air quality is critical for crew health.",
+      "results": "HEPA filtration systems maintained air quality within acceptable limits.",
+      "conclusion": "Advanced filtration systems are effective for air quality management."
+    },
+    "keywords": ["air quality", "filtration", "HEPA", "crew health", "environmental control"],
+    "source": "Space Environmental Health"
+  },
+  {
+    "id": "pub_014",
+    "title": "Nutritional Requirements for Mars Mission Crews",
+    "authors": ["Dr. Sarah Williams", "Dr. Raj Patel"],
+    "year": 2022,
+    "abstract": "Assessment of nutritional requirements and food system design for Mars mission crews.",
+    "sections": {
+      "introduction": "Proper nutrition is essential for crew health and performance.",
+      "results": "Caloric requirements increased by 15% during high-intensity mission phases.",
+      "conclusion": "Dynamic nutritional planning is needed for Mars missions."
+    },
+    "keywords": ["nutrition", "food systems", "mars", "crew health", "caloric requirements"],
+    "source": "Space Nutrition Research"
+  },
+  {
+    "id": "pub_015",
+    "title": "System Redundancy and Failure Modes in Life Support",
+    "authors": ["Dr. David Wilson", "Dr. Maria Garcia"],
+    "year": 2023,
+    "abstract": "Analysis of system redundancy requirements and failure modes in life support systems for deep space missions.",
+    "sections": {
+      "introduction": "System redundancy is critical for mission safety.",
+      "results": "Triple redundancy reduced system failure probability by 99.9%.",
+      "conclusion": "Comprehensive redundancy is essential for life support systems."
+    },
+    "keywords": ["system redundancy", "failure modes", "life support", "safety", "system integration"],
+    "source": "Space Systems Reliability"
+  },
+  {
+    "id": "pub_016",
+    "title": "Exercise Equipment Design for Microgravity Environments",
+    "authors": ["Dr. Jennifer Taylor", "Dr. Ahmed Al-Rashid"],
+    "year": 2022,
+    "abstract": "Design and testing of exercise equipment specifically adapted for microgravity environments.",
+    "sections": {
+      "introduction": "Exercise equipment must be adapted for microgravity conditions.",
+      "results": "Magnetic resistance systems provided consistent exercise loads.",
+      "conclusion": "Specialized equipment is necessary for effective space exercise programs."
+    },
+    "keywords": ["exercise equipment", "microgravity", "magnetic resistance", "crew health", "countermeasure"],
+    "source": "Space Exercise Technology"
+  },
+  {
+    "id": "pub_017",
+    "title": "Radiation Dosimetry and Health Monitoring",
+    "authors": ["Dr. Robert Kim", "Dr. Anna Kowalski"],
+    "year": 2023,
+    "abstract": "Development of advanced radiation dosimetry systems for continuous crew health monitoring during space missions.",
+    "sections": {
+      "introduction": "Continuous radiation monitoring is essential for crew safety.",
+      "results": "Real-time dosimetry systems provided accurate exposure tracking.",
+      "conclusion": "Advanced monitoring systems improve radiation safety management."
+    },
+    "keywords": ["radiation dosimetry", "health monitoring", "real-time", "crew safety", "exposure tracking"],
+    "source": "Space Radiation Monitoring"
+  },
+  {
+    "id": "pub_018",
+    "title": "Waste Management Systems for Long-Duration Missions",
+    "authors": ["Dr. Lisa Anderson", "Dr. Carlos Silva"],
+    "year": 2022,
+    "abstract": "Design and testing of waste management systems for closed-loop life support in long-duration space missions.",
+    "sections": {
+      "introduction": "Efficient waste management is crucial for mission sustainability.",
+      "results": "Composting systems achieved 70% waste reduction through recycling.",
+      "conclusion": "Integrated waste management systems improve mission sustainability."
+    },
+    "keywords": ["waste management", "composting", "recycling", "life support", "sustainability"],
+    "source": "Space Waste Management"
+  },
+  {
+    "id": "pub_019",
+    "title": "Sleep Quality and Circadian Rhythm Management in Space",
+    "authors": ["Dr. Mark Thompson", "Dr. Yuki Sato"],
+    "year": 2023,
+    "abstract": "Study of sleep patterns and circadian rhythm disruption in astronauts and countermeasures for optimal rest.",
+    "sections": {
+      "introduction": "Sleep quality affects crew performance and health.",
+      "results": "Light therapy improved sleep quality by 25% in space environments.",
+      "conclusion": "Circadian rhythm management is essential for crew well-being."
+    },
+    "keywords": ["sleep quality", "circadian rhythm", "light therapy", "crew health", "performance"],
+    "source": "Space Sleep Research"
+  },
+  {
+    "id": "pub_020",
+    "title": "Emergency Response Systems for Deep Space Missions",
+    "authors": ["Dr. Patricia Lee", "Dr. Mohammed Al-Hassan"],
+    "year": 2022,
+    "abstract": "Design and testing of emergency response systems for medical and technical emergencies in deep space.",
+    "sections": {
+      "introduction": "Emergency response capabilities are critical for mission safety.",
+      "results": "Automated systems reduced emergency response time by 60%.",
+      "conclusion": "Advanced emergency systems improve mission safety margins."
+    },
+    "keywords": ["emergency response", "deep space", "medical emergency", "safety", "system integration"],
+    "source": "Space Emergency Systems"
+  },
+  {
+    "id": "pub_021",
+    "title": "Bone Density Monitoring Technologies for Spaceflight",
+    "authors": ["Dr. Susan Davis", "Dr. Roberto Mendez"],
+    "year": 2023,
+    "abstract": "Development of portable bone density monitoring technologies for continuous assessment during space missions.",
+    "sections": {
+      "introduction": "Continuous bone density monitoring is essential for crew health.",
+      "results": "Portable DEXA systems provided accurate bone density measurements.",
+      "conclusion": "Advanced monitoring technologies enable proactive health management."
+    },
+    "keywords": ["bone density", "monitoring", "DEXA", "crew health", "portable technology"],
+    "source": "Space Medical Technology"
+  },
+  {
+    "id": "pub_022",
+    "title": "Radiation-Induced DNA Damage and Repair Mechanisms",
+    "authors": ["Dr. James Wilson", "Dr. Elena Petrov"],
+    "year": 2022,
+    "abstract": "Investigation of radiation-induced DNA damage and cellular repair mechanisms in space environments.",
+    "sections": {
+      "introduction": "Understanding DNA damage mechanisms is crucial for radiation protection.",
+      "results": "Cellular repair mechanisms were 20% less efficient in microgravity.",
+      "conclusion": "Enhanced radiation protection is needed for long-duration missions."
+    },
+    "keywords": ["DNA damage", "radiation", "cellular repair", "microgravity", "protection"],
+    "source": "Space Radiation Biology"
+  },
+  {
+    "id": "pub_023",
+    "title": "Food Storage and Preservation in Space Environments",
+    "authors": ["Dr. Amanda Johnson", "Dr. Hassan Al-Mahmoud"],
+    "year": 2023,
+    "abstract": "Evaluation of food storage and preservation methods for long-duration space missions.",
+    "sections": {
+      "introduction": "Food preservation is essential for mission nutrition.",
+      "results": "Vacuum sealing extended food shelf life by 300%.",
+      "conclusion": "Advanced preservation methods ensure food quality throughout missions."
+    },
+    "keywords": ["food storage", "preservation", "vacuum sealing", "nutrition", "shelf life"],
+    "source": "Space Food Technology"
+  },
+  {
+    "id": "pub_024",
+    "title": "System Integration Testing for Mars Mission Architecture",
+    "authors": ["Dr. Thomas Chen", "Dr. Maria Rodriguez"],
+    "year": 2022,
+    "abstract": "Comprehensive system integration testing of Mars mission architecture components.",
+    "sections": {
+      "introduction": "System integration testing is critical for mission success.",
+      "results": "Integrated testing revealed 15 critical interface issues.",
+      "conclusion": "Thorough integration testing is essential for mission readiness."
+    },
+    "keywords": ["system integration", "testing", "mars mission", "architecture", "interfaces"],
+    "source": "Mars Mission Engineering"
+  },
+  {
+    "id": "pub_025",
+    "title": "Microbial Contamination Prevention Protocols",
+    "authors": ["Dr. Rachel Kim", "Dr. Ahmed Hassan"],
+    "year": 2023,
+    "abstract": "Development of comprehensive protocols for preventing microbial contamination in spacecraft environments.",
+    "sections": {
+      "introduction": "Preventing contamination is essential for crew health and mission success.",
+      "results": "Sterilization protocols reduced contamination risk by 95%.",
+      "conclusion": "Rigorous protocols are effective for contamination prevention."
+    },
+    "keywords": ["microbial contamination", "prevention", "sterilization", "protocols", "crew health"],
+    "source": "Space Contamination Control"
+  },
+  {
+    "id": "pub_026",
+    "title": "Muscle Function Assessment in Microgravity",
+    "authors": ["Dr. David Park", "Dr. Sofia Volkov"],
+    "year": 2022,
+    "abstract": "Comprehensive assessment of muscle function changes during extended microgravity exposure.",
+    "sections": {
+      "introduction": "Muscle function assessment is crucial for understanding spaceflight effects.",
+      "results": "Muscle strength decreased by 20% after 6 months in microgravity.",
+      "conclusion": "Regular assessment and countermeasures are essential for muscle health."
+    },
+    "keywords": ["muscle function", "microgravity", "assessment", "strength", "crew health"],
+    "source": "Space Muscle Research"
+  },
+  {
+    "id": "pub_027",
+    "title": "Advanced Radiation Shielding Concepts",
+    "authors": ["Dr. Jennifer Martinez", "Dr. Yuki Tanaka"],
+    "year": 2023,
+    "abstract": "Development of advanced radiation shielding concepts using active and passive protection systems.",
+    "sections": {
+      "introduction": "Advanced shielding concepts are needed for deep space missions.",
+      "results": "Active shielding reduced radiation exposure by 50% compared to passive systems.",
+      "conclusion": "Combined active and passive shielding offers optimal protection."
+    },
+    "keywords": ["radiation shielding", "active shielding", "passive shielding", "protection", "deep space"],
+    "source": "Advanced Space Protection"
+  },
+  {
+    "id": "pub_028",
+    "title": "Life Support System Reliability Analysis",
+    "authors": ["Dr. Michael O'Connor", "Dr. Fatima Al-Zahra"],
+    "year": 2022,
+    "abstract": "Comprehensive reliability analysis of life support systems for long-duration space missions.",
+    "sections": {
+      "introduction": "System reliability is critical for mission success.",
+      "results": "Redundant systems achieved 99.9% reliability over 2-year missions.",
+      "conclusion": "Comprehensive redundancy ensures life support system reliability."
+    },
+    "keywords": ["life support", "reliability", "redundancy", "long-duration", "system integration"],
+    "source": "Space Systems Reliability"
+  },
+  {
+    "id": "pub_029",
+    "title": "Crew Health Monitoring and Telemedicine Systems",
+    "authors": ["Dr. Sarah Thompson", "Dr. Raj Patel"],
+    "year": 2023,
+    "abstract": "Development of integrated health monitoring and telemedicine systems for space missions.",
+    "sections": {
+      "introduction": "Continuous health monitoring is essential for crew safety.",
+      "results": "Integrated systems provided real-time health status updates.",
+      "conclusion": "Advanced monitoring systems improve crew health management."
+    },
+    "keywords": ["crew health", "monitoring", "telemedicine", "real-time", "health management"],
+    "source": "Space Telemedicine"
+  },
+  {
+    "id": "pub_030",
+    "title": "Mission Architecture Optimization for Mars Missions",
+    "authors": ["Dr. Alex Wilson", "Dr. Elena Popov"],
+    "year": 2022,
+    "abstract": "Optimization of mission architecture for Mars missions considering crew health, life support, and system integration requirements.",
+    "sections": {
+      "introduction": "Mission architecture optimization is crucial for mission success.",
+      "results": "Optimized architecture reduced mission risk by 25%.",
+      "conclusion": "Integrated design approaches improve mission architecture effectiveness."
+    },
+    "keywords": ["mission architecture", "optimization", "mars mission", "crew health", "system integration"],
+    "source": "Mars Mission Design"
+  },
+  {
+    "id": "pub_031",
+    "title": "NASA Human Research Program: Bone Loss Countermeasures",
+    "authors": ["Dr. Scott Smith", "Dr. Jean Sibonga", "Dr. Sara Zwart"],
+    "year": 2024,
+    "abstract": "NASA's comprehensive study on bone loss countermeasures during International Space Station missions, including advanced resistive exercise protocols and nutritional interventions.",
+    "sections": {
+      "introduction": "NASA Human Research Program has been studying bone loss in astronauts for over two decades.",
+      "results": "Advanced Resistive Exercise Device (ARED) combined with optimized nutrition protocols reduced bone loss by 70% compared to previous missions.",
+      "conclusion": "Integrated approach combining exercise, nutrition, and monitoring is essential for long-duration missions."
+    },
+    "keywords": ["NASA", "bone loss", "ARED", "exercise", "nutrition", "countermeasure", "crew health"],
+    "source": "NASA Technical Reports"
+  },
+  {
+    "id": "pub_032",
+    "title": "Artemis Mission Radiation Protection Strategies",
+    "authors": ["Dr. Kerry Lee", "Dr. Edward Semones", "Dr. Zarana Shah"],
+    "year": 2024,
+    "abstract": "Radiation protection strategies for NASA's Artemis missions to the Moon, including storm shelter design and real-time radiation monitoring systems.",
+    "sections": {
+      "introduction": "Artemis missions will face unique radiation challenges during lunar surface operations.",
+      "results": "Multi-layered storm shelters reduced radiation exposure by 60% during solar particle events. Real-time monitoring systems provided accurate dose tracking.",
+      "conclusion": "Comprehensive radiation protection is critical for lunar surface missions and future Mars exploration."
+    },
+    "keywords": ["Artemis", "radiation", "moon", "storm shelter", "monitoring", "protection", "NASA"],
+    "source": "NASA Space Technology Mission Directorate"
+  },
+  {
+    "id": "pub_033",
+    "title": "ISS Life Support System Performance Analysis",
+    "authors": ["Dr. Mark Kliss", "Dr. Robert Bagdigian", "Dr. John Lewis"],
+    "year": 2023,
+    "abstract": "Comprehensive analysis of International Space Station life support system performance over 20 years of operation, including lessons learned for future missions.",
+    "sections": {
+      "introduction": "The ISS Environmental Control and Life Support System (ECLSS) has operated continuously for over two decades.",
+      "results": "Water recovery system achieved 98% efficiency. Air revitalization maintained crew health standards throughout mission duration.",
+      "conclusion": "ISS ECLSS provides proven foundation for future deep space missions with identified areas for improvement."
+    },
+    "keywords": ["ISS", "ECLSS", "life support", "water recovery", "air revitalization", "NASA"],
+    "source": "NASA Johnson Space Center"
+  },
+  {
+    "id": "pub_034",
+    "title": "Microbial Monitoring on the International Space Station",
+    "authors": ["Dr. Kasthuri Venkateswaran", "Dr. Duane Pierson", "Dr. Mark Ott"],
+    "year": 2024,
+    "abstract": "Long-term microbial monitoring study aboard the International Space Station, examining microbial diversity, growth patterns, and potential health impacts.",
+    "sections": {
+      "introduction": "Understanding microbial behavior in space environments is crucial for crew health and system integrity.",
+      "results": "Automated microbial monitoring systems detected contamination events 3x faster than manual methods. Specific microbial species showed increased virulence in microgravity.",
+      "conclusion": "Continuous microbial monitoring and rapid response protocols are essential for long-duration missions."
+    },
+    "keywords": ["microbial", "monitoring", "ISS", "contamination", "crew health", "NASA"],
+    "source": "NASA Ames Research Center"
+  },
+  {
+    "id": "pub_035",
+    "title": "Gateway Station System Integration Architecture",
+    "authors": ["Dr. Dan Hartman", "Dr. Mark Kirasich", "Dr. Howard Hu"],
+    "year": 2024,
+    "abstract": "System integration architecture for NASA's Gateway lunar space station, including power, propulsion, life support, and communication systems integration.",
+    "sections": {
+      "introduction": "Gateway station represents NASA's next-generation deep space platform requiring complex system integration.",
+      "results": "Modular architecture reduced integration complexity by 40%. Standardized interfaces improved system reliability and maintainability.",
+      "conclusion": "Gateway architecture provides scalable foundation for future lunar and Mars missions."
+    },
+    "keywords": ["Gateway", "system integration", "architecture", "modular", "NASA", "lunar"],
+    "source": "NASA Gateway Program Office"
+  },
+  {
+    "id": "pub_036",
+    "title": "Cardiovascular Deconditioning in Long-Duration Spaceflight",
+    "authors": ["Dr. Benjamin Levine", "Dr. James Macias", "Dr. Michael Stenger"],
+    "year": 2023,
+    "abstract": "Comprehensive study of cardiovascular deconditioning during 6-month ISS missions, including countermeasures and recovery protocols.",
+    "sections": {
+      "introduction": "Cardiovascular deconditioning remains a significant challenge for long-duration space missions.",
+      "results": "Integrated exercise protocols maintained 85% of pre-flight cardiovascular function. Recovery protocols reduced post-flight adaptation time by 50%.",
+      "conclusion": "Comprehensive cardiovascular countermeasures are essential for crew health and mission success."
+    },
+    "keywords": ["cardiovascular", "deconditioning", "exercise", "countermeasure", "crew health", "NASA"],
+    "source": "NASA Human Research Program"
+  },
+  {
+    "id": "pub_037",
+    "title": "Mars Mission Radiation Shielding Design",
+    "authors": ["Dr. Cary Zeitlin", "Dr. Francis Cucinotta", "Dr. John Wilson"],
+    "year": 2024,
+    "abstract": "Advanced radiation shielding design for Mars missions, including active and passive protection systems optimized for interplanetary travel.",
+    "sections": {
+      "introduction": "Mars missions face unprecedented radiation challenges requiring innovative shielding solutions.",
+      "results": "Hybrid active-passive shielding reduced radiation exposure by 75% compared to passive-only systems. Magnetic shielding showed promise for crew compartments.",
+      "conclusion": "Advanced shielding technologies are critical for safe Mars mission operations."
+    },
+    "keywords": ["Mars", "radiation", "shielding", "active", "passive", "NASA"],
+    "source": "NASA Space Radiation Analysis Group"
+  },
+  {
+    "id": "pub_038",
+    "title": "Space Food System Development for Mars Missions",
+    "authors": ["Dr. Grace Douglas", "Dr. Sara Zwart", "Dr. Scott Smith"],
+    "year": 2023,
+    "abstract": "Development of sustainable food production systems for Mars missions, including hydroponic agriculture and nutritional optimization.",
+    "sections": {
+      "introduction": "Sustainable food production is essential for Mars mission success and crew health.",
+      "results": "Hydroponic systems achieved 90% crop yield efficiency. Nutritional optimization maintained crew health throughout simulated missions.",
+      "conclusion": "Integrated food production systems are ready for Mars mission deployment."
+    },
+    "keywords": ["food production", "Mars", "hydroponic", "nutrition", "sustainability", "NASA"],
+    "source": "NASA Food Technology Laboratory"
+  },
+  {
+    "id": "pub_039",
+    "title": "Psychological Adaptation in Isolated Confined Environments",
+    "authors": ["Dr. Al Holland", "Dr. Jack Stuster", "Dr. Sheryl Bishop"],
+    "year": 2024,
+    "abstract": "Psychological adaptation patterns in isolated confined environments, including countermeasures for stress, isolation, and team dynamics.",
+    "sections": {
+      "introduction": "Psychological health is crucial for mission success in isolated confined environments.",
+      "results": "Structured communication protocols reduced isolation stress by 45%. Team training programs improved group cohesion and performance.",
+      "conclusion": "Comprehensive psychological support systems are essential for long-duration missions."
+    },
+    "keywords": ["psychological", "adaptation", "isolation", "stress", "crew health", "NASA"],
+    "source": "NASA Behavioral Health and Performance"
+  },
+  {
+    "id": "pub_040",
+    "title": "Emergency Medical Care in Space Environments",
+    "authors": ["Dr. Serena Aunon-Chancellor", "Dr. Kjell Lindgren", "Dr. Scott Parazynski"],
+    "year": 2023,
+    "abstract": "Emergency medical care protocols for space environments, including telemedicine, surgical procedures, and medical equipment design.",
+    "sections": {
+      "introduction": "Emergency medical care capabilities are critical for crew safety during space missions.",
+      "results": "Telemedicine systems enabled accurate diagnosis in 95% of cases. Portable medical equipment maintained functionality in microgravity.",
+      "conclusion": "Advanced medical care systems provide essential safety net for space missions."
+    },
+    "keywords": ["medical care", "emergency", "telemedicine", "crew health", "NASA"],
+    "source": "NASA Space Medicine"
+  }

@@ -1,0 +1,81 @@
+{
+  "crew-health": {
+    "name": "Crew Health",
+    "keywords": [
+      "bone loss", "muscle atrophy", "cardiac", "heart", "deconditioning",
+      "exercise", "countermeasure", "crew health", "monitoring", "assessment",
+      "sleep quality", "circadian rhythm", "psychological", "adaptation",
+      "isolation", "stress", "health monitoring", "telemedicine"
+    ],
+    "implications": [
+      "Include resistive exercise system with magnetic resistance",
+      "Add in-flight bone density monitoring (portable DEXA)",
+      "Implement comprehensive cardiovascular monitoring",
+      "Design circadian rhythm management with light therapy",
+      "Establish psychological support and communication protocols"
+    ],
+    "description": "Physical and psychological health of crew members during space missions"
+  },
+  "radiation": {
+    "name": "Radiation",
+    "keywords": [
+      "radiation", "shielding", "cosmic rays", "protection", "dosimetry",
+      "exposure", "DNA damage", "cellular repair", "polyethylene", "composite",
+      "active shielding", "passive shielding", "radiation monitoring"
+    ],
+    "implications": [
+      "Implement multi-layered radiation shielding (water + polyethylene)",
+      "Deploy real-time radiation dosimetry systems",
+      "Design active shielding systems for deep space missions",
+      "Establish radiation exposure limits and monitoring protocols"
+    ],
+    "description": "Protection from cosmic radiation and space radiation effects"
+  },
+  "food-life-support": {
+    "name": "Food & Life Support",
+    "keywords": [
+      "food production", "agriculture", "hydroponic", "nutrition", "food systems",
+      "life support", "closed loop", "air revitalization", "water recycling",
+      "filtration", "HEPA", "air quality", "environmental control", "waste management",
+      "composting", "recycling", "food storage", "preservation", "vacuum sealing"
+    ],
+    "implications": [
+      "Design closed-loop life support with 95%+ recycling efficiency",
+      "Implement controlled environment agriculture for food production",
+      "Deploy advanced air filtration and quality monitoring systems",
+      "Establish comprehensive waste management and recycling protocols"
+    ],
+    "description": "Sustainable food production and life support systems"
+  },
+  "microbial-risks": {
+    "name": "Microbial Risks",
+    "keywords": [
+      "microbial", "contamination", "spacecraft", "environmental control",
+      "microbial monitoring", "automation", "real-time", "sterilization",
+      "protocols", "prevention", "bacteria", "fungi", "pathogens"
+    ],
+    "implications": [
+      "Implement automated microbial monitoring systems",
+      "Design sterilization protocols for spacecraft environments",
+      "Establish contamination prevention and response procedures",
+      "Deploy real-time environmental monitoring and control systems"
+    ],
+    "description": "Prevention and management of microbial contamination risks"
+  },
+  "system-integration": {
+    "name": "System Integration",
+    "keywords": [
+      "system integration", "deep space", "modular design", "interfaces",
+      "mission planning", "architecture", "optimization", "testing",
+      "redundancy", "failure modes", "reliability", "emergency response",
+      "medical emergency", "safety", "mission architecture"
+    ],
+    "implications": [
+      "Design modular systems with standardized interfaces",
+      "Implement comprehensive redundancy and failure mode analysis",
+      "Establish integrated emergency response systems",
+      "Optimize mission architecture for crew health and system reliability"
+    ],
+    "description": "Integration and optimization of mission systems and architecture"
+  }
+}
