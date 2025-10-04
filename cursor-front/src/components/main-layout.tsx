@@ -3,6 +3,9 @@
 import Header from '@/components/header';
 import AIButton from '@/components/ai-button';
 import ChatbotPanel from '@/components/chatbot-panel';
+import DashboardBreadcrumb from '@/components/dashboard-breadcrumb';
+import { Toaster } from './ui/toaster';
+import { usePathname } from 'next/navigation';
 import { useState, useEffect } from 'react';
 
 interface MainLayoutProps {
@@ -11,6 +14,13 @@ interface MainLayoutProps {
 
 export default function MainLayout({ children }: MainLayoutProps) {
   const [isChatbotOpen, setIsChatbotOpen] = useState(false);
+  const pathname = usePathname();
+  
+  // Show breadcrumbs for dashboard and sub-pages
+  const showBreadcrumbs = pathname === '/dashboard' || 
+    pathname.startsWith('/manager/') || 
+    pathname.startsWith('/mission-planner') ||
+    pathname.startsWith('/papers');
 
   // Listen for summary events to auto-open chat panel
   useEffect(() => {
@@ -26,6 +36,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen relative">
       <Header />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 relative z-10">
+        {showBreadcrumbs && <DashboardBreadcrumb />}
         {children}
       </main>
       
@@ -37,6 +48,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
         isOpen={isChatbotOpen} 
         onClose={() => setIsChatbotOpen(false)} 
       />
+      
+      {/* Toast Notifications */}
+      <Toaster />
     </div>
   );
 }

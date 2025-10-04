@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, sendNasaAiChatMessage, sendHybridNasaAiChatMessage, generateHypotheses, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, sendNasaAiChatMessage, sendHybridNasaAiChatMessage, generateHypotheses, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, fetchCrossDomainSynergy, fetchInvestmentRecommendations, fetchRedFlagAlerts, fetchBudgetSimulation, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -125,6 +125,31 @@ export const useCrossDomainSynergy = () => {
   return useQuery({
     queryKey: ['cross-domain-synergy'],
     queryFn: fetchCrossDomainSynergy,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useInvestmentRecommendations = () => {
+  return useQuery({
+    queryKey: ['investment-recommendations'],
+    queryFn: fetchInvestmentRecommendations,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useRedFlagAlerts = () => {
+  return useQuery({
+    queryKey: ['red-flag-alerts'],
+    queryFn: fetchRedFlagAlerts,
+    staleTime: 2 * 60 * 1000, // 2 minutes for alerts
+  });
+};
+
+export const useBudgetSimulation = (domain: string, adjustmentPercentage: number = 0) => {
+  return useQuery({
+    queryKey: ['budget-simulation', domain, adjustmentPercentage],
+    queryFn: () => fetchBudgetSimulation(domain, adjustmentPercentage),
+    enabled: !!domain,
     staleTime: 5 * 60 * 1000,
   });
 };

@@ -265,9 +265,36 @@ def get_paper_chunks(paper_title: str) -> List[str]:
     Returns a list of chunk texts.
     """
     chunks = []
+    paper_title_lower = paper_title.lower().strip()
+    
+    # First try exact match
     for item in CHUNKS_DATA:
-        if item['Title'].lower().strip() == paper_title.lower().strip():
+        if item['Title'].lower().strip() == paper_title_lower:
             chunks.append(item['Chunk'])
+    
+    # If no exact match, try PMC ID matching
+    if not chunks:
+        # Extract PMC ID from title if it exists
+        import re
+        pmc_match = re.search(r'pmc(\d+)', paper_title_lower)
+        if pmc_match:
+            pmc_id = pmc_match.group(1)
+            for item in CHUNKS_DATA:
+                if f'pmc{pmc_id}' in item['Title'].lower():
+                    chunks.append(item['Chunk'])
+    
+    # If still no match, try fuzzy matching
+    if not chunks:
+        for item in CHUNKS_DATA:
+            chunk_title = item['Title'].lower().strip()
+            # Check if the paper title is contained in the chunk title or vice versa
+            if (paper_title_lower in chunk_title or 
+                chunk_title in paper_title_lower or
+                # Check for common variations
+                paper_title_lower.replace(' ', '') in chunk_title.replace(' ', '') or
+                chunk_title.replace(' ', '') in paper_title_lower.replace(' ', '')):
+                chunks.append(item['Chunk'])
+    
     return chunks
 
 def clean_chunk_text(text: str) -> str:

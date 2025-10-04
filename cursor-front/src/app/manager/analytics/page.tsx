@@ -10,7 +10,7 @@ import {
   PieChart, Pie, Cell
 } from 'recharts';
 import { 
-  TrendingUp, TrendingDown, RefreshCw, Target, Activity, Users, Briefcase
+  TrendingUp, TrendingDown, RefreshCw, Target, Activity, Users, Briefcase, BarChart3
 } from 'lucide-react';
 import { 
   type DomainAnalytics,
@@ -69,8 +69,64 @@ export default function AnalyticsPage() {
   if (loading) {
     return (
       <MainLayout>
-        <div className="flex items-center justify-center h-64">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+        <div className="container mx-auto p-6 space-y-6">
+          {/* Header Skeleton */}
+          <div className="flex justify-between items-center">
+            <div className="space-y-2">
+              <div className="h-8 w-64 bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-96 bg-gray-700 rounded animate-pulse"></div>
+            </div>
+            <div className="h-10 w-32 bg-gray-700 rounded animate-pulse"></div>
+          </div>
+
+          {/* Key Metrics Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <Card key={i} className="bg-transparent border-gray-700">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between space-y-0 pb-2">
+                    <div className="h-4 w-24 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-4 w-4 bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+                  <div className="space-y-2">
+                    <div className="h-8 w-16 bg-gray-700 rounded animate-pulse"></div>
+                    <div className="h-3 w-32 bg-gray-700 rounded animate-pulse"></div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Chart Skeleton */}
+          <Card className="bg-transparent border-gray-700">
+            <CardHeader>
+              <div className="h-6 w-48 bg-gray-700 rounded animate-pulse"></div>
+              <div className="h-4 w-64 bg-gray-700 rounded animate-pulse"></div>
+            </CardHeader>
+            <CardContent>
+              <div className="h-80 w-full bg-gray-700 rounded animate-pulse"></div>
+            </CardContent>
+          </Card>
+
+          {/* Bottom Cards Skeleton */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {Array.from({ length: 2 }).map((_, i) => (
+              <Card key={i} className="bg-transparent border-gray-700">
+                <CardHeader>
+                  <div className="h-6 w-48 bg-gray-700 rounded animate-pulse"></div>
+                  <div className="h-4 w-64 bg-gray-700 rounded animate-pulse"></div>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {Array.from({ length: 4 }).map((_, j) => (
+                    <div key={j} className="flex justify-between items-center">
+                      <div className="h-4 w-32 bg-gray-700 rounded animate-pulse"></div>
+                      <div className="h-6 w-16 bg-gray-700 rounded animate-pulse"></div>
+                    </div>
+                  ))}
+                </CardContent>
+              </Card>
+            ))}
+          </div>
         </div>
       </MainLayout>
     );
@@ -176,9 +232,12 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Research Domain Distribution */}
-        <Card>
+        <Card className="bg-transparent border-gray-700 hover:border-gray-600 transition-colors duration-300">
           <CardHeader>
-            <CardTitle className="text-white">Research Domain Distribution</CardTitle>
+            <CardTitle className="text-white flex items-center gap-2">
+              <BarChart3 className="h-5 w-5 text-blue-500" />
+              Research Domain Distribution
+            </CardTitle>
             <CardDescription className="text-gray-400">
               Distribution of projects across different research domains
             </CardDescription>
@@ -195,18 +254,46 @@ export default function AnalyticsPage() {
                   fill="#8884d8"
                   dataKey="count"
                   label={({ domain, percentage }) => `${domain} (${(percentage as number).toFixed(1)}%)`}
+                  animationBegin={0}
+                  animationDuration={800}
+                  animationEasing="ease-out"
                 >
                   {domainChartData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                    <Cell 
+                      key={`cell-${index}`} 
+                      fill={COLORS[index % COLORS.length]}
+                      stroke="#1F2937"
+                      strokeWidth={2}
+                      className="hover:opacity-80 transition-opacity duration-200"
+                    />
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#1F2937', border: 'none', borderRadius: '8px' }}
-                  labelStyle={{ color: '#E5E7EB' }}
+                  contentStyle={{ 
+                    backgroundColor: '#1F2937', 
+                    border: '1px solid #374151', 
+                    borderRadius: '8px',
+                    boxShadow: '0 10px 25px rgba(0,0,0,0.3)'
+                  }}
+                  labelStyle={{ color: '#E5E7EB', fontWeight: 'bold' }}
                   itemStyle={{ color: '#9CA3AF' }}
+                  formatter={(value: number) => [value, 'Projects']}
                 />
               </PieChart>
             </ResponsiveContainer>
+            
+            {/* Legend */}
+            <div className="mt-4 grid grid-cols-2 gap-2">
+              {domainChartData.map((entry, index) => (
+                <div key={index} className="flex items-center gap-2 text-sm">
+                  <div 
+                    className="w-3 h-3 rounded-full" 
+                    style={{ backgroundColor: COLORS[index % COLORS.length] }}
+                  ></div>
+                  <span className="text-gray-300">{entry.domain}</span>
+                </div>
+              ))}
+            </div>
           </CardContent>
         </Card>
 

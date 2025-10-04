@@ -87,6 +87,15 @@ export default function PapersPage() {
   const handleGenerateSummary = async (paper: Paper) => {
     setGeneratingSummary(paper.id);
     try {
+      // Extract PMC ID from paper link if available
+      let paperIdentifier = paper.title;
+      if (paper.link && paper.link.includes('pmc/articles/PMC')) {
+        const pmcMatch = paper.link.match(/PMC(\d+)/);
+        if (pmcMatch) {
+          paperIdentifier = `PMC${pmcMatch[1]}`;
+        }
+      }
+      
       // Call the backend API to generate summary
       const response = await fetch(`http://localhost:8000/api/paper-summaries`, {
         method: 'POST',
@@ -94,12 +103,22 @@ export default function PapersPage() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          paper_title: paper.title,
+          paper_title: paperIdentifier,
           role: role
         })
       });
       
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
       const data = await response.json();
+      
+      if (data.error) {
+        // Handle backend errors
+        console.error('Backend error:', data.error);
+        throw new Error(data.error);
+      }
       
       if (data.summary) {
         // Open the AI chat panel and show the summary
@@ -111,9 +130,15 @@ export default function PapersPage() {
           }
         });
         window.dispatchEvent(event);
+      } else {
+        throw new Error('No summary generated');
       }
     } catch (error) {
       console.error('Error generating summary:', error);
+      
+      // Show error message to user
+      alert(`Failed to generate summary: ${error instanceof Error ? error.message : 'Unknown error'}`);
+      
       // Fallback to a simple summary
       const event = new CustomEvent('showSummary', {
         detail: {

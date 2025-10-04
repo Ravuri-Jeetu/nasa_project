@@ -14,7 +14,7 @@ interface Hypothesis {
   supporting_evidence: string;
   confidence: number;
   type: string;
-  related_papers: string[];
+  related_papers: Array<{ title: string; link: string; }>;
 }
 
 interface HypothesisResponse {

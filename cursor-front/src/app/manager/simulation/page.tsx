@@ -25,9 +25,9 @@ export default function SimulationPage() {
       setLoading(true);
       const simData = await fetchBudgetSimulation(domain, adjustment);
       
-      // Check if we got an error from the backend
-      if (simData && simData.error) {
-        console.error('Backend error:', simData.error);
+      // Check if we got valid data from the backend
+      if (!simData || !simData.domain) {
+        console.error('No valid simulation data received');
         setSimulation(null);
         return;
       }
@@ -237,7 +237,7 @@ export default function SimulationPage() {
               <Calculator className="h-16 w-16 text-gray-500 mx-auto mb-4" />
               <h3 className="text-lg font-semibold text-gray-400 mb-2">No Simulation Data Available</h3>
               <p className="text-gray-500 mb-4">
-                No data found for the selected domain "{selectedDomain}". Try selecting a different domain or check if the domain has research projects.
+                No data found for the selected domain &quot;{selectedDomain}&quot;. Try selecting a different domain or check if the domain has research projects.
               </p>
               <Button 
                 onClick={handleRunSimulation}
