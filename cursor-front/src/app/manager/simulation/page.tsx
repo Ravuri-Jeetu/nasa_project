@@ -17,16 +17,25 @@ export default function SimulationPage() {
   const [simulation, setSimulation] = useState<BudgetSimulation | null>(null);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [selectedDomain, setSelectedDomain] = useState('all');
+  const [selectedDomain, setSelectedDomain] = useState('Human Physiology');
   const [adjustmentPercentage, setAdjustmentPercentage] = useState(10);
 
   const loadSimulationData = async (domain: string, adjustment: number) => {
     try {
       setLoading(true);
       const simData = await fetchBudgetSimulation(domain, adjustment);
+      
+      // Check if we got an error from the backend
+      if (simData && simData.error) {
+        console.error('Backend error:', simData.error);
+        setSimulation(null);
+        return;
+      }
+      
       setSimulation(simData);
     } catch (error) {
       console.error('Error loading simulation data:', error);
+      setSimulation(null);
     } finally {
       setLoading(false);
     }
@@ -102,15 +111,12 @@ export default function SimulationPage() {
                     onChange={(e) => setSelectedDomain(e.target.value)}
                     className="w-full p-3 bg-gray-800 border border-gray-600 rounded-lg text-white"
                   >
-                    <option value="all">All Domains</option>
-                    <option value="microgravity">Microgravity Effects</option>
-                    <option value="radiation">Radiation Biology</option>
-                    <option value="bone">Bone & Skeletal</option>
-                    <option value="muscle">Muscle Physiology</option>
-                    <option value="cardio">Cardiovascular</option>
-                    <option value="neuro">Neuroscience</option>
-                    <option value="immune">Immunology</option>
-                    <option value="plant">Plant Biology</option>
+                    <option value="Human Physiology">Human Physiology</option>
+                    <option value="Plants">Plant Biology</option>
+                    <option value="Microbes">Microbial Biology</option>
+                    <option value="Radiation">Radiation Biology</option>
+                    <option value="Psychology">Psychology & Behavioral</option>
+                    <option value="Other">Other Domains</option>
                   </select>
                 </div>
               </div>
@@ -157,7 +163,7 @@ export default function SimulationPage() {
                 Simulation Results
               </CardTitle>
               <CardDescription className="text-gray-400">
-                Impact analysis for {adjustmentPercentage}% budget adjustment in {selectedDomain === 'all' ? 'all domains' : selectedDomain}
+                Impact analysis for {adjustmentPercentage}% budget adjustment in {selectedDomain}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -229,10 +235,16 @@ export default function SimulationPage() {
           <Card className="bg-transparent border-gray-700">
             <CardContent className="text-center py-12">
               <Calculator className="h-16 w-16 text-gray-500 mx-auto mb-4" />
-              <h3 className="text-lg font-semibold text-gray-400 mb-2">No Simulation Data</h3>
-              <p className="text-gray-500">
-                Run a simulation to see the impact of budget adjustments on your research portfolio.
+              <h3 className="text-lg font-semibold text-gray-400 mb-2">No Simulation Data Available</h3>
+              <p className="text-gray-500 mb-4">
+                No data found for the selected domain "{selectedDomain}". Try selecting a different domain or check if the domain has research projects.
               </p>
+              <Button 
+                onClick={handleRunSimulation}
+                className="mt-4"
+              >
+                Try Again
+              </Button>
             </CardContent>
           </Card>
         )}
