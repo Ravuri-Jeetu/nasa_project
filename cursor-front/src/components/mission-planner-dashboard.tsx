@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -44,6 +45,7 @@ interface MissionPlannerDashboardProps {
 
 export default function MissionPlannerDashboard({ role }: MissionPlannerDashboardProps) {
   const [selectedMission, setSelectedMission] = useState('mars-exploration');
+  const router = useRouter();
 
   // Mock data for Mission Risk Assessment
   const riskData = [
@@ -98,7 +100,10 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
           <Badge variant="outline" className="bg-purple-100 text-purple-700">
             Mission Planner Mode
           </Badge>
-          <Button className="bg-purple-600 hover:bg-purple-700">
+          <Button 
+            className="bg-purple-600 hover:bg-purple-700"
+            onClick={() => router.push('/mission-planner')}
+          >
             <Settings className="h-4 w-4 mr-2" />
             Configure Mission
           </Button>

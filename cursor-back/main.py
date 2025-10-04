@@ -17,6 +17,7 @@ import faiss
 from nasa_ai_service import nasa_ai
 from hybrid_nasa_ai_service import hybrid_nasa_ai
 from hypothesis_generator import hypothesis_generator
+from synergy_service import synergy_service, initialize_synergy_service
 
 # Initialize FastAPI
 app = FastAPI(title="AI Research Assistant Backend")
@@ -2174,6 +2175,86 @@ def hybrid_nasa_ai_chat_endpoint(request: ChatMessage):
             timestamp=str(pd.Timestamp.now()),
             session_id=request.session_id
         )
+
+# ==================== CROSS-DOMAIN SYNERGY ANALYSIS ENDPOINTS ====================
+
+@app.get("/api/synergy/analysis")
+def get_synergy_analysis():
+    """
+    Get comprehensive cross-domain synergy analysis.
+    """
+    try:
+        if not synergy_service.is_initialized:
+            # Try to initialize if not already done
+            success = synergy_service.initialize_service()
+            if not success:
+                return {"success": False, "error": "Failed to initialize synergy service"}
+        
+        analysis = synergy_service.get_synergy_analysis()
+        return analysis
+        
+    except Exception as e:
+        return {"success": False, "error": f"Error getting synergy analysis: {str(e)}"}
+
+@app.get("/api/synergy/domain/{domain}")
+def get_domain_synergies(domain: str, limit: int = 10):
+    """
+    Get synergies for a specific domain.
+    """
+    try:
+        if not synergy_service.is_initialized:
+            return {"success": False, "error": "Synergy service not initialized"}
+        
+        result = synergy_service.get_domain_synergies(domain, limit)
+        return result
+        
+    except Exception as e:
+        return {"success": False, "error": f"Error getting domain synergies: {str(e)}"}
+
+@app.get("/api/synergy/details")
+def get_synergy_details(project_a: str, project_b: str):
+    """
+    Get detailed information about a specific synergy pair.
+    """
+    try:
+        if not synergy_service.is_initialized:
+            return {"success": False, "error": "Synergy service not initialized"}
+        
+        result = synergy_service.get_synergy_details(project_a, project_b)
+        return result
+        
+    except Exception as e:
+        return {"success": False, "error": f"Error getting synergy details: {str(e)}"}
+
+@app.get("/api/synergy/investment-recommendations")
+def get_investment_recommendations(budget: float, risk_tolerance: str = "Medium"):
+    """
+    Generate investment recommendations based on synergy analysis.
+    """
+    try:
+        if not synergy_service.is_initialized:
+            return {"success": False, "error": "Synergy service not initialized"}
+        
+        result = synergy_service.get_investment_recommendations(budget, risk_tolerance)
+        return result
+        
+    except Exception as e:
+        return {"success": False, "error": f"Error generating investment recommendations: {str(e)}"}
+
+@app.post("/api/synergy/refresh")
+def refresh_synergy_analysis():
+    """
+    Refresh the synergy analysis with updated data.
+    """
+    try:
+        success = synergy_service.refresh_analysis()
+        if success:
+            return {"success": True, "message": "Synergy analysis refreshed successfully"}
+        else:
+            return {"success": False, "error": "Failed to refresh synergy analysis"}
+        
+    except Exception as e:
+        return {"success": False, "error": f"Error refreshing analysis: {str(e)}"}
 
 if __name__ == "__main__":
     import uvicorn

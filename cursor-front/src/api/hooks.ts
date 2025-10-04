@@ -1,5 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { fetchPapers, fetchPaperById, sendChatMessage, sendNasaAiChatMessage, sendHybridNasaAiChatMessage, generateHypotheses, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
+import { fetchPapers, fetchPaperById, sendChatMessage, sendNasaAiChatMessage, sendHybridNasaAiChatMessage, generateHypotheses, fetchAnalytics, fetchKnowledgeGraph, fetchGapFinder, fetchMethodologyComparison, fetchMissionAnalysis, fetchSynergyAnalysis, fetchDomainSynergies, fetchSynergyDetails, fetchSynergyInvestmentRecommendations, refreshSynergyAnalysis, fetchDomainAnalytics, fetchInvestmentRecommendations, fetchRedFlagAlerts, fetchEmergingAreas, fetchProjectStatus, fetchBudgetSimulation, ChatRequest, MethodologyCompareRequest, MissionPlannerRequest } from './api';
 
 // Papers queries
 export const usePapers = (role: string, page: number = 1, limit: number = 10) => {
@@ -117,5 +117,105 @@ export const useMissionAnalysis = (request: MissionPlannerRequest, enabled: bool
     staleTime: 2 * 60 * 1000, // 2 minutes
     retry: 2, // Retry failed requests twice
     retryDelay: 1000, // Wait 1 second between retries
+  });
+};
+
+// Synergy Analysis queries
+export const useSynergyAnalysis = () => {
+  return useQuery({
+    queryKey: ['synergy-analysis'],
+    queryFn: fetchSynergyAnalysis,
+    staleTime: 10 * 60 * 1000, // 10 minutes
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useDomainSynergies = (domain: string, limit: number = 10) => {
+  return useQuery({
+    queryKey: ['domain-synergies', domain, limit],
+    queryFn: () => fetchDomainSynergies(domain, limit),
+    enabled: !!domain,
+    staleTime: 10 * 60 * 1000,
+  });
+};
+
+export const useSynergyDetails = (projectA: string, projectB: string) => {
+  return useQuery({
+    queryKey: ['synergy-details', projectA, projectB],
+    queryFn: () => fetchSynergyDetails(projectA, projectB),
+    enabled: !!projectA && !!projectB,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useSynergyInvestmentRecommendations = (budget: number, riskTolerance: string = "Medium") => {
+  return useQuery({
+    queryKey: ['synergy-investment', budget, riskTolerance],
+    queryFn: () => fetchSynergyInvestmentRecommendations(budget, riskTolerance),
+    enabled: budget > 0,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useRefreshSynergyAnalysis = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: refreshSynergyAnalysis,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['synergy-analysis'] });
+      queryClient.invalidateQueries({ queryKey: ['domain-synergies'] });
+      queryClient.invalidateQueries({ queryKey: ['synergy-investment'] });
+    },
+  });
+};
+
+// Manager Dashboard hooks
+export const useDomainAnalytics = () => {
+  return useQuery({
+    queryKey: ['domain-analytics'],
+    queryFn: fetchDomainAnalytics,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+export const useInvestmentRecommendations = () => {
+  return useQuery({
+    queryKey: ['investment-recommendations'],
+    queryFn: fetchInvestmentRecommendations,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useRedFlagAlerts = () => {
+  return useQuery({
+    queryKey: ['red-flag-alerts'],
+    queryFn: fetchRedFlagAlerts,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useEmergingAreas = () => {
+  return useQuery({
+    queryKey: ['emerging-areas'],
+    queryFn: fetchEmergingAreas,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useProjectStatus = () => {
+  return useQuery({
+    queryKey: ['project-status'],
+    queryFn: fetchProjectStatus,
+    staleTime: 5 * 60 * 1000,
+  });
+};
+
+export const useBudgetSimulation = (domain: string, adjustmentPercentage: number, enabled: boolean = true) => {
+  return useQuery({
+    queryKey: ['budget-simulation', domain, adjustmentPercentage],
+    queryFn: () => fetchBudgetSimulation(domain, adjustmentPercentage),
+    enabled: enabled && !!domain,
+    staleTime: 5 * 60 * 1000,
   });
 };

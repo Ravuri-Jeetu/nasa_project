@@ -34,6 +34,52 @@ export interface ChatResponse {
   timestamp: string;
 }
 
+// Synergy Analysis API
+export interface SynergyPair {
+  Project_A_Title: string;
+  Domain_A: string;
+  Project_B_Title: string;
+  Domain_B: string;
+  Similarity_Score: number;
+  Project_A_Funding?: number;
+  Project_B_Funding?: number;
+  Project_A_Citations?: number;
+  Project_B_Citations?: number;
+  Project_A_Status?: string;
+  Project_B_Status?: string;
+  Collaboration_Potential?: string;
+  Expected_ROI?: number;
+  Risk_Level?: string;
+}
+
+export interface DomainStats {
+  Domain: string;
+  Project_Count: number;
+  Synergy_Count: number;
+  Avg_Similarity: number;
+  Max_Similarity: number;
+}
+
+export interface SynergyAnalysisResponse {
+  success: boolean;
+  synergies: SynergyPair[];
+  domain_stats: DomainStats[];
+  summary_stats: any;
+  total_projects: number;
+  total_domains: number;
+  total_synergies: number;
+  error?: string;
+}
+
+export interface InvestmentRecommendationsResponse {
+  success: boolean;
+  recommendations: any[];
+  total_estimated_cost: number;
+  budget_utilization: number;
+  risk_tolerance: string;
+  error?: string;
+}
+
 // Papers API
 export interface PapersResponse {
   papers: Paper[];
@@ -357,4 +403,30 @@ export const refreshManagerData = async () => {
 export const fetchDashboardSummary = async () => {
   const res = await apiClient.get('/api/manager/dashboard-summary');
   return res.data.data;
+};
+
+// Synergy Analysis API functions
+export const fetchSynergyAnalysis = async (): Promise<SynergyAnalysisResponse> => {
+  const response = await apiClient.get('/api/synergy/analysis');
+  return response.data;
+};
+
+export const fetchDomainSynergies = async (domain: string, limit: number = 10): Promise<any> => {
+  const response = await apiClient.get(`/api/synergy/domain/${domain}?limit=${limit}`);
+  return response.data;
+};
+
+export const fetchSynergyDetails = async (projectA: string, projectB: string): Promise<any> => {
+  const response = await apiClient.get(`/api/synergy/details?project_a=${encodeURIComponent(projectA)}&project_b=${encodeURIComponent(projectB)}`);
+  return response.data;
+};
+
+export const fetchSynergyInvestmentRecommendations = async (budget: number, riskTolerance: string = "Medium"): Promise<InvestmentRecommendationsResponse> => {
+  const response = await apiClient.get(`/api/synergy/investment-recommendations?budget=${budget}&risk_tolerance=${riskTolerance}`);
+  return response.data;
+};
+
+export const refreshSynergyAnalysis = async (): Promise<any> => {
+  const response = await apiClient.post('/api/synergy/refresh');
+  return response.data;
 };

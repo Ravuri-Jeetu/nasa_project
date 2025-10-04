@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import MainLayout from '@/components/main-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -41,6 +42,7 @@ const severityColors = {
 };
 
 export default function MissionPlannerPage() {
+  const router = useRouter();
   const [missionParams, setMissionParams] = useState<MissionPlannerRequest>({
     destination: 'mars',
     crew_size: 4,
@@ -89,14 +91,24 @@ export default function MissionPlannerPage() {
             Design and evaluate space missions based on biological constraints
           </p>
         </div>
-        <Button 
-          onClick={handleAnalyze} 
-          disabled={isAnalyzing || isLoading}
-          className="flex items-center gap-2"
-        >
-          <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
-          {isAnalyzing ? 'Analyzing...' : 'Analyze Mission'}
-        </Button>
+        <div className="flex items-center gap-4">
+          <Button 
+            variant="outline"
+            onClick={() => router.push('/dashboard')}
+            className="flex items-center gap-2"
+          >
+            <Target className="h-4 w-4" />
+            Back to Dashboard
+          </Button>
+          <Button 
+            onClick={handleAnalyze} 
+            disabled={isAnalyzing || isLoading}
+            className="flex items-center gap-2"
+          >
+            <RefreshCw className={`h-4 w-4 ${isAnalyzing ? 'animate-spin' : ''}`} />
+            {isAnalyzing ? 'Analyzing...' : 'Analyze Mission'}
+          </Button>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
