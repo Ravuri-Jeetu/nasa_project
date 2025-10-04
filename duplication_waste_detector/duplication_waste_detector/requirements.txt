@@ -1,5 +1,0 @@
-pandas
-scikit-learn
-fastapi
-uvicorn
-sentence-transformers

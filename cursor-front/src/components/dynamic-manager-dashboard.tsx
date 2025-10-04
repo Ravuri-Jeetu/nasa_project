@@ -123,7 +123,7 @@ export default function DynamicManagerDashboard() {
 
   const fundingData = domainAnalytics ? Object.entries(domainAnalytics.domains.funding).map(([domain, data]) => ({
     domain,
-    funding: typeof data === 'number' ? data : (data as any).sum || 0,
+    funding: typeof data === 'number' ? data : (data as { sum?: number })?.sum || 0,
     roi: domainAnalytics.domains.roi[domain]?.mean || 0
   })) : [];
 
@@ -150,24 +150,24 @@ export default function DynamicManagerDashboard() {
 
       {/* Main Content with Tabs */}
       <Tabs defaultValue="analytics" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="analytics" className="flex items-center gap-2">
-            <BarChart3 className="h-4 w-4" />
-            Analytics
-          </TabsTrigger>
-          <TabsTrigger value="investment" className="flex items-center gap-2">
-            <Investment className="h-4 w-4" />
-            Investment
-          </TabsTrigger>
-          <TabsTrigger value="alerts" className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4" />
-            Alerts
-          </TabsTrigger>
-          <TabsTrigger value="simulation" className="flex items-center gap-2">
-            <Calculator className="h-4 w-4" />
-            Simulation
-          </TabsTrigger>
-        </TabsList>
+            <TabsList>
+              <TabsTrigger value="analytics" className="flex items-center gap-2">
+                <BarChart3 className="h-4 w-4" />
+                Analytics
+              </TabsTrigger>
+              <TabsTrigger value="investment" className="flex items-center gap-2">
+                <Investment className="h-4 w-4" />
+                Investment
+              </TabsTrigger>
+              <TabsTrigger value="alerts" className="flex items-center gap-2">
+                <AlertCircle className="h-4 w-4" />
+                Alerts
+              </TabsTrigger>
+              <TabsTrigger value="simulation" className="flex items-center gap-2">
+                <Calculator className="h-4 w-4" />
+                Simulation
+              </TabsTrigger>
+            </TabsList>
 
         {/* Analytics Tab */}
         <TabsContent value="analytics" className="space-y-4">
@@ -612,6 +612,7 @@ export default function DynamicManagerDashboard() {
         </CardContent>
       </Card>
         </TabsContent>
+
       </Tabs>
     </div>
   );
