@@ -2,6 +2,8 @@
 
 A production-ready frontend application built with Next.js 14, featuring role-based dashboards for scientists and managers with AI-powered insights and analytics.
 
+<!-- Trigger Azure deployment -->
+
 ## 🚀 Features
 
 ### Role-Based Views
