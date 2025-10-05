@@ -78,10 +78,29 @@
   
   body {
     @apply bg-gray-900 text-gray-100;
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-family: var(--font-rajdhani), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     background: linear-gradient(135deg, #0a0a0f 0%, #1a1a2e 50%, #16213e 100%);
     background-attachment: fixed;
     min-height: 100vh;
+    overflow-x: hidden;
+  }
+  
+  /* NASA Space Background Styling */
+  .nasa-space-bg {
+    background-image: url('https://i.postimg.cc/5NR95W0c/space-nasa.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+  }
+  
+  /* Enhanced contrast for better readability over space image */
+  .space-text-shadow {
+    text-shadow: 
+      0 0 4px rgba(0, 0, 0, 0.9),
+      0 0 8px rgba(0, 0, 0, 0.8),
+      0 0 16px rgba(0, 0, 0, 0.6),
+      0 0 24px rgba(0, 0, 0, 0.4);
   }
   
   /* Cosmic background stars animation */
@@ -111,6 +130,30 @@
     50% { opacity: 0.8; }
   }
   
+  /* Floating particles animation */
+  @keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(180deg); }
+  }
+  
+  /* Glow pulse animation */
+  @keyframes glowPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(74, 158, 255, 0.3), 0 0 40px rgba(108, 92, 231, 0.2); }
+    50% { box-shadow: 0 0 30px rgba(74, 158, 255, 0.6), 0 0 60px rgba(108, 92, 231, 0.4); }
+  }
+  
+  /* Slide up animation */
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  
+  /* Fade in animation */
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  
   /* Cosmic gradient overlays */
   .cosmic-gradient {
     background: linear-gradient(135deg, 
@@ -135,6 +178,90 @@
     box-shadow: 
       0 10px 25px rgba(0, 0, 0, 0.3),
       0 0 30px rgba(74, 158, 255, 0.4);
+  }
+  
+  /* NASA-style utility classes */
+  .font-orbitron {
+    font-family: var(--font-orbitron), monospace;
+  }
+  
+  .font-rajdhani {
+    font-family: var(--font-rajdhani), sans-serif;
+  }
+  
+  .glassmorphism {
+    background: rgba(17, 17, 24, 0.6);
+    backdrop-filter: blur(16px);
+    border: 1px solid rgba(74, 158, 255, 0.3);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.5),
+      inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  }
+  
+  .holographic-glow {
+    position: relative;
+    transition: all 0.3s ease;
+  }
+  
+  .holographic-glow:hover {
+    transform: translateY(-4px);
+    box-shadow: 
+      0 0 30px rgba(74, 158, 255, 0.6),
+      0 0 60px rgba(108, 92, 231, 0.4),
+      0 0 90px rgba(0, 212, 170, 0.2);
+  }
+  
+  .cosmic-text-gradient {
+    background: linear-gradient(135deg, #4a9eff 0%, #6c5ce7 50%, #00d4aa 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+/* High contrast cosmic text for space backgrounds */
+.cosmic-text-high-contrast {
+  color: #ffffff !important;
+  text-shadow:
+    0 0 2px rgba(0, 0, 0, 1),
+    0 0 4px rgba(0, 0, 0, 0.9),
+    0 0 8px rgba(0, 0, 0, 0.7),
+    0 0 16px rgba(0, 0, 0, 0.5);
+}
+  
+  .floating-animation {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .glow-pulse {
+    animation: glowPulse 2s ease-in-out infinite;
+  }
+  
+  .slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+  
+  .fade-in {
+    animation: fadeIn 1s ease-out;
+  }
+  
+  /* Particle effects */
+  .particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+  }
+  
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: rgba(74, 158, 255, 0.8);
+    border-radius: 50%;
+    animation: twinkle 3s infinite;
   }
   
   /* Scrollbar styling for cosmic theme */

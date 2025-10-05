@@ -1,6 +1,6 @@
 'use client';
 
-import Header from '@/components/header';
+import NASAHeader from '@/components/nasa-header';
 import AIButton from '@/components/ai-button';
 import ChatbotPanel from '@/components/chatbot-panel';
 import { useState, useEffect } from 'react';
@@ -24,8 +24,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen relative">
-      <Header />
-      <main className="container mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 relative z-10">
+      <NASAHeader />
+      <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-4 sm:pb-6 lg:pb-8 relative z-10">
         {children}
       </main>
       

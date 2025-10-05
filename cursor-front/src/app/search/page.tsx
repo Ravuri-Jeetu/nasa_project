@@ -24,12 +24,13 @@ import Link from 'next/link';
 
 export default function SearchPage() {
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
-  const { data: papers, isLoading } = usePapers(role);
+  const { data: papersData, isLoading } = usePapers(role);
   
   const [searchTerm, setSearchTerm] = useState('');
   const [sortBy, setSortBy] = useState('date');
 
-  const filteredPapers = papers?.filter(paper => {
+  const papers = papersData?.papers || [];
+  const filteredPapers = papers.filter(paper => {
     const matchesSearch = !searchTerm || 
       paper.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       paper.abstract.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -86,32 +87,49 @@ export default function SearchPage() {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Search Research Papers</h1>
-            <p className="text-gray-600 mt-1">
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-orbitron font-bold text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.7)' }}>
+              Search Research Papers
+            </h1>
+            <p className="text-xl md:text-2xl font-rajdhani font-medium text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7)' }}>
               {role === 'Scientist' ? 'Technical analysis and research insights' : 'Business intelligence and investment opportunities'}
             </p>
+            <div className="flex items-center space-x-3 mt-3">
+              <div className="flex items-center space-x-2 bg-blue-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-400/30">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm font-rajdhani font-semibold text-blue-300">Search Active</span>
+              </div>
+              <div className="text-sm font-rajdhani text-white/70 space-text-shadow">
+                Last updated: {new Date().toLocaleTimeString()}
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700">
-              {selectedPaperIds.length} selected
-            </Badge>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
+          <div className="flex flex-col items-end space-y-3">
+            <div className="flex items-center space-x-3">
+              <Badge variant="outline" className="bg-blue-500/20 text-blue-300 border-blue-400/40 px-4 py-2 text-lg font-rajdhani font-semibold">
+                {selectedPaperIds.length} papers selected
+              </Badge>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300 px-6 py-3"
+              >
+                <Download className="h-5 w-5 mr-2" />
+                <span className="font-rajdhani font-semibold">Export</span>
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Search Section */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Search className="h-5 w-5 mr-2" />
+        <Card className="glassmorphism border-blue-400/20">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center text-2xl font-orbitron font-bold text-white space-text-shadow">
+              <Search className="h-6 w-6 mr-3 text-blue-400" />
               Search Papers
             </CardTitle>
-            <CardDescription>
+            <CardDescription className="text-white/70 font-rajdhani text-base space-text-shadow">
               Search across all research papers by title, abstract, authors, keywords, or journal
             </CardDescription>
           </CardHeader>
@@ -304,7 +322,7 @@ export default function SearchPage() {
               Previous
             </Button>
             <span className="text-sm text-gray-600">
-              Showing {filteredPapers.length} of {papers?.length || 0} papers
+              Showing {filteredPapers.length} of {papers.length} papers
             </span>
             <Button variant="outline" size="sm" disabled>
               Next

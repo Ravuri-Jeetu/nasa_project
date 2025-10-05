@@ -166,31 +166,51 @@ export default function PapersPage() {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Research Papers</h1>
-            <p className="text-gray-600 mt-1">
+        <div className="flex items-center justify-between mb-8">
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-5xl font-orbitron font-bold text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.7)' }}>
+              Research Papers
+            </h1>
+            <p className="text-xl md:text-2xl font-rajdhani font-medium text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7)' }}>
               {role === 'Scientist' ? 'Technical analysis and research insights' : 'Business intelligence and investment opportunities'}
             </p>
+            <div className="flex items-center space-x-3 mt-3">
+              <div className="flex items-center space-x-2 bg-blue-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-400/30">
+                <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                <span className="text-sm font-rajdhani font-semibold text-blue-300">Papers Active</span>
+              </div>
+              <div className="text-sm font-rajdhani text-white/70 space-text-shadow">
+                Last updated: {new Date().toLocaleTimeString()}
+              </div>
+            </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Badge variant="outline" className="bg-blue-50 text-blue-700">
-              {selectedPaperIds.length} selected
-            </Badge>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
+          <div className="flex flex-col items-end space-y-3">
+            <div className="flex items-center space-x-3">
+              <Badge variant="outline" className="bg-blue-500/20 text-blue-300 border-blue-400/40 px-4 py-2 text-lg font-rajdhani font-semibold">
+                {selectedPaperIds.length} papers selected
+              </Badge>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300 px-6 py-3"
+              >
+                <Download className="h-5 w-5 mr-2" />
+                <span className="font-rajdhani font-semibold">Export</span>
+              </Button>
+            </div>
           </div>
         </div>
 
         {/* Filters */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center">
-              <Filter className="h-5 w-5 mr-2" />
+        <Card className="glassmorphism border-blue-400/20">
+          <CardHeader className="pb-4">
+            <CardTitle className="flex items-center text-2xl font-orbitron font-bold text-white space-text-shadow">
+              <Filter className="h-6 w-6 mr-3 text-blue-400" />
               Filter & Search
             </CardTitle>
+            <CardDescription className="text-white/70 font-rajdhani text-base space-text-shadow">
+              Refine your research search with advanced filtering options
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

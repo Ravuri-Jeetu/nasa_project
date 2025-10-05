@@ -31,7 +31,8 @@ import {
   Filter,
   Download,
   Eye,
-  FileText
+  FileText,
+  Calendar
 } from 'lucide-react';
 import { useState } from 'react';
 import KnowledgeGraph from './knowledge-graph';
@@ -146,9 +147,9 @@ export default function ScientistDashboard() {
   ];
 
   const citationTrends = analytics?.publication_trends?.map((trend: { year?: number; count?: number }) => ({
-    month: trend.year,
-    citations: Math.floor(trend.count * 2.5), // Estimated citations based on publication count
-    publications: trend.count,
+    month: trend.year || 'Unknown',
+    citations: Math.floor((trend.count || 0) * 2.5), // Estimated citations based on publication count
+    publications: trend.count || 0,
   })) || [
     { month: 'Jan', citations: 120, publications: 8 },
     { month: 'Feb', citations: 135, publications: 12 },
@@ -168,77 +169,154 @@ export default function ScientistDashboard() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Scientist Dashboard</h1>
-          <p className="text-gray-600 mt-1">Deep technical insights and research analysis</p>
+      <div className="flex items-center justify-between mb-8">
+        <div className="space-y-2">
+          <h1 className="text-4xl md:text-5xl font-orbitron font-bold text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.7)' }}>
+            Scientist Dashboard
+          </h1>
+          <p className="text-xl md:text-2xl font-rajdhani font-medium text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7)' }}>
+            Deep technical insights and research analysis
+          </p>
+          <div className="flex items-center space-x-3 mt-3">
+            <div className="flex items-center space-x-2 bg-blue-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-400/30">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+              <span className="text-sm font-rajdhani font-semibold text-blue-300">Research Active</span>
+            </div>
+            <div className="text-sm font-rajdhani text-white/70 space-text-shadow">
+              Last updated: {new Date().toLocaleTimeString()}
+            </div>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <Badge variant="outline" className="bg-blue-50 text-blue-700">
-            {selectedPaperIds.length} papers selected
-          </Badge>
-          <Button variant="outline" size="sm">
-            <Download className="h-4 w-4 mr-2" />
-            Export Data
-          </Button>
+        <div className="flex flex-col items-end space-y-3">
+          <div className="flex items-center space-x-3">
+            <Badge variant="outline" className="bg-blue-500/20 text-blue-300 border-blue-400/40 px-4 py-2 text-lg font-rajdhani font-semibold">
+              {selectedPaperIds.length} papers selected
+            </Badge>
+            <Button 
+              variant="outline" 
+              size="lg"
+              className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300 px-6 py-3"
+            >
+              <Download className="h-5 w-5 mr-2" />
+              <span className="font-rajdhani font-semibold">Export Data</span>
+            </Button>
+          </div>
         </div>
       </div>
 
 
       {/* Main Content */}
-      <Tabs defaultValue="publications" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="publications">Publications</TabsTrigger>
-          <TabsTrigger value="knowledge-graph">Knowledge Graph</TabsTrigger>
-          <TabsTrigger value="methodology">Methodology Comparison</TabsTrigger>
-          <TabsTrigger value="topics">Topic Comparison</TabsTrigger>
-          <TabsTrigger value="gaps">Gap Finder</TabsTrigger>
+      <Tabs defaultValue="publications" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-5 bg-white/5 backdrop-blur-sm border border-blue-400/20 rounded-xl p-1 h-auto">
+          <TabsTrigger 
+            value="publications" 
+            className="flex flex-col items-center space-y-1 px-4 py-4 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-300 data-[state=active]:border-blue-400/40 border border-transparent rounded-lg transition-all duration-300 hover:bg-white/10"
+          >
+            <BookOpen className="h-5 w-5 mb-1" />
+            <span className="font-rajdhani font-semibold text-sm">Publications</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="knowledge-graph"
+            className="flex flex-col items-center space-y-1 px-4 py-4 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-300 data-[state=active]:border-blue-400/40 border border-transparent rounded-lg transition-all duration-300 hover:bg-white/10"
+          >
+            <Brain className="h-5 w-5 mb-1" />
+            <span className="font-rajdhani font-semibold text-sm">Knowledge Graph</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="methodology"
+            className="flex flex-col items-center space-y-1 px-4 py-4 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-300 data-[state=active]:border-blue-400/40 border border-transparent rounded-lg transition-all duration-300 hover:bg-white/10"
+          >
+            <TrendingUp className="h-5 w-5 mb-1" />
+            <span className="font-rajdhani font-semibold text-sm">Methodology</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="topics"
+            className="flex flex-col items-center space-y-1 px-4 py-4 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-300 data-[state=active]:border-blue-400/40 border border-transparent rounded-lg transition-all duration-300 hover:bg-white/10"
+          >
+            <Filter className="h-5 w-5 mb-1" />
+            <span className="font-rajdhani font-semibold text-sm">Topic Compare</span>
+          </TabsTrigger>
+          <TabsTrigger 
+            value="gaps"
+            className="flex flex-col items-center space-y-1 px-4 py-4 data-[state=active]:bg-blue-500/20 data-[state=active]:text-blue-300 data-[state=active]:border-blue-400/40 border border-transparent rounded-lg transition-all duration-300 hover:bg-white/10"
+          >
+            <Search className="h-5 w-5 mb-1" />
+            <span className="font-rajdhani font-semibold text-sm">Gap Finder</span>
+          </TabsTrigger>
         </TabsList>
 
         {/* Publications Tab */}
-        <TabsContent value="publications" className="space-y-4">
+        <TabsContent value="publications" className="space-y-6">
           {/* Filters */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center">
-                <Filter className="h-5 w-5 mr-2" />
+          <Card className="glassmorphism border-blue-400/20">
+            <CardHeader className="pb-4">
+              <CardTitle className="flex items-center text-2xl font-orbitron font-bold text-white space-text-shadow">
+                <Filter className="h-6 w-6 mr-3 text-blue-400" />
                 Filter Publications
               </CardTitle>
+              <CardDescription className="text-white/70 font-rajdhani text-base space-text-shadow">
+                Refine your research search with advanced filtering options
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="text-sm font-medium">Search</label>
-                  <input
-                    type="text"
-                    placeholder="Search by title, abstract, or keywords..."
-                    value={filterKeyword}
-                    onChange={(e) => setFilterKeyword(e.target.value)}
-                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label className="text-lg font-rajdhani font-semibold text-white space-text-shadow block">
+                    Search Keywords
+                  </label>
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-blue-400" />
+                    <input
+                      type="text"
+                      placeholder="Search by title, abstract, or keywords..."
+                      value={filterKeyword}
+                      onChange={(e) => setFilterKeyword(e.target.value)}
+                      className="w-full pl-10 pr-4 py-3 bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 font-rajdhani"
+                    />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-sm font-medium">Topics</label>
+                <div className="space-y-2">
+                  <label className="text-lg font-rajdhani font-semibold text-white space-text-shadow block">
+                    Research Topics
+                  </label>
                   <select
                     value={filterMethodology}
                     onChange={(e) => setFilterMethodology(e.target.value)}
-                    className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-4 py-3 bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-300 font-rajdhani"
+                    style={{
+                      color: 'white'
+                    }}
                   >
-                    <option value="">All Topics</option>
-                    <option value="microgravity">Microgravity Research</option>
-                    <option value="stem cells">Stem Cell Biology</option>
-                    <option value="bone">Bone & Skeletal Research</option>
-                    <option value="oxidative stress">Oxidative Stress & Radiation</option>
-                    <option value="heart">Cardiac Research</option>
-                    <option value="spaceflight">Spaceflight Biology</option>
-                    <option value="gene expression">Gene Expression</option>
-                    <option value="biomedical">Biomedical Research</option>
-                    <option value="molecular biology">Molecular Biology</option>
-                    <option value="cell biology">Cell Biology</option>
-                    <option value="biomechanics">Biomechanics</option>
-                    <option value="radiation biology">Radiation Biology</option>
-                    <option value="space biology">Space Biology</option>
+                    <option value="" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>All Topics</option>
+                    <option value="microgravity" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Microgravity Research</option>
+                    <option value="stem cells" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Stem Cell Biology</option>
+                    <option value="bone" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Bone & Skeletal Research</option>
+                    <option value="oxidative stress" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Oxidative Stress & Radiation</option>
+                    <option value="heart" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Cardiac Research</option>
+                    <option value="spaceflight" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Spaceflight Biology</option>
+                    <option value="gene expression" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Gene Expression</option>
+                    <option value="biomedical" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Biomedical Research</option>
+                    <option value="molecular biology" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Molecular Biology</option>
+                    <option value="cell biology" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Cell Biology</option>
+                    <option value="biomechanics" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Biomechanics</option>
+                    <option value="radiation biology" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Radiation Biology</option>
+                    <option value="space biology" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Space Biology</option>
                   </select>
+                </div>
+              </div>
+              <div className="mt-4 flex items-center justify-between">
+                <div className="text-sm font-rajdhani text-white/60 space-text-shadow">
+                  Showing {filteredPapers.length} of {papers.length} publications
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Badge variant="outline" className="bg-blue-500/20 text-blue-300 border-blue-400/40">
+                    {filterKeyword ? 'Filtered' : 'All Results'}
+                  </Badge>
+                  {filterMethodology && (
+                    <Badge variant="outline" className="bg-purple-500/20 text-purple-300 border-purple-400/40">
+                      {filterMethodology}
+                    </Badge>
+                  )}
                 </div>
               </div>
             </CardContent>
@@ -247,67 +325,93 @@ export default function ScientistDashboard() {
           {/* Publications List */}
           <div className="grid gap-4">
             {papersLoading ? (
-              <div className="text-center py-8">Loading publications...</div>
+              <div className="flex flex-col items-center justify-center py-12 space-y-4">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-400"></div>
+                <div className="text-center space-y-2">
+                  <p className="text-xl font-rajdhani font-semibold text-white space-text-shadow">Loading Publications</p>
+                  <p className="text-base font-rajdhani text-white/70 space-text-shadow">Analyzing research data...</p>
+                </div>
+              </div>
             ) : (
               filteredPapers.map((paper) => (
                 <Card 
                   key={paper.id} 
-                  className={`cursor-pointer transition-all hover:shadow-md ${
-                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-blue-500 bg-blue-50' : ''
+                  className={`cursor-pointer transition-all duration-300 hover:shadow-xl glassmorphism border-blue-400/20 hover:border-blue-400/40 ${
+                    selectedPaperIds.includes(paper.id) ? 'ring-2 ring-blue-500 bg-blue-500/10' : ''
                   }`}
                   onClick={() => handlePaperSelect(paper.id)}
                 >
-                  <CardHeader>
-                    <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
-                      <div className="flex-1">
-                        <CardTitle className="text-lg leading-tight">
+                  <CardHeader className="pb-4">
+                    <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-4">
+                      <div className="flex-1 space-y-3">
+                        <CardTitle className="text-xl md:text-2xl font-orbitron font-bold leading-tight">
                           <a 
                             href={paper.link} 
                             target="_blank" 
                             rel="noopener noreferrer"
-                            className="text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                            className="cosmic-text-high-contrast hover:text-blue-300 hover:underline cursor-pointer transition-colors duration-300 space-text-shadow"
                             onClick={(e) => e.stopPropagation()}
                           >
                             {paper.title}
                           </a>
                         </CardTitle>
-                        <CardDescription className="mt-2 text-sm">
-                          {paper.authors.join(', ')} • {paper.journal} • {paper.publicationDate}
-                        </CardDescription>
+                        <div className="space-y-2">
+                          <CardDescription className="text-base font-rajdhani font-medium text-white/90 space-text-shadow">
+                            {paper.authors.join(', ')}
+                          </CardDescription>
+                          <div className="flex items-center space-x-4 text-sm font-rajdhani text-white/70 space-text-shadow">
+                            <span className="flex items-center space-x-1">
+                              <BookOpen className="h-4 w-4 text-blue-400" />
+                              <span>{paper.journal}</span>
+                            </span>
+                            <span className="flex items-center space-x-1">
+                              <Calendar className="h-4 w-4 text-blue-400" />
+                              <span>{paper.publicationDate}</span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <Badge variant="secondary" className="text-xs">
-                          {paper.citations} citations
-                        </Badge>
-                        {paper.methodology && (
-                          <Badge variant="outline" className="text-xs">
-                            {paper.methodology}
+                      <div className="flex flex-col items-end space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Badge variant="secondary" className="bg-blue-500/20 text-blue-300 border-blue-400/40 px-3 py-1 font-rajdhani font-semibold">
+                            <TrendingUp className="h-3 w-3 mr-1" />
+                            {paper.citations} citations
                           </Badge>
-                        )}
+                          {paper.methodology && (
+                            <Badge variant="outline" className="bg-purple-500/20 text-purple-300 border-purple-400/40 px-3 py-1 font-rajdhani font-semibold">
+                              {paper.methodology}
+                            </Badge>
+                          )}
+                        </div>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="text-xs"
+                          className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300 font-rajdhani font-semibold"
                           onClick={(e) => {
                             e.stopPropagation();
                             handleGenerateSummary(paper);
                           }}
                           disabled={generatingSummary === paper.id}
                         >
-                          <FileText className="h-3 w-3 mr-1" />
-                          {generatingSummary === paper.id ? 'Generating...' : 'Summary'}
+                          <FileText className="h-4 w-4 mr-2" />
+                          {generatingSummary === paper.id ? 'Generating...' : 'Generate Summary'}
                         </Button>
                       </div>
                     </div>
                   </CardHeader>
-                  <CardContent>
-                    <p className="text-sm text-gray-600 mb-3">{paper.abstract}</p>
-                    <div className="flex flex-wrap gap-1">
-                      {paper.keywords.map((keyword) => (
-                        <Badge key={keyword} variant="outline" className="text-xs">
-                          {keyword}
-                        </Badge>
-                      ))}
+                  <CardContent className="pt-0">
+                    <div className="space-y-4">
+                      <p className="text-base font-rajdhani leading-relaxed text-white/80 space-text-shadow line-clamp-3">
+                        {paper.abstract}
+                      </p>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="text-sm font-rajdhani font-semibold text-white/70 space-text-shadow">Keywords:</span>
+                        {paper.keywords.map((keyword) => (
+                          <Badge key={keyword} variant="outline" className="bg-white/10 text-white border-white/20 hover:bg-white/20 transition-colors duration-300 font-rajdhani font-medium">
+                            {keyword}
+                          </Badge>
+                        ))}
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
@@ -354,30 +458,36 @@ export default function ScientistDashboard() {
                 {/* Topic Selection */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="text-sm font-medium">Select First Topic</label>
+                    <label className="text-sm font-medium text-white">Select First Topic</label>
                     <select
                       value={selectedTopic1}
                       onChange={(e) => setSelectedTopic1(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-1 px-3 py-2 bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-md text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        color: 'white'
+                      }}
                     >
-                      <option value="">Choose a topic...</option>
+                      <option value="" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Choose a topic...</option>
                       {analytics?.top_keywords?.map((keyword: string) => (
-                        <option key={keyword} value={keyword}>
+                        <option key={keyword} value={keyword} style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
                           {keyword}
                         </option>
                       ))}
                     </select>
                   </div>
                   <div>
-                    <label className="text-sm font-medium">Select Second Topic</label>
+                    <label className="text-sm font-medium text-white">Select Second Topic</label>
                     <select
                       value={selectedTopic2}
                       onChange={(e) => setSelectedTopic2(e.target.value)}
-                      className="w-full mt-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                      className="w-full mt-1 px-3 py-2 bg-white/10 backdrop-blur-sm border border-blue-400/30 rounded-md text-white placeholder-white/60 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      style={{
+                        color: 'white'
+                      }}
                     >
-                      <option value="">Choose a topic...</option>
+                      <option value="" style={{ backgroundColor: '#1a1a2e', color: 'white' }}>Choose a topic...</option>
                       {analytics?.top_keywords?.map((keyword: string) => (
-                        <option key={keyword} value={keyword}>
+                        <option key={keyword} value={keyword} style={{ backgroundColor: '#1a1a2e', color: 'white' }}>
                           {keyword}
                         </option>
                       ))}

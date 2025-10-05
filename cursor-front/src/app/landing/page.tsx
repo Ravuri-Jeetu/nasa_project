@@ -1,6 +1,6 @@
 'use client';
 
-import MainLayout from '@/components/main-layout';
+import NASALayout from '@/components/nasa-layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -74,7 +74,7 @@ export default function LandingPage() {
   ];
 
   return (
-    <MainLayout>
+    <NASALayout>
       <div className="min-h-screen">
         {/* Hero Section */}
         <div className="relative overflow-hidden cosmic-gradient rounded-2xl p-8 mb-8 cosmic-glow">
@@ -88,51 +88,152 @@ export default function LandingPage() {
               and role-specific intelligence for scientists and research managers.
             </p>
             
-            {/* Role Selection */}
-            <div className="bg-card/80 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg mb-8 cosmic-hover">
-              <h2 className="text-2xl font-semibold text-foreground mb-4">Choose Your Role</h2>
-              <div className="flex justify-center space-x-4 mb-6">
-                <Button
-                  variant={role === 'Scientist' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setRole('Scientist')}
-                  className="px-8 py-4 text-lg"
-                >
-                  <Brain className="h-5 w-5 mr-2" />
-                  Scientist
-                </Button>
-                <Button
-                  variant={role === 'Manager' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setRole('Manager')}
-                  className="px-8 py-4 text-lg"
-                >
-                  <DollarSign className="h-5 w-5 mr-2" />
-                  Manager
-                </Button>
-                <Button
-                  variant={role === 'Mission Planner' ? 'default' : 'outline'}
-                  size="lg"
-                  onClick={() => setRole('Mission Planner')}
-                  className="px-8 py-4 text-lg"
-                >
-                  <Rocket className="h-5 w-5 mr-2" />
-                  Mission Planner
-                </Button>
+            {/* Mission Role Selection Card */}
+            <div className="relative max-w-5xl mx-auto mb-16 slide-up">
+              {/* Main Card Container */}
+              <div className="relative overflow-hidden rounded-3xl">
+                {/* Background Layers */}
+                <div className="absolute inset-0 bg-gradient-to-br from-slate-900/90 via-blue-900/80 to-purple-900/90 backdrop-blur-xl" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+                
+                {/* Animated Border */}
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-500/20 via-purple-500/20 to-cyan-500/20 p-[2px]">
+                  <div className="h-full w-full rounded-3xl bg-transparent" />
+                </div>
+                
+                {/* Content */}
+                <div className="relative p-8 md:p-12">
+                  {/* Header Section */}
+                  <div className="text-center mb-12">
+                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-2xl mb-6 border border-blue-400/30">
+                      <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
+                        <div className="w-4 h-4 bg-white rounded-full animate-pulse" />
+                      </div>
+                    </div>
+                    <h2 className="text-4xl md:text-5xl font-orbitron font-bold cosmic-text-gradient mb-4">
+                      Mission Role Selection
+                    </h2>
+                    <p className="text-lg text-white/70 font-rajdhani max-w-2xl mx-auto">
+                      Choose your specialized role to access tailored research capabilities and mission control interfaces
+                    </p>
+                  </div>
+
+                  {/* Role Selection Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                    {(['Scientist', 'Manager', 'Mission Planner'] as const).map((roleOption, index) => {
+                      const isActive = role === roleOption;
+                      const roleData = {
+                        'Scientist': { 
+                          icon: <Brain className="h-8 w-8" />, 
+                          color: 'from-blue-500 to-cyan-500',
+                          bgColor: 'from-blue-600/20 to-cyan-600/20',
+                          borderColor: 'border-blue-400/40',
+                          shadowColor: 'shadow-blue-500/25'
+                        },
+                        'Manager': { 
+                          icon: <DollarSign className="h-8 w-8" />, 
+                          color: 'from-emerald-500 to-green-500',
+                          bgColor: 'from-emerald-600/20 to-green-600/20',
+                          borderColor: 'border-emerald-400/40',
+                          shadowColor: 'shadow-emerald-500/25'
+                        },
+                        'Mission Planner': { 
+                          icon: <Rocket className="h-8 w-8" />, 
+                          color: 'from-purple-500 to-pink-500',
+                          bgColor: 'from-purple-600/20 to-pink-600/20',
+                          borderColor: 'border-purple-400/40',
+                          shadowColor: 'shadow-purple-500/25'
+                        }
+                      };
+
+                      const roleConfig = roleData[roleOption];
+
+                      return (
+                        <div
+                          key={roleOption}
+                          className={`relative group cursor-pointer transition-all duration-500 hover:scale-105 ${
+                            isActive ? 'scale-105' : ''
+                          }`}
+                          onClick={() => setRole(roleOption)}
+                          style={{ animationDelay: `${index * 0.1}s` }}
+                        >
+                          {/* Card Background */}
+                          <div className={`relative overflow-hidden rounded-2xl p-8 h-full transition-all duration-500 ${
+                            isActive 
+                              ? `bg-gradient-to-br ${roleConfig.bgColor} ${roleConfig.borderColor} border-2 shadow-xl ${roleConfig.shadowColor}` 
+                              : 'bg-white/5 border border-white/10 hover:bg-white/10 hover:border-white/20'
+                          }`}>
+                            
+                            {/* Animated Background Effect */}
+                            <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 bg-gradient-to-br ${roleConfig.bgColor}`} />
+                            
+                            {/* Content */}
+                            <div className="relative z-10 text-center">
+                              {/* Icon */}
+                              <div className={`mx-auto w-16 h-16 rounded-2xl flex items-center justify-center mb-4 transition-all duration-500 ${
+                                isActive 
+                                  ? `bg-gradient-to-br ${roleConfig.color} text-white shadow-lg` 
+                                  : 'bg-white/10 text-white/60 group-hover:text-white group-hover:bg-white/20'
+                              }`}>
+                                {roleConfig.icon}
+                              </div>
+                              
+                              {/* Title */}
+                              <h3 className={`text-xl font-orbitron font-bold mb-2 transition-colors duration-500 ${
+                                isActive ? 'text-white' : 'text-white/80 group-hover:text-white'
+                              }`}>
+                                {roleOption}
+                              </h3>
+                              
+                              {/* Description */}
+                              <p className={`text-sm font-rajdhani transition-colors duration-500 ${
+                                isActive ? 'text-white/80' : 'text-white/60 group-hover:text-white/80'
+                              }`}>
+                                {roleOption === 'Scientist' && 'Advanced research analysis and technical insights'}
+                                {roleOption === 'Manager' && 'Strategic planning and resource optimization'}
+                                {roleOption === 'Mission Planner' && 'Mission design and operational planning'}
+                              </p>
+                            </div>
+
+                            {/* Active Indicator */}
+                            {isActive && (
+                              <div className="absolute top-4 right-4">
+                                <div className="w-3 h-3 bg-green-400 rounded-full animate-pulse shadow-lg shadow-green-400/50" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
               </div>
               
-              <div className="flex items-center justify-center space-x-2 mb-6">
-                <Badge variant="secondary" className="bg-primary/20 text-primary border-primary/30 text-lg px-4 py-2 cosmic-glow">
-                  {role} Mode
-                </Badge>
+                  {/* Status Section */}
+                  <div className="flex flex-col items-center space-y-6">
+                    {/* Active Role Badge */}
+                    <div className="flex items-center space-x-3 bg-gradient-to-r from-blue-600/20 to-purple-600/20 backdrop-blur-sm rounded-full px-6 py-3 border border-blue-400/30 shadow-lg">
+                      <div className="w-6 h-6 bg-gradient-to-br from-blue-400 to-purple-400 rounded-lg flex items-center justify-center">
+                        <div className="w-2 h-2 bg-white rounded-full animate-pulse" />
+                      </div>
+                      <span className="text-white font-rajdhani font-semibold text-lg">
+                        {role} Mode Active
+                      </span>
+                      <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
               </div>
 
-              <Button asChild size="lg" className="px-8 py-4 text-lg">
-                <Link href="/dashboard">
-                  Get Started
-                  <ArrowRight className="h-5 w-5 ml-2" />
+                    {/* Launch Button */}
+                    <Button 
+                      asChild 
+                      size="lg" 
+                      className="group px-12 py-6 text-xl font-orbitron font-bold bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-600 hover:from-blue-700 hover:via-purple-700 hover:to-cyan-700 text-white border-0 rounded-2xl shadow-2xl shadow-blue-500/30 transition-all duration-500 hover:scale-110 hover:shadow-blue-500/50"
+                    >
+                      <Link href="/dashboard" className="flex items-center space-x-3">
+                        <span>Launch Mission Control</span>
+                        <ArrowRight className="h-6 w-6 group-hover:translate-x-1 transition-transform duration-300" />
                 </Link>
               </Button>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -320,6 +421,6 @@ export default function LandingPage() {
           </Card>
         </div>
       </div>
-    </MainLayout>
+    </NASALayout>
   );
 }

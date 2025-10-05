@@ -109,32 +109,60 @@ export default function PaperDetailPage({ params }: PaperDetailPageProps) {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between mb-8">
           <div className="flex items-center space-x-4">
-            <Button variant="outline" size="sm" asChild>
+            <Button 
+              variant="outline" 
+              size="sm" 
+              asChild
+              className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300"
+            >
               <Link href="/papers">
                 <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Papers
+                <span className="font-rajdhani font-semibold">Back to Papers</span>
               </Link>
             </Button>
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">{paper.title}</h1>
-              <p className="text-gray-600 mt-1">
+            <div className="space-y-2">
+              <h1 className="text-4xl md:text-5xl font-orbitron font-bold text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 4px rgba(0,0,0,1), 0 0 8px rgba(0,0,0,0.9), 0 0 16px rgba(0,0,0,0.7)' }}>
+                {paper.title}
+              </h1>
+              <p className="text-xl md:text-2xl font-rajdhani font-medium text-white space-text-shadow" style={{ color: '#ffffff !important', textShadow: '0 0 2px rgba(0,0,0,1), 0 0 4px rgba(0,0,0,0.9), 0 0 8px rgba(0,0,0,0.7)' }}>
                 {role === 'Scientist' ? 'Technical Analysis' : 'Business Intelligence'}
               </p>
+              <div className="flex items-center space-x-3 mt-3">
+                <div className="flex items-center space-x-2 bg-blue-500/20 backdrop-blur-sm rounded-full px-4 py-2 border border-blue-400/30">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                  <span className="text-sm font-rajdhani font-semibold text-blue-300">Paper Analysis Active</span>
+                </div>
+                <div className="text-sm font-rajdhani text-white/70 space-text-shadow">
+                  Last updated: {new Date().toLocaleTimeString()}
+                </div>
+              </div>
             </div>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button 
-              variant={isSelected ? "default" : "outline"}
-              onClick={handleSelect}
-            >
-              {isSelected ? 'Selected' : 'Select Paper'}
-            </Button>
-            <Button variant="outline" size="sm">
-              <Download className="h-4 w-4 mr-2" />
-              Export
-            </Button>
+          <div className="flex flex-col items-end space-y-3">
+            <div className="flex items-center space-x-3">
+              <Button 
+                variant={isSelected ? "default" : "outline"}
+                onClick={handleSelect}
+                size="lg"
+                className={`transition-all duration-300 px-6 py-3 font-rajdhani font-semibold ${
+                  isSelected 
+                    ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+                    : 'bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60'
+                }`}
+              >
+                {isSelected ? 'Selected' : 'Select Paper'}
+              </Button>
+              <Button 
+                variant="outline" 
+                size="lg"
+                className="bg-white/10 backdrop-blur-sm border-blue-400/40 text-white hover:bg-white/20 hover:border-blue-400/60 transition-all duration-300 px-6 py-3"
+              >
+                <Download className="h-5 w-5 mr-2" />
+                <span className="font-rajdhani font-semibold">Export</span>
+              </Button>
+            </div>
           </div>
         </div>
 
