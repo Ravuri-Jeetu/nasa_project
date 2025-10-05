@@ -22,6 +22,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { use } from 'react';
 
 interface PaperDetailPageProps {
   params: Promise<{
@@ -29,8 +30,8 @@ interface PaperDetailPageProps {
   }>;
 }
 
-export default async function PaperDetailPage({ params }: PaperDetailPageProps) {
-  const { id } = await params;
+export default function PaperDetailPage({ params }: PaperDetailPageProps) {
+  const { id } = use(params);
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
   const { data: paper, isLoading, error } = usePaper(id, role);
 
