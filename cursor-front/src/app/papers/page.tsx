@@ -194,7 +194,7 @@ export default function PapersPage() {
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-3xl font-bold text-white">Research Papers</h1>
-            <p className="text-gray-600 mt-1">
+            <p className="text-cyan-300 mt-1">
               {role === 'Scientist' ? 'Technical analysis and research insights' : 'Business intelligence and investment opportunities'}
             </p>
           </div>
@@ -288,14 +288,14 @@ export default function PapersPage() {
           {isLoading ? (
             <div className="text-center py-8">
               <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-2 text-gray-600">Loading papers...</p>
+              <p className="mt-2 text-cyan-300">Loading papers...</p>
             </div>
           ) : filteredPapers.length === 0 ? (
             <Card>
               <CardContent className="text-center py-8">
                 <BookOpen className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                 <h3 className="text-lg font-semibold text-white mb-2">No papers found</h3>
-                <p className="text-gray-600">Try adjusting your search criteria or filters.</p>
+                <p className="text-cyan-300">Try adjusting your search criteria or filters.</p>
               </CardContent>
             </Card>
           ) : (
@@ -356,7 +356,7 @@ export default function PapersPage() {
                   </CardHeader>
                   <CardContent>
                     <div className="space-y-4">
-                      <p className="text-gray-700">{paper.abstract}</p>
+                      <p className="text-white/80">{paper.abstract}</p>
                       
                       <div className="flex flex-wrap gap-1">
                         {paper.keywords.map((keyword) => (
@@ -369,7 +369,7 @@ export default function PapersPage() {
                       {/* Role-specific Summary */}
                       <div className="bg-transparent rounded-lg p-4 border border-gray-200">
                         <h4 className="font-semibold text-white mb-2">{summary.title}</h4>
-                        <p className="text-sm text-gray-700 mb-3">{summary.content}</p>
+                        <p className="text-sm text-white/70 mb-3">{summary.content}</p>
                         <div className="flex flex-wrap gap-2">
                           {summary.metrics.map((metric, index) => (
                             <Badge key={index} variant="secondary" className="text-xs">
@@ -380,7 +380,7 @@ export default function PapersPage() {
                       </div>
 
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <div className="flex items-center space-x-4 text-sm text-gray-500">
+                        <div className="flex items-center space-x-4 text-sm text-cyan-400">
                           {paper.doi && <span>DOI: {paper.doi}</span>}
                         </div>
                         <div className="flex flex-wrap items-center gap-2">

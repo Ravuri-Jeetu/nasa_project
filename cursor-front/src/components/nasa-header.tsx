@@ -27,10 +27,7 @@ export default function NASAHeader() {
 
   const navigationItems = [
     { href: '/', label: 'Home' },
-    { href: '/dashboard', label: 'Dashboard' },
-    { href: '/search', label: 'Search' },
-    { href: '/papers', label: 'Papers' },
-    { href: '/mission-planner', label: 'Mission Planner' }
+    { href: '/papers', label: 'Papers' }
   ];
 
   const roleIcons = {
@@ -72,15 +69,15 @@ export default function NASAHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`relative px-5 py-4 rounded-lg font-rajdhani font-semibold text-lg transition-all duration-300 hover:scale-105 ${
+                  className={`smooth-nav-link relative px-5 py-4 rounded-lg font-rajdhani font-semibold text-lg ${
                     isActive(item.href)
-                      ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/30'
+                      ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/30 shadow-lg shadow-cyan-400/20'
                       : 'text-white/80 hover:text-cyan-400 hover:bg-white/5'
                   }`}
                 >
-                  <span>{item.label}</span>
+                  <span className="relative z-10">{item.label}</span>
                   {isActive(item.href) && (
-                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-400 rounded-full" />
+                    <div className="absolute -bottom-1 left-1/2 transform -translate-x-1/2 w-1 h-1 bg-cyan-400 rounded-full animate-pulse" />
                   )}
                 </Link>
               ))}
@@ -150,14 +147,14 @@ export default function NASAHeader() {
                 <Link
                   key={item.href}
                   href={item.href}
-                  className={`px-3 py-2 rounded-lg font-rajdhani font-medium transition-all duration-300 ${
+                  className={`smooth-nav-link px-3 py-2 rounded-lg font-rajdhani font-medium ${
                     isActive(item.href)
-                      ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/30'
+                      ? 'text-cyan-400 bg-cyan-400/10 border border-cyan-400/30 shadow-lg shadow-cyan-400/20'
                       : 'text-white/80 hover:text-cyan-400 hover:bg-white/5'
                   }`}
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  <span>{item.label}</span>
+                  <span className="relative z-10">{item.label}</span>
                 </Link>
               ))}
               

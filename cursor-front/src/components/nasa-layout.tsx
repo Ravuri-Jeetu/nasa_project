@@ -3,6 +3,7 @@
 import NASAHeader from '@/components/nasa-header';
 import AIButton from '@/components/ai-button';
 import ChatbotPanel from '@/components/chatbot-panel';
+import SmoothTransition from '@/components/smooth-transition';
 import { useState, useEffect } from 'react';
 
 // Particle component for animated background
@@ -106,7 +107,9 @@ export default function NASALayout({ children }: NASALayoutProps) {
       
       {/* Main Content */}
       <main className="relative z-10 pt-24">
-        {children}
+        <SmoothTransition>
+          {children}
+        </SmoothTransition>
       </main>
       
       {/* AI Button */}

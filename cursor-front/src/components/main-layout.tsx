@@ -3,6 +3,7 @@
 import NASAHeader from '@/components/nasa-header';
 import AIButton from '@/components/ai-button';
 import ChatbotPanel from '@/components/chatbot-panel';
+import SmoothTransition from '@/components/smooth-transition';
 import { useState, useEffect } from 'react';
 
 interface MainLayoutProps {
@@ -26,7 +27,9 @@ export default function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen relative">
       <NASAHeader />
       <main className="container mx-auto px-4 sm:px-6 lg:px-8 pt-28 pb-4 sm:pb-6 lg:pb-8 relative z-10">
-        {children}
+        <SmoothTransition>
+          {children}
+        </SmoothTransition>
       </main>
       
       {/* AI Button */}
