@@ -1,13 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Optimize for Azure Static Web Apps
+  // Optimize for shared hosting (Hostingial)
   output: 'export',
   trailingSlash: true,
   images: {
     unoptimized: true
-  }
-  // Removed experimental.esmExternals to fix Turbopack compatibility
+  },
+  // Disable server-side features for static hosting
+  distDir: 'out'
 };
 
 export default nextConfig;
