@@ -6,11 +6,8 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true
-  },
-  // Disable server-side features for static hosting
-  experimental: {
-    esmExternals: false
   }
+  // Removed experimental.esmExternals to fix Turbopack compatibility
 };
 
 export default nextConfig;
