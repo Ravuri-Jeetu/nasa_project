@@ -24,14 +24,15 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 interface PaperDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function PaperDetailPage({ params }: PaperDetailPageProps) {
+export default async function PaperDetailPage({ params }: PaperDetailPageProps) {
+  const { id } = await params;
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
-  const { data: paper, isLoading, error } = usePaper(params.id, role);
+  const { data: paper, isLoading, error } = usePaper(id, role);
 
   if (isLoading) {
     return (
