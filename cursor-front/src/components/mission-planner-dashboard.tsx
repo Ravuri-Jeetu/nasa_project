@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { motion } from 'framer-motion';
 import { 
   Rocket, 
   Shield, 
@@ -525,29 +525,63 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
         </CardContent>
       </Card>
 
-      {/* Main Tabs */}
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList className="grid w-full grid-cols-4">
-          <TabsTrigger value="risk-assessment" className="flex items-center">
-            <Shield className="h-4 w-4 mr-2" />
-            Risk Assessment
-          </TabsTrigger>
-          <TabsTrigger value="resource-planning" className="flex items-center">
-            <Settings className="h-4 w-4 mr-2" />
-            Resource Planning
-          </TabsTrigger>
-          <TabsTrigger value="mission-design" className="flex items-center">
-            <Rocket className="h-4 w-4 mr-2" />
-            Mission Design
-          </TabsTrigger>
-          <TabsTrigger value="mission-readiness" className="flex items-center">
-            <Target className="h-4 w-4 mr-2" />
-            Mission Readiness
-          </TabsTrigger>
-        </TabsList>
+      {/* Main Tabs with Bubble Effect */}
+      <div className="space-y-4">
+        {/* Custom Tab Selector with Bubble Effect */}
+        <motion.div 
+          className="bg-muted/20 rounded-xl p-2 border border-border/30 shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex flex-wrap gap-1">
+            {[
+              { id: 'risk-assessment', label: 'Risk Assessment', icon: Shield },
+              { id: 'resource-planning', label: 'Resource Planning', icon: Settings },
+              { id: 'mission-design', label: 'Mission Design', icon: Rocket },
+              { id: 'mission-readiness', label: 'Mission Readiness', icon: Target },
+            ].map((tab) => {
+              const IconComponent = tab.icon;
+              const isActive = activeTab === tab.id;
+              
+              return (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative py-3 px-4 rounded-full transition-all duration-300 ${
+                    isActive 
+                      ? 'bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25 scale-105' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:scale-102'
+                  }`}
+                  whileHover={{ scale: isActive ? 1.08 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  animate={{
+                    boxShadow: isActive 
+                      ? '0 8px 25px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2)' 
+                      : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ 
+                        rotate: isActive ? 360 : 0,
+                        scale: isActive ? 1.1 : 1
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <IconComponent className="h-4 w-4" />
+                    </motion.div>
+                    <span className="font-medium text-sm">{tab.label}</span>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* Risk Assessment Tab */}
-        <TabsContent value="risk-assessment" className="space-y-4">
+        {activeTab === 'risk-assessment' && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Risk Overview */}
             <Card>
@@ -651,10 +685,12 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+        )}
 
         {/* Resource Planning Tab */}
-        <TabsContent value="resource-planning" className="space-y-4">
+        {activeTab === 'resource-planning' && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Resource Allocation */}
             <Card>
@@ -753,10 +789,12 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+        )}
 
         {/* Mission Design & Architecture Tab */}
-        <TabsContent value="mission-design" className="space-y-4">
+        {activeTab === 'mission-design' && (
+        <div className="space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {/* Mission Timeline */}
             <Card>
@@ -881,10 +919,12 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+        )}
 
         {/* Mission Readiness Tab */}
-        <TabsContent value="mission-readiness" className="space-y-4">
+        {activeTab === 'mission-readiness' && (
+        <div className="space-y-4">
           {/* Overall Mission Readiness Score */}
           <Card>
             <CardHeader>
@@ -1026,8 +1066,9 @@ export default function MissionPlannerDashboard({ role }: MissionPlannerDashboar
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+        )}
+      </div>
     </div>
   );
 }

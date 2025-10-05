@@ -3,13 +3,13 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Pagination from '@/components/ui/pagination';
 import { useAppStore } from '@/store/appStore';
 import { usePapers, useAnalytics, useKnowledgeGraph, useGapFinder } from '@/api/hooks';
 import MethodologyComparisonComponent from '@/components/methodology-comparison';
 import HypothesisGenerator from '@/components/hypothesis-generator';
 import { Paper } from '@/api/api';
+import { motion } from 'framer-motion';
 import { 
   BarChart, 
   Bar, 
@@ -43,6 +43,7 @@ export default function ScientistDashboard() {
   const { role, selectedPaperIds, addSelectedPaperId, removeSelectedPaperId } = useAppStore();
   const [currentPage, setCurrentPage] = useState(1);
   const [limit] = useState(10);
+  const [activeTab, setActiveTab] = useState('publications');
   const { data: papersData, isLoading: papersLoading } = usePapers(role, currentPage, limit);
   const { data: analytics, isLoading: analyticsLoading } = useAnalytics(role);
   const { data: knowledgeGraph, isLoading: kgLoading } = useKnowledgeGraph(role);
@@ -53,6 +54,15 @@ export default function ScientistDashboard() {
   const [generatingSummary, setGeneratingSummary] = useState<string | null>(null);
   const [selectedTopic1, setSelectedTopic1] = useState('');
   const [selectedTopic2, setSelectedTopic2] = useState('');
+
+  const tabs = [
+    { id: 'publications', label: 'Publications', icon: BookOpen },
+    { id: 'knowledge-graph', label: 'Knowledge Graph', icon: Brain },
+    { id: 'methodology', label: 'Methodology', icon: TrendingUp },
+    { id: 'topics', label: 'Topics', icon: Search },
+    { id: 'hypothesis', label: 'Hypothesis', icon: FileText },
+    { id: 'gaps', label: 'Gap Finder', icon: Filter },
+  ];
 
   const papers = papersData?.papers || [];
   const totalPages = papersData?.total_pages || 0;
@@ -187,18 +197,57 @@ export default function ScientistDashboard() {
 
 
       {/* Main Content */}
-      <Tabs defaultValue="publications" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="publications">Publications</TabsTrigger>
-          <TabsTrigger value="knowledge-graph">Knowledge Graph</TabsTrigger>
-          <TabsTrigger value="methodology">Methodology Comparison</TabsTrigger>
-          <TabsTrigger value="topics">Topic Comparison</TabsTrigger>
-          <TabsTrigger value="hypothesis">Hypothesis Generation</TabsTrigger>
-          <TabsTrigger value="gaps">Gap Finder</TabsTrigger>
-        </TabsList>
+      <div className="space-y-4">
+        {/* Custom Tab Selector with Bubble Effect */}
+        <motion.div 
+          className="bg-muted/20 rounded-xl p-2 border border-border/30 shadow-lg"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <div className="flex flex-wrap gap-1">
+            {tabs.map((tab) => {
+              const IconComponent = tab.icon;
+              const isActive = activeTab === tab.id;
+              
+              return (
+                <motion.button
+                  key={tab.id}
+                  onClick={() => setActiveTab(tab.id)}
+                  className={`relative py-3 px-4 rounded-full transition-all duration-300 ${
+                    isActive 
+                      ? 'bg-gradient-to-br from-primary via-primary to-primary/80 text-primary-foreground shadow-lg shadow-primary/25 scale-105' 
+                      : 'text-muted-foreground hover:text-foreground hover:bg-muted/50 hover:scale-102'
+                  }`}
+                  whileHover={{ scale: isActive ? 1.08 : 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  animate={{
+                    boxShadow: isActive 
+                      ? '0 8px 25px rgba(59, 130, 246, 0.3), 0 0 0 1px rgba(59, 130, 246, 0.2)' 
+                      : '0 2px 8px rgba(0, 0, 0, 0.1)'
+                  }}
+                >
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      animate={{ 
+                        rotate: isActive ? 360 : 0,
+                        scale: isActive ? 1.1 : 1
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <IconComponent className="h-4 w-4" />
+                    </motion.div>
+                    <span className="font-medium text-sm">{tab.label}</span>
+                  </div>
+                </motion.button>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* Publications Tab */}
-        <TabsContent value="publications" className="space-y-4">
+        {activeTab === 'publications' && (
+        <div className="space-y-4">
           {/* Filters */}
           <Card>
             <CardHeader>
@@ -327,20 +376,26 @@ export default function ScientistDashboard() {
             totalItems={totalItems}
             itemsPerPage={limit}
           />
-        </TabsContent>
+        </div>
+        )}
 
         {/* Knowledge Graph Tab */}
-        <TabsContent value="knowledge-graph" className="space-y-4">
+        {activeTab === 'knowledge-graph' && (
+        <div className="space-y-4">
           <KnowledgeGraph papers={papers || []} role={role} />
-        </TabsContent>
+        </div>
+        )}
 
         {/* Methodology Comparison Tab */}
-        <TabsContent value="methodology" className="space-y-4">
+        {activeTab === 'methodology' && (
+        <div className="space-y-4">
           <MethodologyComparisonComponent role={role} />
-        </TabsContent>
+        </div>
+        )}
 
         {/* Topic Comparison Tab */}
-        <TabsContent value="topics" className="space-y-4">
+        {activeTab === 'topics' && (
+        <div className="space-y-4">
           <Card className="bg-transparent">
             <CardHeader>
               <CardTitle className="flex items-center text-white">
@@ -511,15 +566,19 @@ export default function ScientistDashboard() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
+        </div>
+        )}
 
         {/* Hypothesis Generation Tab */}
-        <TabsContent value="hypothesis" className="space-y-4">
+        {activeTab === 'hypothesis' && (
+        <div className="space-y-4">
           <HypothesisGenerator />
-        </TabsContent>
+        </div>
+        )}
 
         {/* Gap Finder Tab */}
-        <TabsContent value="gaps" className="space-y-4">
+        {activeTab === 'gaps' && (
+        <div className="space-y-4">
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center">
@@ -551,8 +610,9 @@ export default function ScientistDashboard() {
               </div>
             </CardContent>
           </Card>
-        </TabsContent>
-      </Tabs>
+        </div>
+        )}
+      </div>
     </div>
   );
 }
