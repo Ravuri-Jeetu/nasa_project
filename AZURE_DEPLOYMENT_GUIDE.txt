@@ -1,0 +1,373 @@
+# Microsoft Azure Deployment Guide for NASA Research Analytics Platform
+
+## 🚀 Complete Azure Deployment Guide
+
+This guide will help you deploy your NASA Research Analytics Platform to Microsoft Azure using:
+- Frontend: Azure Static Web Apps (FREE)
+- Backend: Azure App Service (FREE with $200 credits)
+- Domain: Your free GoDaddy domain
+
+## 📋 Prerequisites
+
+### Required Accounts:
+- ✅ Microsoft Azure account (with $200 free credits)
+- ✅ GitHub account
+- ✅ Free domain from GoDaddy Registry
+- ✅ Your project code ready
+
+### Required Software:
+- ✅ Git installed
+- ✅ Node.js 18+ installed
+- ✅ Python 3.9+ installed
+- ✅ pnpm installed
+
+## 🎯 Step 1: Prepare Your Project
+
+### 1.1 Project Structure
+Ensure your repository has this structure:
+```
+your-repository/
+├── cursor-front/          # Next.js frontend
+│   ├── package.json
+│   ├── next.config.ts
+│   ├── staticwebapp.config.json
+│   └── ... (all frontend files)
+├── cursor-back/           # FastAPI backend
+│   ├── main.py
+│   ├── requirements.txt
+│   └── ... (all backend files)
+└── .github/
+    └── workflows/
+        └── azure-static-web-apps.yml
+```
+
+### 1.2 Update Next.js Configuration
+File: cursor-front/next.config.ts
+```typescript
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  // Optimize for Azure Static Web Apps
+  output: 'export',
+  trailingSlash: true,
+  images: {
+    unoptimized: true
+  },
+  // Disable server-side features for static hosting
+  experimental: {
+    esmExternals: false
+  }
+};
+
+export default nextConfig;
+```
+
+### 1.3 Create Azure Static Web Apps Configuration
+File: cursor-front/staticwebapp.config.json
+```json
+{
+  "routes": [
+    {
+      "route": "/*",
+      "serve": "/index.html",
+      "statusCode": 200
+    }
+  ],
+  "navigationFallback": {
+    "rewrite": "/index.html",
+    "exclude": ["/images/*.{png,jpg,jpeg,gif,svg}", "/css/*", "/js/*", "/api/*"]
+  },
+  "mimeTypes": {
+    ".json": "application/json"
+  },
+  "globalHeaders": {
+    "X-Content-Type-Options": "nosniff",
+    "X-Frame-Options": "DENY",
+    "X-XSS-Protection": "1; mode=block"
+  }
+}
+```
+
+### 1.4 Create GitHub Actions Workflow
+File: .github/workflows/azure-static-web-apps.yml
+```yaml
+name: Azure Static Web Apps CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches:
+      - main
+
+jobs:
+  build_and_deploy_job:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy Job
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - name: Build And Deploy
+        id: builddeploy
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          app_location: "/cursor-front"
+          output_location: "out"
+          app_build_command: "pnpm run build"
+
+  close_pull_request_job:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request Job
+    steps:
+      - name: Close Pull Request
+        id: closepullrequest
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN }}
+          action: "close"
+```
+
+## 🌐 Step 2: Deploy Frontend to Azure Static Web Apps
+
+### 2.1 Create Static Web App
+1. Go to Azure Portal: https://portal.azure.com
+2. Click "Create a resource"
+3. Search for "Static Web Apps"
+4. Click "Create"
+
+### 2.2 Configure Static Web App
+```
+Subscription: Your Azure subscription
+Resource Group: Create new "nasa-research-rg"
+Name: nasa-research-frontend
+Plan type: Free
+Region: East US (or closest to India)
+Source: GitHub
+```
+
+### 2.3 Connect GitHub
+1. Sign in to GitHub
+2. Select your repository
+3. Branch: main
+4. Build presets: Next.js
+5. App location: /cursor-front
+6. Output location: out
+
+### 2.4 Deploy
+1. Click "Review + Create"
+2. Click "Create"
+3. Wait 5-10 minutes for deployment
+4. Get URL: https://nasa-research-frontend.azurestaticapps.net
+
+## 🐍 Step 3: Deploy Backend to Azure App Service
+
+### 3.1 Create App Service
+1. Azure Portal → "Create a resource"
+2. Search: "App Service"
+3. Click "Create"
+
+### 3.2 Configure App Service
+```
+Subscription: Your Azure subscription
+Resource Group: nasa-research-rg (same as frontend)
+Name: nasa-research-backend
+Runtime stack: Python 3.9
+Operating System: Linux
+Region: East US (same as frontend)
+Pricing Plan: Free F1 (or Basic B1 for better performance)
+```
+
+### 3.3 Deploy Backend
+1. Click "Review + Create"
+2. Click "Create"
+3. Wait 5-10 minutes for deployment
+4. Get URL: https://nasa-research-backend.azurewebsites.net
+
+### 3.4 Configure Deployment
+1. Go to your App Service in Azure Portal
+2. Go to "Deployment Center"
+3. Connect your GitHub repository
+4. Set build settings:
+   - Source: /cursor-back
+   - Build command: pip install -r requirements.txt
+   - Start command: python main.py
+
+## 🔧 Step 4: Configure Environment Variables
+
+### 4.1 Frontend Environment Variables
+In Azure Portal → Static Web App → Configuration:
+```
+NEXT_PUBLIC_API_BASE_URL=https://nasa-research-backend.azurewebsites.net/api
+NODE_ENV=production
+```
+
+### 4.2 Backend Environment Variables
+In Azure Portal → App Service → Configuration → Application settings:
+```
+NODE_ENV=production
+PORT=8000
+CORS_ORIGINS=https://nasa-research-frontend.azurestaticapps.net
+```
+
+## 🌐 Step 5: Configure Your Free Domain
+
+### 5.1 Map Domain to Frontend
+1. Azure Portal → Static Web App → "Custom domains"
+2. Add: Your free domain (e.g., your-domain.com)
+3. Azure will provide DNS instructions
+
+### 5.2 Map Subdomain to Backend
+1. Azure Portal → App Service → "Custom domains"
+2. Add: api.your-domain.com
+3. Azure will provide DNS instructions
+
+### 5.3 Update DNS Records
+In your GoDaddy domain management, add:
+```
+A     @           [Azure Static Web Apps IP]
+CNAME www         nasa-research-frontend.azurestaticapps.net
+CNAME api         nasa-research-backend.azurewebsites.net
+```
+
+## 🧪 Step 6: Test Your Deployment
+
+### 6.1 Test Frontend
+- Visit: https://your-domain.com
+- Check if pages load correctly
+- Test navigation
+
+### 6.2 Test Backend
+- Visit: https://api.your-domain.com/docs
+- Test API endpoints
+- Check CORS settings
+
+### 6.3 Test Integration
+- Check if frontend can connect to backend
+- Test AI chat functionality
+- Verify data processing
+
+## 🎉 Your Live URLs
+
+### With Your Free Domain:
+- Frontend: https://your-domain.com
+- Backend API: https://api.your-domain.com
+- API Documentation: https://api.your-domain.com/docs
+
+### Azure URLs (backup):
+- Frontend: https://nasa-research-frontend.azurestaticapps.net
+- Backend: https://nasa-research-backend.azurewebsites.net
+
+## 💰 Cost Breakdown
+
+| Component | Cost | Status |
+|-----------|------|--------|
+| Domain | ₹0 | ✅ FREE (GoDaddy) |
+| Frontend Hosting | ₹0 | ✅ FREE (Azure Static Web Apps) |
+| Backend Hosting | ₹0 | ✅ FREE (Azure App Service with credits) |
+| SSL Certificate | ₹0 | ✅ FREE (Automatic) |
+| CDN | ₹0 | ✅ FREE (Global) |
+| Total | ₹0 | 🎉 COMPLETELY FREE |
+
+## 🚨 Troubleshooting
+
+### Common Issues:
+
+#### 1. Frontend Not Deploying
+- Check app_location is set to "/cursor-front"
+- Verify next.config.ts has output: 'export'
+- Check GitHub Actions logs
+
+#### 2. Backend Not Starting
+- Verify Python version is 3.9+
+- Check requirements.txt has all dependencies
+- Check App Service logs
+
+#### 3. API Connection Issues
+- Verify CORS_ORIGINS includes frontend URL
+- Check NEXT_PUBLIC_API_BASE_URL is correct
+- Test API endpoints directly
+
+#### 4. Domain Not Working
+- Check DNS records are correct
+- Wait 24-48 hours for DNS propagation
+- Verify SSL certificate is active
+
+## 🔍 Monitoring and Maintenance
+
+### Azure Monitoring:
+- Check Azure Portal for service health
+- Monitor resource usage
+- Set up alerts for downtime
+
+### Performance Optimization:
+- Enable Azure CDN for faster loading
+- Optimize images and assets
+- Monitor Core Web Vitals
+
+## 📞 Support Resources
+
+### Azure Documentation:
+- Azure Static Web Apps: https://docs.microsoft.com/en-us/azure/static-web-apps/
+- Azure App Service: https://docs.microsoft.com/en-us/azure/app-service/
+
+### Support:
+- Azure Support: Available in portal
+- GitHub Issues: For deployment problems
+- Community Forums: Azure and GitHub communities
+
+## 🎯 Quick Commands
+
+### Git Commands:
+```bash
+git add .
+git commit -m "Deploy to Azure"
+git push origin main
+```
+
+### Azure CLI Commands (Optional):
+```bash
+# Install Azure CLI
+curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
+
+# Login to Azure
+az login
+
+# List resources
+az resource list --resource-group nasa-research-rg
+```
+
+## 🚀 Success Checklist
+
+- ✅ Azure account created with $200 credits
+- ✅ GitHub repository with project code
+- ✅ Static Web App created and deployed
+- ✅ App Service created and deployed
+- ✅ Environment variables configured
+- ✅ Free domain mapped to Azure services
+- ✅ DNS records updated
+- ✅ Frontend accessible at your domain
+- ✅ Backend API accessible at api.your-domain.com
+- ✅ Full-stack application working end-to-end
+
+## 🎉 Congratulations!
+
+Your NASA Research Analytics Platform is now live on Microsoft Azure!
+
+Total deployment cost: ₹0 (completely FREE!)
+
+Your application is now accessible worldwide with:
+- Global CDN for fast loading
+- Automatic HTTPS security
+- Auto-scaling capabilities
+- Enterprise-grade reliability
+- 24/7 monitoring and support
+
+Enjoy your live NASA Research Analytics Platform! 🚀
