@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
-import { Inter, Geist_Mono } from "next/font/google";
+import { Inter, Geist_Mono, Orbitron, Rajdhani } from "next/font/google";
 import "./globals.css";
 import Providers from "@/components/providers";
-import { ThemeProvider } from "next-themes";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -15,9 +14,22 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const orbitron = Orbitron({
+  variable: "--font-orbitron",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const rajdhani = Rajdhani({
+  variable: "--font-rajdhani",
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Research Analytics Dashboard",
-  description: "AI-powered research analytics platform for scientists and managers",
+  title: "SpaceScope - Space Biology Research Platform",
+  description: "AI-powered space biology research platform with immersive mission control interface",
 };
 
 export default function RootLayout({
@@ -26,21 +38,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en">
       <body
-        className={`${inter.variable} ${geistMono.variable} antialiased`}
-        suppressHydrationWarning={true}
+        className={`${inter.variable} ${geistMono.variable} ${orbitron.variable} ${rajdhani.variable} antialiased`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="dark"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <Providers>
-            {children}
-          </Providers>
-        </ThemeProvider>
+        <Providers>
+          {children}
+        </Providers>
       </body>
     </html>
   );
