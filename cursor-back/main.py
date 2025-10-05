@@ -2215,8 +2215,5 @@ def hybrid_nasa_ai_chat_endpoint(request: ChatMessage):
 
 if __name__ == "__main__":
     import uvicorn
-    print("🚀 Starting NASA AI Research Assistant Backend...")
-    print("📡 Backend will be available at: http://localhost:8000")
-    print("📚 API Documentation: http://localhost:8000/docs")
-    print("🤖 NASA AI Chat: http://localhost:8000/api/nasa-ai-chat")
-    uvicorn.run(app, host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", 8080)), reload=False)
+
